@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from . import app, avr
 
 @app.route('/api/v1.0/volume', methods=['GET'])

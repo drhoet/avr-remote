@@ -5,7 +5,8 @@ This project builds a python web application that provides a user-friendly web i
 
 ## Requirements
 1. Python 3
-2. Flask (`pip2 install flask` should do the trick)
+2. Flask (`pip3 install flask` should do the trick)
+3. requests (`pip3 install requests` should do the trick)
 
 ## Installation
 1. Clone the git repo
