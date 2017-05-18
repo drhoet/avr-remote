@@ -7,6 +7,37 @@
 			</script>
 	</head>
 	<body>
-		{% block body %}{% endblock %}
+		<div class="container">
+			{% block body %}{% endblock %}
+		</div>
+		
+		<script src="//cdnjs.cloudflare.com/ajax/libs/fallback/1.1.7/fallback.min.js"></script>
+		<script>window.fallback || document.write('<script src="{{ url_for('static', filename='js/fallback-1.1.7.min.js') }}">\x3C/script>')</script>
+		<script>
+			fallback.load({
+					bootstrap_css: ['//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', '{{ url_for("static", filename="css/bootstrap-3.3.7.min.css") }}'],
+					avrremote_css: '{{ url_for("static", filename="css/avrremote.css") }}',
+
+					// JavaScript library. THE KEY MUST BE THE LIBRARIES WINDOW VARIABLE!
+					jQuery: [
+						'//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js',
+						'{{ url_for("static", filename="js/jquery-3.1.1.min.js") }}'
+					],
+					sprintf: [
+						'//cdnjs.cloudflare.com/ajax/libs/sprintf/1.0.3/sprintf.min.js',
+						'{{ url_for("static", filename="js/sprintf-1.0.3.min.js") }}'
+					],
+					'jQuery.fn.modal': [
+						'//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
+						'{{ url_for("static", filename="js/bootstrap-3.3.7.min.js") }}'
+					]
+			}, {
+				shim: {
+					'jQuery.fn.modal': ['jQuery']
+				}
+			});
+
+			{% block script %}{% endblock %}
+		</script>
 	</body>
 </html>
