@@ -8,6 +8,10 @@ class Marantz(AbstractAvr):
 	def __init__(self, config, listener):
 		self.listener = listener
 		self.baseUri = 'http://{0}/'.format(config['ip'])
+		
+	@property
+	def static_info(self):
+		return { 'name': 'Marantz NR1605' }
 
 	def get_volume(self):
 		status = self._post_app_command( 'GetVolumeLevel' )
