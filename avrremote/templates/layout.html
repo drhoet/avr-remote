@@ -2,9 +2,11 @@
 <html>
 	<head>
 		<title>AVR remote</title>
-			<script type="text/javascript">
-				$SCRIPT_ROOT = {{ request.script_root|tojson }};
-			</script>
+		<script type="text/javascript">
+			$SCRIPT_ROOT = {{ request.script_root|tojson }};
+		</script>
+		<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/avrremote.css") }}">
 	</head>
 	<body>
 		<div class="container">
@@ -15,9 +17,6 @@
 		<script>window.fallback || document.write('<script src="{{ url_for('static', filename='js/fallback-1.1.7.min.js') }}">\x3C/script>')</script>
 		<script>
 			fallback.load({
-					bootstrap_css: ['//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', '{{ url_for("static", filename="css/bootstrap-3.3.7.min.css") }}'],
-					avrremote_css: '{{ url_for("static", filename="css/avrremote.css") }}',
-
 					// JavaScript library. THE KEY MUST BE THE LIBRARIES WINDOW VARIABLE!
 					jQuery: [
 						'//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js',
@@ -30,10 +29,15 @@
 					'jQuery.fn.modal': [
 						'//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
 						'{{ url_for("static", filename="js/bootstrap-3.3.7.min.js") }}'
+					],
+					'jQuery.fn.knob': [
+						'//cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.12/jquery.knob.min.js',
+						'{{ url_for("static", filename="js/jquery.knob-1.2.12.min.js") }}'
 					]
 			}, {
 				shim: {
-					'jQuery.fn.modal': ['jQuery']
+					'jQuery.fn.modal': ['jQuery'],
+					'jQuery.fn.knob': ['jQuery']
 				}
 			});
 

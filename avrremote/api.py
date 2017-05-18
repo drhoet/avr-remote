@@ -5,7 +5,7 @@ from . import app, avr
 def get_volume():
 	return jsonify({ 'value': avr.get_volume() })
 
-@app.route('/api/v1.0/volume', methods=['POST'])
+@app.route('/api/v1.0/volume', methods=['PUT'])
 def set_volume():
 	avr.set_volume( request.get_json()['value'] )
 	return ('', 202)
