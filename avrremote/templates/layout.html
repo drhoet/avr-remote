@@ -5,8 +5,7 @@
 		<script type="text/javascript">
 			$SCRIPT_ROOT = {{ request.script_root|tojson }};
 		</script>
-		<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/avrremote.css") }}">
+		{% block head %}{% endblock %}
 	</head>
 	<body>
 		<div class="container">
@@ -33,11 +32,16 @@
 					'jQuery.fn.knob': [
 						'//cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.12/jquery.knob.min.js',
 						'{{ url_for("static", filename="js/jquery.knob-1.2.12.min.js") }}'
+					],
+					'jQuery.fn.bootstrapToggle': [
+						'//gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js',
+						'{{ url_for("static", filename="js/bootstrap-toggle-2.2.0.min.js") }}'
 					]
 			}, {
 				shim: {
 					'jQuery.fn.modal': ['jQuery'],
-					'jQuery.fn.knob': ['jQuery']
+					'jQuery.fn.knob': ['jQuery'],
+					'jQuery.fn.bootstrapToggle': ['jQuery']
 				}
 			});
 

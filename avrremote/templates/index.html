@@ -1,23 +1,62 @@
 {% extends "layout.html" %}
+{% block head %}
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-3.3.7.min.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-toggle-2.2.0.min.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome-4.7.0.min.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/avrremote.css') }}">
+{% endblock %}
 {% block body %}
-	<h1 class="page-header">{{static_info.name}}</h1>
+	<h1 class="page-header">
+		<div class="row">
+			<div class="col-md-11">{{static_info.name}}</div>
+			<div class="col-md-1 text-right"><input {% if status.zones[0].power %}checked{% endif %} id="mainPower" data-toggle="toggle" data-on="<i class='fa fa-power-off'></i>" data-onstyle="success" data-off="<i class='fa fa-power-off'></i>"  type="checkbox"></div>
+		</div>
+	</h1>
 	<div class="row">
-		<div class="col-md-3"></div>
-		<div class="col-md-6"></div>
+		<div class="col-md-1">
+			<ul id="mainSources" class="nav nav-stacked" role="tablist">
+				<li role="presentation">
+					<a href="#home" role="tab" data-toggle="tab">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					</a>
+				</li>
+				<li role="presentation">
+					<a href="#profile" role="tab" data-toggle="tab">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					</a>
+				</li>
+				<li role="presentation">
+					<a href="#messages" role="tab" data-toggle="tab">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					</a>
+				</li>
+				<li role="presentation">
+					<a href="#settings" role="tab" data-toggle="tab">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="col-md-8 tab-content">
+			<div role="tabpanel" class="tab-pane" id="home">...home</div>
+			<div role="tabpanel" class="tab-pane" id="profile">...profile</div>
+			<div role="tabpanel" class="tab-pane" id="messages">...messages</div>
+			<div role="tabpanel" class="tab-pane" id="settings">...settings</div>
+		</div>
 		<div class="col-md-3">
 			<div id="mainVolumeWrapper">
 				<div id="mainVolumeKnobWrapper">
-					<input type="text" value="100.0" id="mainVolume" data-displayPrevious="true" data-width="95%">
+					<input type="text" value="{{status.zones[0].volume}}" id="mainVolume" data-displayPrevious="true" data-width="95%">
 				</div>
 				<div class="btn-group btn-group-justified" role="group">
 					<a class="btn btn-default" href="#" role="button">
-						<span class="glyphicon glyphicon-volume-down" aria-hidden="true"></span>
+						<span class="fa fa-volume-down" aria-hidden="true"></span>
 					</a>
 					<a class="btn btn-default" href="#" role="button">
-						<span class="glyphicon glyphicon-volume-off" aria-hidden="true"></span>
+						<span class="fa fa-volume-off" aria-hidden="true"></span>
 					</a>
 					<a class="btn btn-default" href="#" role="button">
-						<span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span>
+						<span class="fa fa-volume-up" aria-hidden="true"></span>
 					</a>
 				</div>
 			</div>
@@ -26,11 +65,16 @@
 {% endblock %}
 {% block script %}
 	fallback.ready(function() {
-		$.getJSON('/api/v1.0/volume', {}, function(data) {
-			$('#mainVolume').val(data.value).trigger('change');
-		});
-
 		$(function() {
+			$('#mainPower').change(function() {
+				$.ajax({
+						url: '/api/v1.0/zone/0/power',
+						type: 'PUT',
+						data: JSON.stringify({ value: $(this).prop('checked') }),
+						contentType: 'application/json; charset=utf-8'					
+				})
+			});
+		
 			$('#mainVolume').knob({
 				'min': 0,
 				'max': 60,
@@ -40,13 +84,16 @@
 				},
 				'release': function(volume) {
 					$.ajax({
-						url: '/api/v1.0/volume',
+						url: '/api/v1.0/zone/0/volume',
 						type: 'PUT',
 						data: JSON.stringify({ value: parseFloat($('#mainVolume').val()) }),
 						contentType: 'application/json; charset=utf-8'
 					});
 				}
 			});
+			
+			$('#mainSources').tab();
+			$('#mainSources a[href="#profile"]').tab('show');
 		});
 	});
 {% endblock %}
