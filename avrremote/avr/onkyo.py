@@ -21,8 +21,10 @@ class Onkyo(AbstractAvr):
 			return receiver.command('power on' if value else 'power off' )
 
 	def get_volume(self, zoneId):
-		return 20
+		with eiscp.eISCP(self.ip) as receiver:
+			resp = receiver.raw('MVLQSTN')
+		return int(resp[3:], 16)	
 	
 	def set_volume(self, zoneId, value):
 		with eiscp.eISCP(self.ip) as receiver:
-			return receiver.raw('MVL' + str(value))
+			return receiver.raw('MVL' + hex(value)[2:].upper())
