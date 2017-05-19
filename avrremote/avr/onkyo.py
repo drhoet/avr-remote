@@ -27,4 +27,4 @@ class Onkyo(AbstractAvr):
 	
 	def set_volume(self, zoneId, value):
 		with eiscp.eISCP(self.ip) as receiver:
-			return receiver.raw('MVL' + hex(value)[2:].upper())
+			return receiver.raw('MVL' + '{0:02X}'.format(value))
