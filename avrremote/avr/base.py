@@ -18,7 +18,8 @@ class AbstractAvr(metaclass=ABCMeta):
 		return {
 			'zones': [ {
 				'power': self.get_power(zoneId),
-				'volume': self.get_volume(zoneId)
+				'volume': self.get_volume(zoneId),
+				'input': self.get_selected_input(zoneId)
 			} for zoneId in range(self.static_info['zones']) ]
 		}
 
@@ -54,6 +55,19 @@ class AbstractAvr(metaclass=ABCMeta):
 	# value: a float [0..100] representing the new volume
 	@abstractmethod
 	def set_volume(self, zoneId, value):
+		pass
+	
+	# returns the index of the selected input. The returned value is the index in the static_info['zone'] list
+	# zoneId: the zone id, int [0..static_info.zones[
+	@abstractmethod
+	def get_selected_input(self, zoneId):
+		pass
+	
+	# selects an input source
+	# inputId: the id of the input source to select. Corresponds to the index in the static_info['zone'] list
+	# zoneId: the zone id, int [0..static_info.zones[
+	@abstractmethod
+	def select_input(self, zoneId, inputId):
 		pass
 	
 	@classmethod
