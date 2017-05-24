@@ -77,7 +77,7 @@
 		
 			$('#mainVolume').knob({
 				'min': 0,
-				'max': 60,
+				'max': {{config.MAX_VOLUME}},
 				'step': {{static_info.volume_step}},
 				{% if static_info.volume_step < 1 %}
 				'format': function(value) {

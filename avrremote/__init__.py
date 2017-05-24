@@ -16,4 +16,4 @@ from . import api
 
 @app.route('/')
 def index():
-	return render_template('index.html', status = avr.status, static_info = avr.static_info)
+	return render_template('index.html', status = avr.status, static_info = avr.static_info, config = app.config)
