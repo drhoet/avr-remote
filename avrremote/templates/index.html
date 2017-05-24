@@ -78,10 +78,12 @@
 			$('#mainVolume').knob({
 				'min': 0,
 				'max': 60,
-				'step': 0.5,
+				'step': {{static_info.volume_step}},
+				{% if static_info.volume_step < 1 %}
 				'format': function(value) {
 					return sprintf('%04.1f', value);
 				},
+				{% endif %}
 				'release': function(volume) {
 					$.ajax({
 						url: '/api/v1.0/zone/0/volume',

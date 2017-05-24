@@ -49,7 +49,7 @@ class Marantz(AbstractAvr):
 		
 	@property
 	def static_info(self):
-		return { 'name': 'Marantz NR1605', 'ip': self.config['ip'], 'zones': self.zones, 'sources': self.sources }
+		return { 'name': 'Marantz NR1605', 'ip': self.config['ip'], 'zones': self.zones, 'sources': self.sources, 'volume_step': 0.5 }
 	
 	def get_power(self, zoneId):
 		return self._get_zone_status( zoneId )['power']
