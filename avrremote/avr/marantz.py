@@ -42,14 +42,14 @@ class Marantz(AbstractAvr):
 		self.baseUri = 'http://{0}'.format(config['ip'])
 		
 		cmds = self._post_app_command('GetZoneName', 'GetRenameSource')
-		self.zones = [ x.text for x in cmds[0] ]
+		self.zones = [ x.text.strip() for x in cmds[0] ]
 
 		self.sources = [ x.findtext('rename').strip() for x in cmds[1].findall('functionrename/list') ]
 		self.source_ids = [ Marantz.INPUT_ID_MAPPING[x.findtext('name').strip().upper()] for x in cmds[1].findall('functionrename/list') ]
 		
 	@property
 	def static_info(self):
-		return { 'name': 'Marantz NR1605', 'ip': self.config['ip'], 'zones': len(self.zones), 'sources': self.sources }
+		return { 'name': 'Marantz NR1605', 'ip': self.config['ip'], 'zones': self.zones, 'sources': self.sources }
 	
 	def get_power(self, zoneId):
 		return self._get_zone_status( zoneId )['power']
@@ -94,7 +94,6 @@ class Marantz(AbstractAvr):
 		else:
 			data = self._get('/goform/formZone{0}_Zone{0}XmlStatusLite.xml'.format(zoneId + 1))
 		xml = ElementTree.fromstring( data )
-		print(xml)
 		return { 'power': xml.findtext( 'Power/value' ) == 'ON',
 			'input': xml.findtext( 'InputFuncSelect/value' ),
 			'volume': float(xml.findtext( 'MasterVolume/value' )) + 80,

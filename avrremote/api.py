@@ -1,6 +1,10 @@
 from flask import jsonify, request
 from . import app, avr
 
+@app.route('/api/v1.0/static_info', methods=['GET'])
+def static_info():
+	return jsonify( avr.static_info )
+
 @app.route('/api/v1.0/status', methods=['GET'])
 def status():
 	return jsonify( avr.status )
