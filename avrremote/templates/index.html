@@ -6,96 +6,116 @@
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/avrremote.css') }}">
 {% endblock %}
 {% block body %}
-	<h1 class="page-header">
-		<div class="row">
-			<div class="col-md-11">{{static_info.name}}</div>
-			<div class="col-md-1 text-right"><input {% if status.zones[0].power %}checked{% endif %} id="mainPower" data-toggle="toggle" data-on="<i class='fa fa-power-off'></i>" data-onstyle="success" data-off="<i class='fa fa-power-off'></i>"  type="checkbox"></div>
-		</div>
-	</h1>
-	<div class="row">
-		<div class="col-md-1">
-			<ul id="mainSources" class="nav nav-stacked" role="tablist">
-				<li role="presentation">
-					<a href="#home" role="tab" data-toggle="tab">
-						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-					</a>
-				</li>
-				<li role="presentation">
-					<a href="#profile" role="tab" data-toggle="tab">
-						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-					</a>
-				</li>
-				<li role="presentation">
-					<a href="#messages" role="tab" data-toggle="tab">
-						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-					</a>
-				</li>
-				<li role="presentation">
-					<a href="#settings" role="tab" data-toggle="tab">
-						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<div class="col-md-8 tab-content">
-			<div role="tabpanel" class="tab-pane" id="home">...home</div>
-			<div role="tabpanel" class="tab-pane" id="profile">...profile</div>
-			<div role="tabpanel" class="tab-pane" id="messages">...messages</div>
-			<div role="tabpanel" class="tab-pane" id="settings">...settings</div>
-		</div>
-		<div class="col-md-3">
-			<div id="mainVolumeWrapper">
-				<div id="mainVolumeKnobWrapper">
-					<input type="text" value="{{status.zones[0].volume}}" id="mainVolume" data-displayPrevious="true" data-width="95%">
-				</div>
-				<div class="btn-group btn-group-justified" role="group">
-					<a class="btn btn-default" href="#" role="button">
-						<span class="fa fa-volume-down" aria-hidden="true"></span>
-					</a>
-					<a class="btn btn-default" href="#" role="button">
-						<span class="fa fa-volume-off" aria-hidden="true"></span>
-					</a>
-					<a class="btn btn-default" href="#" role="button">
-						<span class="fa fa-volume-up" aria-hidden="true"></span>
-					</a>
+	<h1 class="page-header">{{static_info.name}}</h1>
+	<div class="panel-group" id="zones-accordion" role="tablist">
+	{% for zoneName in static_info.zones %}
+		<div class="panel panel-default">
+			<div class="panel-heading clearfix" data-toggle="collapse" data-parent="#zones-accordion" data-target="#zone{{loop.index0}}-body">
+				<span class="zone-name">{{zoneName}}</span>
+				<span class="pull-right">
+					<input {% if status.zones[loop.index0].power %}checked{% endif %} id="zone{{loop.index0}}-power" data-toggle="toggle" data-on="<i class='fa fa-power-off'></i>" data-onstyle="success" data-off="<i class='fa fa-power-off'></i>" type="checkbox">
+				</span>
+			</div>
+			<div id="zone{{loop.index0}}-body" class="panel-collapse collapse{% if loop.index0 == 0 %} in{% endif %}" role="tabpanel">
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-1">
+							<ul id="zone{{loop.index0}}-sources" class="nav nav-stacked" role="tablist">
+								<li role="presentation">
+									<a href="#home" role="tab" data-toggle="tab">
+										<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+									</a>
+								</li>
+								<li role="presentation">
+									<a href="#profile" role="tab" data-toggle="tab">
+										<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+									</a>
+								</li>
+								<li role="presentation">
+									<a href="#messages" role="tab" data-toggle="tab">
+										<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+									</a>
+								</li>
+								<li role="presentation">
+									<a href="#settings" role="tab" data-toggle="tab">
+										<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div class="col-md-8 tab-content">
+							<div role="tabpanel" class="tab-pane" id="home">...home</div>
+							<div role="tabpanel" class="tab-pane" id="profile">{{static_info.sources}} selected: {{status}}</div>
+							<div role="tabpanel" class="tab-pane" id="messages">...messages</div>
+							<div role="tabpanel" class="tab-pane" id="settings">...settings</div>
+						</div>
+						<div class="col-md-3">
+							<div class="volume-wrapper">
+								<div class="volume-dial-wrapper">
+									<input type="text" value="{{status.zones[loop.index0].volume}}" id="zone{{loop.index0}}-volume-dial" data-displayPrevious="true" data-angleOffset="-125" data-angleArc="250" data-rotation="anticlockwise" data-width="220" data-height="175">
+								</div>
+								<div class="btn-group btn-group-justified" role="group">
+									<a class="btn btn-default" href="#" role="button">
+										<span class="fa fa-volume-down" aria-hidden="true"></span>
+									</a>
+									<a class="btn btn-default" href="#" role="button">
+										<span class="fa fa-volume-off" aria-hidden="true"></span>
+									</a>
+									<a class="btn btn-default" href="#" role="button">
+										<span class="fa fa-volume-up" aria-hidden="true"></span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
+	{% endfor %}
 	</div>
 {% endblock %}
 {% block script %}
 	fallback.ready(function() {
 		$(function() {
-			$('#mainPower').change(function() {
-				$.ajax({
-						url: '/api/v1.0/zone/0/power',
-						type: 'PUT',
-						data: JSON.stringify({ value: $(this).prop('checked') }),
-						contentType: 'application/json; charset=utf-8'					
-				})
-			});
-		
-			$('#mainVolume').knob({
-				'min': 0,
-				'max': {{config.MAX_VOLUME}},
-				'step': {{static_info.volume_step}},
-				{% if static_info.volume_step < 1 %}
-				'format': function(value) {
-					return sprintf('%04.1f', value);
-				},
-				{% endif %}
-				'release': function(volume) {
+			{% for zoneName in static_info.zones %}
+				$('#zone{{loop.index0}}-power').change(function(e) {
 					$.ajax({
-						url: '/api/v1.0/zone/0/volume',
-						type: 'PUT',
-						data: JSON.stringify({ value: parseFloat($('#mainVolume').val()) }),
-						contentType: 'application/json; charset=utf-8'
+							url: '/api/v1.0/zone/{{loop.index0}}/power',
+							type: 'PUT',
+							data: JSON.stringify({ value: $(this).prop('checked') }),
+							contentType: 'application/json; charset=utf-8'					
 					});
-				}
-			});
+				});
+				
+				// prevent checkbox .click event to bubble up (which would trigger the accordion click :()
+				$('.toggle:has(#zone{{loop.index0}}-power)').click(function(e) {
+					var $checkbox = $(this).find('input[type=checkbox]')
+					$checkbox.bootstrapToggle('toggle')
+					e.stopPropagation();
+				});
 			
-			$('#mainSources').tab();
-			$('#mainSources a[href="#profile"]').tab('show');
+				$('#zone{{loop.index0}}-volume-dial').knob({
+					'min': 0,
+					'max': {{config.MAX_VOLUME}},
+					'step': {{static_info.volume_step}},
+					{% if static_info.volume_step < 1 %}
+					'format': function(value) {
+						return sprintf('%04.1f', value);
+					},
+					{% endif %}
+					'release': function(volume) {
+						$.ajax({
+							url: '/api/v1.0/zone/{{loop.index0}}/volume',
+							type: 'PUT',
+							data: JSON.stringify({ value: parseFloat($('#zone{{loop.index0}}-volume-dial').val()) }),
+							contentType: 'application/json; charset=utf-8'
+						});
+					}
+				});
+				
+				$('#zone{{loop.index0}}-sources').tab();
+				$('#zone{{loop.index0}}-sources a[href="#profile"]').tab('show');
+			{% endfor %}
 		});
 	});
 {% endblock %}
