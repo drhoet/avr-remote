@@ -8,8 +8,9 @@ class Onkyo(AbstractAvr):
 		self.listener = listener
 		self.ip = config['ip']
 		self.zones = ['main', 'zone2']
-		self.sources = [ ('dvd', 'hdmi'), ('fm', 'radio'), ('network', 'cloud'), ('am', 'radio'), ('strm-box', 'hdmi'), ('video2', 'hdmi'), ('bluetooth', 'bluetooth_audio') ]
-		self.source_ids = [x[0] for x in self.sources]
+		self.sources = [ ('BD/DVD', 'hdmi'), ('Tuner fm', 'radio'), ('Network', 'cloud'), ('Tuner am', 'radio'), ('STRM BOX', 'hdmi'), ('CBL/SAT', 'hdmi'), ('BLUETOOTH', 'bluetooth-audio'), ('PC', 'hdmi'), ('GAME', 'videogame'), ('AUX', 'hdmi'), ('CD', 'cd'), ('PHONO', 'hdmi'), ('TV', 'tv') ]
+		self.source_real_names = [ ('dvd', 'BD/DVD'), ('fm', 'Tuner fm'), ('network', 'Network'), ('am', 'Tuner am'), ('strm-box', 'STRM BOX'), ('video2', 'CBL/SAT'), ('bluetooth', 'BLUETOOTH'), ('video6', 'PC'), ('video3', 'GAME'), ('video4', 'AUX'), ('cd', 'CD'), ('phono', 'PHONO'), ('tv', 'TV') ]
+		self.source_ids = [x[0] for x in self.source_real_names]
 			
 	@property
 	def static_info(self):
