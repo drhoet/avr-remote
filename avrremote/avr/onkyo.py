@@ -11,7 +11,7 @@ class Onkyo(AbstractAvr):
 			
 	@property
 	def static_info(self):
-		return { 'name': 'Onkyo', 'ip': self.ip, 'zones': self.zones, 'sources': [ ('CBL/SAT', 'settings_input_hdmi'), ('DVD', 'album'), ('Blu-Ray', 'album') ], 'volume_step': 1 }
+		return { 'name': 'Onkyo', 'ip': self.ip, 'zones': self.zones, 'sources': [ ('CBL/SAT', 'hdmi'), ('DVD', 'dvd'), ('Blu-Ray', 'blu-ray') ], 'volume_step': 1 }
 	
 	def get_power(self, zoneId):
 		with eiscp.eISCP(self.ip) as receiver:

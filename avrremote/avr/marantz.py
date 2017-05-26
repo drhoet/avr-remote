@@ -49,30 +49,30 @@ class Marantz(AbstractAvr):
 	
 	INPUT_ID_TO_ICON_MAPPING = {
 		# source_id : icon mapping
-		'AUX1': 'settings_input_hdmi',
-		'AUX2': 'settings_input_hdmi',
-		'AUX3': 'settings_input_hdmi',
-		'AUX4': 'settings_input_hdmi',
-		'AUX5': 'settings_input_hdmi',
-		'AUX6': 'settings_input_hdmi',
-		'AUX7': 'settings_input_hdmi',
-		'BT': 'bluetooth_audio',
-		'BD': 'album',
-		'SAT/CBL': 'settings_input_hdmi',
-		'SAT': 'settings_input_hdmi',
-		'CD': 'album',
-		'DVD': 'album',
-		'GAME': 'videogame_asset',
+		'AUX1': 'hdmi',
+		'AUX2': 'hdmi',
+		'AUX3': 'hdmi',
+		'AUX4': 'hdmi',
+		'AUX5': 'hdmi',
+		'AUX6': 'hdmi',
+		'AUX7': 'hdmi',
+		'BT': 'bluetooth-audio',
+		'BD': 'blu-ray',
+		'SAT/CBL': 'satellite',
+		'SAT': 'satellite',
+		'CD': 'cd',
+		'DVD': 'dvd',
+		'GAME': 'videogame',
 		'HDRADIO': 'radio',
 		'IRP': 'radio',
 		'USB/IPOD': 'usb',
-		'MPLAY': 'movie', #'fiber_dvr',
+		'MPLAY': 'dvr',
 		'SERVER': 'cloud',
 		'NET': 'cloud',
-		'PHONO': 'settings_input_hdmi',
+		'PHONO': 'hdmi',
 		'TUNER': 'radio',
 		'TV': 'tv',
-		'SPOTIFY': 'cloud' # add missing!
+		'SPOTIFY': 'spotify' # add missing!
 	}
 
 	def __init__(self, config, listener):

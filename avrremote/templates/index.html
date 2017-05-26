@@ -31,7 +31,7 @@
 										{% for item, icon in menu_items_left %}
 										<li {% if loop.index0 == status.zones[zoneId].input %}class="active"{% endif %}>
 											<a href="#item">
-												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
+												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#{{icon}}" /></svg>
 												<span class="name">{{item}}</span>
 											</a>
 										</li>
@@ -47,7 +47,7 @@
 										<li {% if (loop.index0 + menu_items_left_len) == status.zones[zoneId].input %}class="active"{% endif %}>
 											<a href="#item">
 												<span class="name">{{item}}</span>
-												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
+												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#{{icon}}" /></svg>
 											</a>
 										</li>
 										{% endfor %}
