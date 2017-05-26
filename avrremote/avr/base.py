@@ -58,14 +58,14 @@ class AbstractAvr(metaclass=ABCMeta):
 	def set_volume(self, zoneId, value):
 		pass
 	
-	# returns the index of the selected input. The returned value is the index in the static_info['zone'] list
+	# returns the index of the selected input. The returned value is the index in the static_info.sources list
 	# zoneId: the zone id, int, index in static_info.zones of the zone
 	@abstractmethod
 	def get_selected_input(self, zoneId):
 		pass
 	
 	# selects an input source
-	# inputId: the id of the input source to select. Corresponds to the index in the static_info['zone'] list
+	# inputId: the id of the input source to select. Corresponds to the index in the static_info.sources list
 	# zoneId: the zone id, int, index in static_info.zones of the zone
 	@abstractmethod
 	def select_input(self, zoneId, inputId):
