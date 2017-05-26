@@ -8,7 +8,7 @@ class Onkyo(AbstractAvr):
 		self.listener = listener
 		self.ip = config['ip']
 		self.zones = ['main', 'zone2']
-		
+			
 	@property
 	def static_info(self):
 		return { 'name': 'Onkyo', 'ip': self.ip, 'zones': self.zones, 'sources': [ 'CBL/SAT', 'DVD', 'Blu-Ray' ], 'volume_step': 1 }
