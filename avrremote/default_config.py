@@ -3,4 +3,4 @@ AVR_CLASS = 'AbstractAvr'
 
 AVR_CONNECTION = { 'ip': '192.168.0.55' }
 MAX_VOLUME = 60.0
-ROTATION = 'anticlockwise'
+ROTATION = 'clockwise'
