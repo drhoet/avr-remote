@@ -16,46 +16,40 @@
 					<input {% if status.zones[loop.index0].power %}checked{% endif %} id="zone{{loop.index0}}-power" data-toggle="toggle" data-on="<i class='fa fa-power-off'></i>" data-onstyle="success" data-off="<i class='fa fa-power-off'></i>" type="checkbox">
 				</span>
 			</div>
-			<div id="zone{{loop.index0}}-body" class="panel-collapse collapse{% if loop.index0 == 0 %} in{% endif %}" role="tabpanel">
+			<div id="zone{{loop.index0}}-body" class="panel-collapse collapse{% if loop.index0 == 0 %} in{% endif %} zone" role="tabpanel">
 				<div class="panel-body">
 					<div class="row">
-						{% set menu_items = static_info.sources|slice(2) %}
-						<div class="col-md-1">
+						<div class="col-md-9 sources-column">
+							{% set menu_items = static_info.sources|slice(2) %}
 							<nav id="zone{{loop.index0}}-sources" class="nav nav-stacked sources">
 								<ul>
 									{% for item, icon in menu_items|first %}
 									<li>
 										<a href="#item">
-											<div class="svg-icon svg-baseline">
-												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
-											</div>
+											<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
 											<span class="name">{{item}}</span>
 										</a>
 									</li>
 									{% endfor %}
 								</ul>
 							</nav>
-						</div>
-						<div class="col-md-7">
-							<div role="tabpanel" class="tab-pane" id="profile">{{static_info.sources}} selected: {{status}}</div>
-						</div>
-						<div class="col-md-1">
 							<nav id="zone{{loop.index0}}-sources" class="nav nav-stacked sources text-right">
 								<ul>
 									{% for item, icon in menu_items|first %} {# |first here looks weird, but menu_items is actually a generator and first seems to get the next item... #}
 									<li>
 										<a href="#item">
 											<span class="name">{{item}}</span>
-											<div class="svg-icon svg-baseline">
-												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
-											</div>
+											<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
 										</a>
 									</li>
 									{% endfor %}
 								</ul>
 							</nav>
+							<div class="sources-content">
+								{{static_info.sources}} selected: {{status}}
+							</div>
 						</div>
-						<div class="col-md-3">
+						<div class="col-md-3 volume-column">
 							<div class="volume-wrapper">
 								<div class="volume-dial-wrapper">
 									<input type="text" value="{{status.zones[loop.index0].volume}}" id="zone{{loop.index0}}-volume-dial" data-displayPrevious="true" data-angleOffset="-125" data-angleArc="250" data-rotation="anticlockwise" data-width="220" data-height="175">

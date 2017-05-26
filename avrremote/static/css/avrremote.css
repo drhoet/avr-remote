@@ -8,24 +8,6 @@ a, a:hover, a:focus {
 	text-decoration: none;
 }
 
-.svg-icon {
-	display: inline-flex;
-	align-self: center;
-	position: relative;
-	height: 1em;
-	width: 1em;
-}
-
-.svg-icon svg {
-	height: 1.3em;
-	width: 1.3em;
-}
-
-.svg-icon.svg-baseline svg {
-	bottom: -0.3em;
-	position: absolute;
-}
-
 .btn-default {
 	background-color: #ccc;
 	border-color: #bbb;
@@ -55,9 +37,27 @@ a, a:hover, a:focus {
 	color: #337ab7;
 }
 
+div.volume-column {
+	padding: 15px;
+}
+
+div.sources-column {
+	padding-left: 0;
+	padding-right: 0;
+}
+
 nav ul {
 	margin: 0;
 	padding: 0;
+}
+
+nav.sources {
+	float: left;
+	width: 3.3em;
+}
+
+nav.sources.text-right {
+	float: right;
 }
 
 nav.sources ul li {
@@ -70,7 +70,7 @@ nav.sources ul li {
 
 nav.sources ul li a {
 	display: block;
-	padding: 0.5em 1em;
+	padding: 0.6em 1em;
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -90,6 +90,8 @@ nav.sources ul li:hover a {
 
 nav.sources ul li a svg.icon {
 	fill: #24292e;
+	height: 1.3em;
+	width: 1.3em;
 }
 
 nav.sources ul li:hover a svg.icon {
@@ -101,6 +103,7 @@ nav.sources ul li a span.name {
 	padding-left: 1em;
 	padding-right: 0;
 	font-weight: bold;
+	vertical-align: top;
 }
 
 nav.sources.text-right ul li a span.name {
@@ -110,6 +113,17 @@ nav.sources.text-right ul li a span.name {
 
 nav.sources ul li:hover a span.name {
 	display: inline-block;
+}
+
+div.zone div.panel-body {
+	padding: 0 15px;
+}
+
+div.sources-content {
+	margin: 0 3.3em;
+	box-shadow:  0px 100px 50px -40px #ffffff inset, 0px -100px 50px -40px #ffffff inset, -5px 0px 10px -5px rgba(0,0,0,0.5) inset, 5px 0px 10px -5px rgba(0,0,0,0.5) inset;
+	padding: 15px;
+	min-height: 250px;
 }
 
 
