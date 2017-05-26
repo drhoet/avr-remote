@@ -17,7 +17,7 @@ AVR_CLASS = 'Marantz'
 
 AVR_CONNECTION = { 'ip': 'x.x.x.x' }
 MAX_VOLUME = x.x
-ROTATION = 'clockwise'		##ROTATION can be either 'clockwise' or 'anticlockwise'. 'anticlockwise' is the default.
+ROTATION = 'clockwise'		##ROTATION can be either 'clockwise' or 'anticlockwise'. 'clockwise' is the default.
 ```
 3. Start the app as follows:
 ```
