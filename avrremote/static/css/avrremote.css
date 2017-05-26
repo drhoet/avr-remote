@@ -1,6 +1,29 @@
 body {
   color: #ccc;
   background-color: #24292e;
+  font-family: "opensans",Helvetica,Arial,sans-serif;
+}
+
+a, a:hover, a:focus {
+	text-decoration: none;
+}
+
+.svg-icon {
+	display: inline-flex;
+	align-self: center;
+	position: relative;
+	height: 1em;
+	width: 1em;
+}
+
+.svg-icon svg {
+	height: 1.3em;
+	width: 1.3em;
+}
+
+.svg-icon.svg-baseline svg {
+	bottom: -0.3em;
+	position: absolute;
 }
 
 .btn-default {
@@ -18,6 +41,10 @@ body {
 	line-height: 1;
 }
 
+.panel {
+	color: #24292e;
+}
+
 .panel-heading {
     cursor: pointer;
 }
@@ -27,3 +54,62 @@ body {
 	line-height: 34px;
 	color: #337ab7;
 }
+
+nav ul {
+	margin: 0;
+	padding: 0;
+}
+
+nav.sources ul li {
+	position: relative;
+	height: 2.5em;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+nav.sources ul li a {
+	display: block;
+	padding: 0.5em 1em;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	white-space: nowrap;
+}
+
+nav.sources.text-right ul li a {
+	left: auto;
+	right: 0;
+}
+
+nav.sources ul li:hover a {
+	background-color: #12b2e7; /*#23527c;*/
+	color: #fff;
+}
+
+nav.sources ul li a svg.icon {
+	fill: #24292e;
+}
+
+nav.sources ul li:hover a svg.icon {
+	fill: #fff;
+}
+
+nav.sources ul li a span.name {
+	display: none;
+	padding-left: 1em;
+	padding-right: 0;
+	font-weight: bold;
+}
+
+nav.sources.text-right ul li a span.name {
+	padding-left: 0;
+	padding-right: 1em;
+}
+
+nav.sources ul li:hover a span.name {
+	display: inline-block;
+}
+
+

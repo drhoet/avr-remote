@@ -19,35 +19,41 @@
 			<div id="zone{{loop.index0}}-body" class="panel-collapse collapse{% if loop.index0 == 0 %} in{% endif %}" role="tabpanel">
 				<div class="panel-body">
 					<div class="row">
+						{% set menu_items = static_info.sources|slice(2) %}
 						<div class="col-md-1">
-							<ul id="zone{{loop.index0}}-sources" class="nav nav-stacked" role="tablist">
-								<li role="presentation">
-									<a href="#home" role="tab" data-toggle="tab">
-										<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-									</a>
-								</li>
-								<li role="presentation">
-									<a href="#profile" role="tab" data-toggle="tab">
-										<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-									</a>
-								</li>
-								<li role="presentation">
-									<a href="#messages" role="tab" data-toggle="tab">
-										<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-									</a>
-								</li>
-								<li role="presentation">
-									<a href="#settings" role="tab" data-toggle="tab">
-										<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-									</a>
-								</li>
-							</ul>
+							<nav id="zone{{loop.index0}}-sources" class="nav nav-stacked sources">
+								<ul>
+									{% for item, icon in menu_items|first %}
+									<li>
+										<a href="#item">
+											<div class="svg-icon svg-baseline">
+												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
+											</div>
+											<span class="name">{{item}}</span>
+										</a>
+									</li>
+									{% endfor %}
+								</ul>
+							</nav>
 						</div>
-						<div class="col-md-8 tab-content">
-							<div role="tabpanel" class="tab-pane" id="home">...home</div>
+						<div class="col-md-7">
 							<div role="tabpanel" class="tab-pane" id="profile">{{static_info.sources}} selected: {{status}}</div>
-							<div role="tabpanel" class="tab-pane" id="messages">...messages</div>
-							<div role="tabpanel" class="tab-pane" id="settings">...settings</div>
+						</div>
+						<div class="col-md-1">
+							<nav id="zone{{loop.index0}}-sources" class="nav nav-stacked sources text-right">
+								<ul>
+									{% for item, icon in menu_items|first %} {# |first here looks weird, but menu_items is actually a generator and first seems to get the next item... #}
+									<li>
+										<a href="#item">
+											<span class="name">{{item}}</span>
+											<div class="svg-icon svg-baseline">
+												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
+											</div>
+										</a>
+									</li>
+									{% endfor %}
+								</ul>
+							</nav>
 						</div>
 						<div class="col-md-3">
 							<div class="volume-wrapper">
@@ -112,9 +118,6 @@
 						});
 					}
 				});
-				
-				$('#zone{{loop.index0}}-sources').tab();
-				$('#zone{{loop.index0}}-sources a[href="#profile"]').tab('show');
 			{% endfor %}
 		});
 	});

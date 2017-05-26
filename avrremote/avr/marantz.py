@@ -5,7 +5,7 @@ from xml.etree import ElementTree
 
 class Marantz(AbstractAvr):
 
-	INPUT_ID_MAPPING = {
+	INPUT_NAME_TO_ID_MAPPING = {
 		# name : source_id mapping
 		'AUX': 'AUX1',
 		'AUX1': 'AUX1',
@@ -24,16 +24,55 @@ class Marantz(AbstractAvr):
 		'DVD': 'DVD',
 		'GAME': 'GAME',
 		'HD RADIO': 'HDRADIO',
-		'INTERNET RADIO': 'IRP',
 		'IPOD/USB': 'USB/IPOD',
 		'MEDIA PLAYER': 'MPLAY',
-		'MEDIA SERVER': 'SERVER',
-		'ONLINE MUSIC': 'NET',
 		'NETWORK': 'NET',
 		'PHONO': 'PHONO',
 		'TUNER': 'TUNER',
 		'TV AUDIO': 'TV',
-		'SPOTIFYCONNECT': 'NET',
+		'SPOTIFYCONNECT': 'SPOTIFY', # Virtual input --> NET?
+		'VCR': 'VCR', # from xls
+		'V.AUX': 'V.AUX', # from xls
+		'SIRIUS': 'SIRIUS', # from xls
+		'SIRIUSXM': 'SIRIUSXM', # from xls
+		'RHAPSODY': 'RHAPSODY', # from xls
+		'PANDORA': 'PANDORA', # from xls. Virtual input --> NET?
+		'NAPSTER': 'NAPSTER', # from xls. Virtual input --> NET?
+		'LASTFM': 'LASTFM', # from xls. Virtual input --> NET?
+		'FLICKR': 'FLICKR', # from xls. Virtual input --> NET?
+		'IRADIO': 'IRADIO', # from xls. Virtual input --> NET?
+		'FAVORITES': 'FAVORITES', # from xls. Virtual input --> NET?
+		'CDR': 'CDR', # from xls
+		'NET/USB': 'NET/USB', # from xls
+		'M-XPORT': 'MXPORT' # from xls
+	}
+	
+	INPUT_ID_TO_ICON_MAPPING = {
+		# source_id : icon mapping
+		'AUX1': 'settings_input_hdmi',
+		'AUX2': 'settings_input_hdmi',
+		'AUX3': 'settings_input_hdmi',
+		'AUX4': 'settings_input_hdmi',
+		'AUX5': 'settings_input_hdmi',
+		'AUX6': 'settings_input_hdmi',
+		'AUX7': 'settings_input_hdmi',
+		'BT': 'bluetooth_audio',
+		'BD': 'album',
+		'SAT/CBL': 'settings_input_hdmi',
+		'SAT': 'settings_input_hdmi',
+		'CD': 'album',
+		'DVD': 'album',
+		'GAME': 'videogame_asset',
+		'HDRADIO': 'radio',
+		'IRP': 'radio',
+		'USB/IPOD': 'usb',
+		'MPLAY': 'movie', #'fiber_dvr',
+		'SERVER': 'cloud',
+		'NET': 'cloud',
+		'PHONO': 'settings_input_hdmi',
+		'TUNER': 'radio',
+		'TV': 'tv',
+		'SPOTIFY': 'cloud' # add missing!
 	}
 
 	def __init__(self, config, listener):
@@ -44,8 +83,8 @@ class Marantz(AbstractAvr):
 		cmds = self._post_app_command('GetZoneName', 'GetRenameSource')
 		self.zones = [ x.text.strip() for x in cmds[0] ]
 
-		self.sources = [ x.findtext('rename').strip() for x in cmds[1].findall('functionrename/list') ]
-		self.source_ids = [ Marantz.INPUT_ID_MAPPING[x.findtext('name').strip().upper()] for x in cmds[1].findall('functionrename/list') ]
+		self.source_ids = [ Marantz.INPUT_NAME_TO_ID_MAPPING[x.findtext('name').strip().upper()] for x in cmds[1].findall('functionrename/list') ]
+		self.sources = [ (x.findtext('rename').strip(), Marantz.INPUT_ID_TO_ICON_MAPPING[Marantz.INPUT_NAME_TO_ID_MAPPING[x.findtext('name').strip().upper()]]) for x in cmds[1].findall('functionrename/list') ]
 		
 	@property
 	def static_info(self):

@@ -7,7 +7,8 @@ class AvrListener:
 		raise NotImplementedError
 
 class AbstractAvr(metaclass=ABCMeta):
-	# must return a dictionary with at least the following keys: name (string), zones (list of zone names), sources (list of source names), volume_step (float).
+	# must return a dictionary with at least the following keys: name (string), zones (list of zone names),
+	# sources (list of tuples: (source names, source icon)), volume_step (float).
 	@property
 	@abstractmethod
 	def static_info(self):
