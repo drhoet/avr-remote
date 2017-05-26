@@ -42,4 +42,5 @@ class Onkyo(AbstractAvr):
 		return self.source_ids.index(sourceid)
 	
 	def select_input(self, zoneId, inputId):
-		pass
+		with eiscp.eISCP(self.ip) as receiver:
+			return receiver.command('input-selector' if zoneId == 0 else 'selector', arguments=[self.source_real_names[inputId][0]], zone=self.zones[zoneId])
