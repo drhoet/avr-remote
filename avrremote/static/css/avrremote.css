@@ -83,7 +83,7 @@ div.sources nav.text-right ul li a {
 	right: 0;
 }
 
-div.sources nav ul li:hover a {
+div.sources nav ul li.active a, div.sources nav ul li:hover a {
 	background-color: #12b2e7; /*#23527c;*/
 	color: #fff;
 }
@@ -94,7 +94,7 @@ div.sources nav ul li a svg.icon {
 	width: 1.3em;
 }
 
-div.sources nav ul li:hover a svg.icon {
+div.sources nav ul li.active a svg.icon, div.sources nav ul li:hover a svg.icon {
 	fill: #fff;
 }
 

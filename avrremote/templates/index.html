@@ -9,23 +9,27 @@
 	<h1 class="page-header">{{static_info.name}}</h1>
 	<div class="panel-group" id="zones-accordion" role="tablist">
 	{% for zoneName in static_info.zones %}
+		{% set zoneId = loop.index0 %}
 		<div class="panel panel-default">
-			<div class="panel-heading clearfix" data-toggle="collapse" data-parent="#zones-accordion" data-target="#zone{{loop.index0}}-body">
+			<div class="panel-heading clearfix" data-toggle="collapse" data-parent="#zones-accordion" data-target="#zone{{zoneId}}-body">
 				<span class="zone-name">{{zoneName}}</span>
 				<span class="pull-right">
-					<input {% if status.zones[loop.index0].power %}checked{% endif %} id="zone{{loop.index0}}-power" data-toggle="toggle" data-on="<i class='fa fa-power-off'></i>" data-onstyle="success" data-off="<i class='fa fa-power-off'></i>" type="checkbox">
+					<input {% if status.zones[zoneId].power %}checked{% endif %} id="zone{{zoneId}}-power" data-toggle="toggle" data-on="<i class='fa fa-power-off'></i>" data-onstyle="success" data-off="<i class='fa fa-power-off'></i>" type="checkbox">
 				</span>
 			</div>
-			<div id="zone{{loop.index0}}-body" class="panel-collapse collapse{% if loop.index0 == 0 %} in{% endif %} zone" role="tabpanel">
+			<div id="zone{{zoneId}}-body" class="panel-collapse collapse{% if zoneId == 0 %} in{% endif %} zone" role="tabpanel">
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-md-9 sources-column">
 							<div class="sources">
 								{% set menu_items = static_info.sources|slice(2) %}
-								<nav id="zone{{loop.index0}}-sources">
+								{% set menu_items_left = menu_items|first %}
+								{% set menu_items_right = menu_items|first %} {# |first here looks weird, but menu_items is actually a generator and first seems to get the next item... #}
+								{% set menu_items_left_len = menu_items_left|count %}
+								<nav id="zone{{zoneId}}-sources">
 									<ul>
-										{% for item, icon in menu_items|first %}
-										<li>
+										{% for item, icon in menu_items_left %}
+										<li {% if loop.index0 == status.zones[zoneId].input %}class="active"{% endif %}>
 											<a href="#item">
 												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
 												<span class="name">{{item}}</span>
@@ -37,10 +41,10 @@
 								<div class="sources-content">
 									{{static_info.sources}} selected: {{status}}
 								</div>
-								<nav id="zone{{loop.index0}}-sources" class="text-right">
+								<nav id="zone{{zoneId}}-sources" class="text-right">
 									<ul>
-										{% for item, icon in menu_items|first %} {# |first here looks weird, but menu_items is actually a generator and first seems to get the next item... #}
-										<li>
+										{% for item, icon in menu_items_right %}
+										<li {% if (loop.index0 + menu_items_left_len) == status.zones[zoneId].input %}class="active"{% endif %}>
 											<a href="#item">
 												<span class="name">{{item}}</span>
 												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
@@ -54,7 +58,7 @@
 						<div class="col-md-3 volume-column">
 							<div class="volume-wrapper">
 								<div class="volume-dial-wrapper">
-									<input type="text" value="{{status.zones[loop.index0].volume}}" id="zone{{loop.index0}}-volume-dial" data-displayPrevious="true" data-angleOffset="-125" data-angleArc="250" data-rotation="anticlockwise" data-width="220" data-height="175">
+									<input type="text" value="{{status.zones[zoneId].volume}}" id="zone{{zoneId}}-volume-dial" data-displayPrevious="true" data-angleOffset="-125" data-angleArc="250" data-rotation="anticlockwise" data-width="220" data-height="175">
 								</div>
 								<div class="btn-group btn-group-justified" role="group">
 									<a class="btn btn-default" href="#" role="button">
@@ -80,9 +84,10 @@
 	fallback.ready(function() {
 		$(function() {
 			{% for zoneName in static_info.zones %}
-				$('#zone{{loop.index0}}-power').change(function(e) {
+				{% set zoneId = loop.index0 %}
+				$('#zone{{zoneId}}-power').change(function(e) {
 					$.ajax({
-							url: '/api/v1.0/zone/{{loop.index0}}/power',
+							url: '/api/v1.0/zone/{{zoneId}}/power',
 							type: 'PUT',
 							data: JSON.stringify({ value: $(this).prop('checked') }),
 							contentType: 'application/json; charset=utf-8'					
@@ -90,13 +95,13 @@
 				});
 				
 				// prevent checkbox .click event to bubble up (which would trigger the accordion click :()
-				$('.toggle:has(#zone{{loop.index0}}-power)').click(function(e) {
+				$('.toggle:has(#zone{{zoneId}}-power)').click(function(e) {
 					var $checkbox = $(this).find('input[type=checkbox]')
 					$checkbox.bootstrapToggle('toggle')
 					e.stopPropagation();
 				});
 			
-				$('#zone{{loop.index0}}-volume-dial').knob({
+				$('#zone{{zoneId}}-volume-dial').knob({
 					'min': 0,
 					'max': {{config.MAX_VOLUME}},
 					'step': {{static_info.volume_step}},
@@ -107,9 +112,9 @@
 					{% endif %}
 					'release': function(volume) {
 						$.ajax({
-							url: '/api/v1.0/zone/{{loop.index0}}/volume',
+							url: '/api/v1.0/zone/{{zoneId}}/volume',
 							type: 'PUT',
-							data: JSON.stringify({ value: parseFloat($('#zone{{loop.index0}}-volume-dial').val()) }),
+							data: JSON.stringify({ value: parseFloat($('#zone{{zoneId}}-volume-dial').val()) }),
 							contentType: 'application/json; charset=utf-8'
 						});
 					}
