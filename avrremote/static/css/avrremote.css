@@ -51,16 +51,16 @@ nav ul {
 	padding: 0;
 }
 
-nav.sources {
-	float: left;
+div.sources {
+	display: table;
+}
+
+div.sources nav {
 	width: 3.3em;
+	display: table-cell;
 }
 
-nav.sources.text-right {
-	float: right;
-}
-
-nav.sources ul li {
+div.sources nav ul li {
 	position: relative;
 	height: 2.5em;
 	list-style: none;
@@ -68,7 +68,7 @@ nav.sources ul li {
 	padding: 0;
 }
 
-nav.sources ul li a {
+div.sources nav ul li a {
 	display: block;
 	padding: 0.6em 1em;
 	position: absolute;
@@ -78,27 +78,27 @@ nav.sources ul li a {
 	white-space: nowrap;
 }
 
-nav.sources.text-right ul li a {
+div.sources nav.text-right ul li a {
 	left: auto;
 	right: 0;
 }
 
-nav.sources ul li:hover a {
+div.sources nav ul li:hover a {
 	background-color: #12b2e7; /*#23527c;*/
 	color: #fff;
 }
 
-nav.sources ul li a svg.icon {
+div.sources nav ul li a svg.icon {
 	fill: #24292e;
 	height: 1.3em;
 	width: 1.3em;
 }
 
-nav.sources ul li:hover a svg.icon {
+div.sources nav ul li:hover a svg.icon {
 	fill: #fff;
 }
 
-nav.sources ul li a span.name {
+div.sources nav ul li a span.name {
 	display: none;
 	padding-left: 1em;
 	padding-right: 0;
@@ -106,12 +106,12 @@ nav.sources ul li a span.name {
 	vertical-align: top;
 }
 
-nav.sources.text-right ul li a span.name {
+div.sources nav.text-right ul li a span.name {
 	padding-left: 0;
 	padding-right: 1em;
 }
 
-nav.sources ul li:hover a span.name {
+div.sources nav ul li:hover a span.name {
 	display: inline-block;
 }
 
@@ -120,10 +120,10 @@ div.zone div.panel-body {
 }
 
 div.sources-content {
-	margin: 0 3.3em;
-	box-shadow:  0px 100px 50px -40px #ffffff inset, 0px -100px 50px -40px #ffffff inset, -5px 0px 10px -5px rgba(0,0,0,0.5) inset, 5px 0px 10px -5px rgba(0,0,0,0.5) inset;
+	box-shadow:  0px 50px 25px -20px #ffffff inset, 0px -50px 25px -20px #ffffff inset, -5px 0px 5px -5px rgba(0,0,0,0.5) inset, 5px 0px 5px -5px rgba(0,0,0,0.5) inset;
 	padding: 15px;
-	min-height: 250px;
+	display: table-cell;
+	vertical-align: top;
 }
 
 

@@ -20,33 +20,35 @@
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-md-9 sources-column">
-							{% set menu_items = static_info.sources|slice(2) %}
-							<nav id="zone{{loop.index0}}-sources" class="nav nav-stacked sources">
-								<ul>
-									{% for item, icon in menu_items|first %}
-									<li>
-										<a href="#item">
-											<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
-											<span class="name">{{item}}</span>
-										</a>
-									</li>
-									{% endfor %}
-								</ul>
-							</nav>
-							<nav id="zone{{loop.index0}}-sources" class="nav nav-stacked sources text-right">
-								<ul>
-									{% for item, icon in menu_items|first %} {# |first here looks weird, but menu_items is actually a generator and first seems to get the next item... #}
-									<li>
-										<a href="#item">
-											<span class="name">{{item}}</span>
-											<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
-										</a>
-									</li>
-									{% endfor %}
-								</ul>
-							</nav>
-							<div class="sources-content">
-								{{static_info.sources}} selected: {{status}}
+							<div class="sources">
+								{% set menu_items = static_info.sources|slice(2) %}
+								<nav id="zone{{loop.index0}}-sources">
+									<ul>
+										{% for item, icon in menu_items|first %}
+										<li>
+											<a href="#item">
+												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
+												<span class="name">{{item}}</span>
+											</a>
+										</li>
+										{% endfor %}
+									</ul>
+								</nav>
+								<div class="sources-content">
+									{{static_info.sources}} selected: {{status}}
+								</div>
+								<nav id="zone{{loop.index0}}-sources" class="text-right">
+									<ul>
+										{% for item, icon in menu_items|first %} {# |first here looks weird, but menu_items is actually a generator and first seems to get the next item... #}
+										<li>
+											<a href="#item">
+												<span class="name">{{item}}</span>
+												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#ic_{{icon}}_24px" /></svg>
+											</a>
+										</li>
+										{% endfor %}
+									</ul>
+								</nav>
 							</div>
 						</div>
 						<div class="col-md-3 volume-column">
