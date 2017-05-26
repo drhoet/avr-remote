@@ -37,6 +37,13 @@ a, a:hover, a:focus {
 	color: #337ab7;
 }
 
+svg.icon {
+	fill: #24292e;
+	height: 1em;
+	width: 1em;
+	vertical-align: top;
+}
+
 div.volume-column {
 	padding: 15px;
 }
@@ -44,6 +51,10 @@ div.volume-column {
 div.sources-column {
 	padding-left: 0;
 	padding-right: 0;
+}
+
+span.zone-power svg.icon {
+	vertical-align: text-bottom;
 }
 
 nav ul {
