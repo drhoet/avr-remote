@@ -2,7 +2,6 @@
 {% block head %}
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-3.3.7.min.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-toggle-2.2.0.min.css') }}">
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/font-awesome-4.7.0.min.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/avrremote.css') }}">
 {% endblock %}
 {% block body %}
@@ -13,8 +12,9 @@
 		<div class="panel panel-default">
 			<div class="panel-heading clearfix" data-toggle="collapse" data-parent="#zones-accordion" data-target="#zone{{zoneId}}-body">
 				<span class="zone-name">{{zoneName}}</span>
-				<span class="pull-right">
-					<input {% if status.zones[zoneId].power %}checked{% endif %} id="zone{{zoneId}}-power" data-toggle="toggle" data-on="<i class='fa fa-power-off'></i>" data-onstyle="success" data-off="<i class='fa fa-power-off'></i>" type="checkbox">
+				<span class="pull-right zone-power">
+					{% set power_off_url = url_for('static', filename='svg/sprite/input_sources_24px.svg') %}
+					<input {% if status.zones[zoneId].power %}checked{% endif %} id="zone{{zoneId}}-power" data-toggle="toggle" data-on="<svg class='icon'><use xlink:href='{{power_off_url}}#power' /></svg>" data-onstyle="success" data-off="<svg class='icon'><use xlink:href='{{power_off_url}}#power' /></svg>" type="checkbox">
 				</span>
 			</div>
 			<div id="zone{{zoneId}}-body" class="panel-collapse collapse{% if zoneId == 0 %} in{% endif %} zone" role="tabpanel">
@@ -62,13 +62,13 @@
 								</div>
 								<div class="btn-group btn-group-justified" role="group">
 									<a class="btn btn-default" href="#" role="button">
-										<span class="fa fa-volume-down" aria-hidden="true"></span>
+										<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#volume-down" /></svg>
 									</a>
 									<a class="btn btn-default" href="#" role="button">
-										<span class="fa fa-volume-off" aria-hidden="true"></span>
+										<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#volume-off" /></svg>
 									</a>
 									<a class="btn btn-default" href="#" role="button">
-										<span class="fa fa-volume-up" aria-hidden="true"></span>
+										<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#volume-up" /></svg>
 									</a>
 								</div>
 							</div>
