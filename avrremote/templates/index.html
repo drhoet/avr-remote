@@ -26,11 +26,11 @@
 								{% set menu_items_left = menu_items|first %}
 								{% set menu_items_right = menu_items|first %} {# |first here looks weird, but menu_items is actually a generator and first seems to get the next item... #}
 								{% set menu_items_left_len = menu_items_left|count %}
-								<nav id="zone{{zoneId}}-sources">
+								<nav>
 									<ul>
 										{% for item, icon in menu_items_left %}
 										<li {% if loop.index0 == status.zones[zoneId].input %}class="active"{% endif %}>
-											<a href="#item">
+											<a href="#fixme" class="input-select" data-zone="{{zoneId}}" data-input="{{loop.index0}}">
 												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#{{icon}}" /></svg>
 												<span class="name">{{item}}</span>
 											</a>
@@ -41,11 +41,11 @@
 								<div class="sources-content">
 									{{static_info.sources}} selected: {{status}}
 								</div>
-								<nav id="zone{{zoneId}}-sources" class="text-right">
+								<nav class="text-right">
 									<ul>
 										{% for item, icon in menu_items_right %}
 										<li {% if (loop.index0 + menu_items_left_len) == status.zones[zoneId].input %}class="active"{% endif %}>
-											<a href="#item">
+											<a href="#fixme" class="input-select" data-zone="{{zoneId}}" data-input="{{loop.index0 + menu_items_left_len}}">
 												<span class="name">{{item}}</span>
 												<svg class="icon"><use xlink:href="{{ url_for('static', filename='svg/sprite/input_sources_24px.svg') }}#{{icon}}" /></svg>
 											</a>
@@ -83,6 +83,17 @@
 {% block script %}
 	fallback.ready(function() {
 		$(function() {
+			$('div.sources nav').on('click', '.input-select', function(e) {
+				var zoneId = $(this).data('zone');
+				var inputId = $(this).data('input');
+				$.ajax({
+						url: '/api/v1.0/zone/' + zoneId + '/input',
+						type: 'PUT',
+						data: JSON.stringify({ value: inputId }),
+						contentType: 'application/json; charset=utf-8'					
+				});
+			});
+			
 			{% for zoneName in static_info.zones %}
 				{% set zoneId = loop.index0 %}
 				$('#zone{{zoneId}}-power').change(function(e) {

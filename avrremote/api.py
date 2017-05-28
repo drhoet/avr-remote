@@ -18,3 +18,8 @@ def set_power(zoneId):
 def set_volume(zoneId):
 	avr.set_volume( zoneId, request.get_json()['value'] )
 	return ('', 202)
+
+@app.route('/api/v1.0/zone/<int:zoneId>/input', methods=['PUT'])
+def select_input(zoneId):
+	avr.select_input( zoneId, request.get_json()['value'] )
+	return ('', 202)
