@@ -116,7 +116,7 @@ class Marantz(AbstractAvr):
 			return self.source_ids.index( input )
 	
 	def select_input(self, zoneId, inputId):
-		pass
+		self._get( '/goform/formiPhoneAppDirect.xml?{0}{1}'.format('SI' if zoneId == 0 else 'Z{0}'.format(zoneId + 1), self.source_ids[inputId]) )
 	
 	def _get(self, path):
 		return requests.get( self.baseUri + path ).text
