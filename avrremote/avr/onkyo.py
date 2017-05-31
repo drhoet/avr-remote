@@ -43,4 +43,5 @@ class Onkyo(AbstractAvr):
 	
 	def select_input(self, zoneId, inputId):
 		with eiscp.eISCP(self.ip) as receiver:
-			return receiver.command('input-selector' if zoneId == 0 else 'selector', arguments=[self.source_real_names[inputId][0]], zone=self.zones[zoneId])
+			resp = (receiver.raw('SLI12' if zoneId == 0 else 'SLZ12')) if self.source_real_names[inputId][0] == 'tv' else (receiver.command('input-selector' if zoneId == 0 else 'selector', arguments=[self.source_real_names[inputId][0]], zone=self.zones[zoneId]))
+			return resp
