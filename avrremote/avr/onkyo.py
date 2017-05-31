@@ -45,3 +45,13 @@ class Onkyo(AbstractAvr):
 		with eiscp.eISCP(self.ip) as receiver:
 			resp = (receiver.raw('SLI12' if zoneId == 0 else 'SLZ12')) if self.source_real_names[inputId][0] == 'tv' else (receiver.command('input-selector' if zoneId == 0 else 'selector', arguments=[self.source_real_names[inputId][0]], zone=self.zones[zoneId]))
 			return resp
+			
+	def get_tuning_freq(self, zoneId):
+		with eiscp.eISCP(self.ip) as receiver:
+			resp = receiver.raw('TUNQSTN')
+			return int(resp[3:])/100
+			
+	def set_tuning_freq(self, zoneId, freq):
+		with eiscp.eISCP(self.ip) as receiver:
+			resp = receiver.raw('TUN' + '{0:05.0f}'.format(freq))
+			return resp
