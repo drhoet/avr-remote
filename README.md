@@ -8,6 +8,9 @@ This project builds a python web application that provides a user-friendly web i
 2. Flask (`pip3 install flask` should do the trick)
 3. requests (`pip3 install requests` should do the trick)
 
+## Extra requirements if using for Onkyo AVR
+1. onkyo-eiscp (https://github.com/miracle2k/onkyo-eiscp)
+
 ## Installation
 1. Clone the git repo
 2. Create a configuration file, similar to:
