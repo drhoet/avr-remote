@@ -55,3 +55,15 @@ class Onkyo(AbstractAvr):
 		with eiscp.eISCP(self.ip) as receiver:
 			resp = receiver.raw('TUN' + '{0:05.0f}'.format(freq))
 			return resp
+			
+	def get_preset(self, zoneId):
+		with eiscp.eISCP(self.ip) as receiver:
+			return receiver.command('preset', arguments=['query'], zone=self.zones[zoneId])
+			
+	def set_selected_preset(self, zoneId, preset):
+		with eiscp.eISCP(self.ip) as receiver:
+			return receiver.command('preset', [preset], zone=self.zones[zoneId])
+			
+	def set_selected_preset_memory(self, zoneId, preset):
+		with eiscp.eISCP(self.ip) as receiver:
+			return receiver.raw('PRM' + '{0:02x}'.format(preset))
