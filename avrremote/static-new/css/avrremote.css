@@ -179,3 +179,10 @@ div.sources-content {
 	cursor: not-allowed;
 }
 /* End - PowerToggle */
+
+/* Start - Transitions */
+.auto-expand-enter-active, .auto-expand-leave-active {
+	transition: all 0.3s ease;
+	overflow: hidden;
+}
+/* End - Transitions */

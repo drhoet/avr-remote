@@ -11,10 +11,12 @@ $.get('templates/zone.html', function( template ) {
 				required: true,
 			},
 		},
+		data: function() {
+			return {
+				active: true,
+			};
+		},
 		computed: {
-			panelId: function() {
-				return '#zone' + this.zone.id + '-body';
-			},
 			mappedInputs: function() {
 				return this.zone.inputs.map( function(v, index) {
 					return {
@@ -34,6 +36,9 @@ $.get('templates/zone.html', function( template ) {
 		methods: {
 			inputIcon: function( id ) {
 				return 'svg/sprite/input_sources_24px.svg#' + id;
+			},
+			toggle: function() {
+				this.active = !this.active;
 			},
 		},
 	});
