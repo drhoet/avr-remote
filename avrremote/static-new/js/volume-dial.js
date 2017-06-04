@@ -9,7 +9,6 @@
 			volume: {
 				type: Number,
 				required: false,
-				twoWay: true,
 			},
 			rotation: {
 				type: String,
