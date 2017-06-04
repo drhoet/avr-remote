@@ -2,19 +2,19 @@
 	<div class="panel-heading clearfix" data-toggle="collapse" data-parent="#zones-accordion" v-on:click="toggle">
 		<span class="zone-name">{{zone.name}}</span>
 		<span class="pull-right zone-power">
-			<PowerToggle v-bind:zoneId="zone.id" v-model="zone.power"/>
+			<power-toggle :zoneId="zone.id" v-model="zone.power"></power-toggle>
 		</span>
 	</div>
-	<TransitionAutoExpand>
-		<div class="panel-body" v-show="active">
+	<transition-auto-expand>
+		<div class="panel-body" v-if="active">
 			<div class="row">
 				<div class="col-1 col-md-9 sources-column">
 					<div class="sources">
 						<nav>
 							<ul>
-								<li v-for="input in inputs1" v-bind:class="{ active: input.id == zone.selected_input }">
-									<span class="input-select" v-bind:data-zone="zone.id" v-bind:data-input="input.id" v-on:click="zone.selected_input = input.id">
-										<svg class="icon"><use v-bind:xlink:href="inputIcon(input.icon)" /></svg>
+								<li v-for="input in inputs1" :class="{ active: input.id == zone.selected_input }">
+									<span class="input-select" :data-input="input.id" @click="zone.selected_input = input.id">
+										<svg class="icon"><use :xlink:href="inputIcon(input.icon)" /></svg>
 										<span class="name">{{input.name}}</span>
 									</span>
 								</li>
@@ -25,10 +25,10 @@
 						</div>
 						<nav class="text-right">
 							<ul>
-								<li v-for="input in inputs2" v-bind:class="{ active: input.id == zone.selected_input }">
-									<span class="input-select" v-bind:data-zone="zone.id" v-bind:data-input="input.id" v-on:click="zone.selected_input = input.id">
+								<li v-for="input in inputs2" :class="{ active: input.id == zone.selected_input }">
+									<span class="input-select" :data-input="input.id" @click="zone.selected_input = input.id">
 										<span class="name">{{input.name}}</span>
-										<svg class="icon"><use v-bind:xlink:href="inputIcon(input.icon)" /></svg>
+										<svg class="icon"><use :xlink:href="inputIcon(input.icon)" /></svg>
 									</span>
 								</li>
 							</ul>
@@ -36,9 +36,9 @@
 					</div>
 				</div>
 				<div class="col-1 col-md-3 volume-column">
-					<VolumeDial v-bind:zoneId="zone.id" v-bind:volume.sync="zone.volume" v-bind:step="config.volume_step" v-bind:max="config.volume_max"/>
+					<volume-dial :zoneId="zone.id" :volume.sync="zone.volume" :step="config.volume_step" :max="config.volume_max"></volume-dial>
 				</div>
 			</div>
 		</div>
-	</TransitionAutoExpand>
+	</transition-auto-expand>
 </div>

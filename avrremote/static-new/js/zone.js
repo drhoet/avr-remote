@@ -1,5 +1,5 @@
 $.get('templates/zone.html', function( template ) {
-	Vue.component('Zone', {
+	Vue.component('zone', {
 		template: template,
 		props: {
 			zone: {

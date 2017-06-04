@@ -1,5 +1,5 @@
 $.get('templates/power-toggle.html', function( template ) {
-	Vue.component('PowerToggle', { 
+	Vue.component('power-toggle', { 
 		template: template,
 		model: {
 			prop: 'checked',

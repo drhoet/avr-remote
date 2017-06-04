@@ -12,7 +12,7 @@
 		<div id="app-container" class="container">
 			<h1 class="page-header">{{ avr.name }}</h1>
 			<div class="panel-group" id="zones-accordion" role="tablist">
-				<Zone v-for="(item, index) in avr.zones" v-bind:key="item.id" v-bind:zone="item" v-bind:config="config" />
+				<zone v-for="(item, index) in avr.zones" :key="item.id" :zone="item" :config="config" />
 			</div>
 		</div>
 		

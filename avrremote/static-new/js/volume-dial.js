@@ -1,5 +1,5 @@
  $.get('templates/volume-dial.html', function( template ) {
-	Vue.component('VolumeDial', { 
+	Vue.component('volume-dial', { 
 		template: template,
 		props: {
 			zoneId: {
