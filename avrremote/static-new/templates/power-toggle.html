@@ -1,20 +1,4 @@
-<!--------------------------------------------------------------------------
-  Html layout is heavily based on Bootstrap Toggle.
-  ========================================================================
-  Bootstrap Toggle: bootstrap-toggle.js v2.2.0
-  http://www.bootstraptoggle.com
-  ========================================================================
-  Copyright 2014 Min Hur, The New York Times Company
-  Licensed under MIT
- -------------------------------------------------------------------------->
-<div class="toggle btn" v-bind:class="btnStyle" v-on:click.prevent="toggle">
-	<div class="toggle-group">
-		<label class="btn btn-success toggle-on">
-			<svg class='icon'><use xlink:href='svg/sprite/input_sources_24px.svg#power' /></svg>
-		</label>
-		<label class="btn btn-default active toggle-off">
-			<svg class='icon'><use xlink:href='svg/sprite/input_sources_24px.svg#power' /></svg>
-		</label>
-		<span class="toggle-handle btn btn-default"></span>
-	</div>
-</div>
+<span class="tgl-btn">
+	<input v-bind:id="uid" type="checkbox" v-model="internalPower" v-bind:disabled="disabled"/>
+	<label v-bind:for="uid" />
+</span>

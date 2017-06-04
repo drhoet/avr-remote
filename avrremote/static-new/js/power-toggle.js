@@ -12,23 +12,20 @@ $.get('templates/power-toggle.html', function( template ) {
 			}
 		},
 		computed: {
-			btnStyle: function() {
-				if( this.power === null ) {
-					return 'btn-default off disabled';
-				} else {
-					return this.power ? 'btn-success on' : 'btn-default off';
+			internalPower: {
+				get: function() {
+					return this.power;
+				},
+				set: function(value) {
+					this.$emit('update:power', value);
 				}
 			},
 			disabled: function() {
-				return this.power === null ? 'disabled' : '';
-			}
-		},
-		methods: {
-			toggle: function() {
-				if( !(this.power === null) ) {
-					this.$emit('update:power', !this.power)
-				};
+				return this.power === null;
 			},
+			uid: function() {
+				return 'power-toggle-' + this.zoneId;
+			}
 		},
 	});
 });

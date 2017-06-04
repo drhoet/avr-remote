@@ -31,7 +31,7 @@ a, a:hover, a:focus {
     cursor: pointer;
 }
 
-#zones-accordion .panel-heading .zone-name {
+#zones-accordion .panel-heading span {
 	font-size: 24px;
 	line-height: 34px;
 	color: #337ab7;
@@ -140,11 +140,42 @@ div.sources-content {
 }
 
 /* Start - PowerToggle */
-.toggle.disabled, .toggle.disabled label, .toggle.disabled span,
-.toggle.disabled:hover, .toggle.disabled label:hover, .toggle.disabled span:hover	{
+.tgl-btn input {
+	display: none;
+}
+
+.tgl-btn label {
+	background: #cccccc;
+	width: 2em;
+	height: 1em;
+	border-radius: 1em;
+	padding: 2px;
+	cursor: pointer;
+	transition: all .4s ease;
+	vertical-align: middle;
+}
+
+.tgl-btn label::after {
+	background: #ffffff;
+	width: 50%;
+	height: 100%;
+	border-radius: 1em;
+	display: block;
+	position: relative;
+	left: 0;
+	transition: all .2s ease;
+	content: '';
+}
+
+.tgl-btn input:checked + label {
+	background: #9fd6ae;
+}
+
+.tgl-btn input:checked + label::after {
+	left: 50%;
+}
+
+.tgl-btn input:disabled + label {
 	cursor: not-allowed;
-	color: #333;
-	background-color: #ccc;
-	border-color: #bbb;
 }
 /* End - PowerToggle */
