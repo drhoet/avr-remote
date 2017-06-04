@@ -2,10 +2,6 @@
 	Vue.component('volume-dial', { 
 		template: template,
 		props: {
-			zoneId: {
-				type: Number,
-				required: true,
-			},
 			volume: {
 				type: Number,
 				required: false,
@@ -25,10 +21,16 @@
 		},
 		mounted: function() {
 			var vm = this;
-			$(this.$el).find('input').knob({
+			$(this.$refs.input).knob({
 				'min': 0,
 				'max': this.max,
 				'step': this.step,
+				'rotation': this.rotation,
+				'displayPrevious': true,
+				'angleOffset': -125,
+				'angleArc': 250,
+				'width': 220, //fixme
+				'height': 175, //fixme
 				'format': function( value ) {
 					if( this.step < 1) {
 						return sprintf('%04.1f', value);

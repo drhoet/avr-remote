@@ -1,6 +1,6 @@
 <div class="volume-wrapper">
 	<div class="volume-dial-wrapper">
-		<input type="text" :value="displayVolume" class="zone-volume-value" data-displayPrevious="true" data-angleOffset="-125" data-angleArc="250" :data-rotation="rotation" data-width="220" data-height="175">
+		<input ref="input" type="text" :value="displayVolume" class="zone-volume-value">
 	</div>
 	<div class="btn-group btn-group-justified" role="group">
 		<a class="btn btn-default" href="#" role="button">
