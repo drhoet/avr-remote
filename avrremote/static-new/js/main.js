@@ -72,6 +72,13 @@ $.get( '/api/v1.0/static_info', function( data ) {
 	avr.set_static_info(data);
 });
 
-$.get( '/api/v1.0/status', function( data ) {
-	avr.set_status(data);
-});
+function pollStatus() {
+	$.get( '/api/v1.0/status', function( data ) {
+		avr.set_status(data);
+	});
+}
+
+pollStatus();
+setInterval( pollStatus, 5000 );
+
+
