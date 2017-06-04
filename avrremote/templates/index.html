@@ -22,7 +22,7 @@
 					<div class="row">
 						<div class="col-md-9 sources-column">
 							<div class="sources">
-								{% set menu_items = static_info.sources|slice(2) %}
+								{% set menu_items = static_info.inputs|slice(2) %}
 								{% set menu_items_left = menu_items|first %}
 								{% set menu_items_right = menu_items|first %} {# |first here looks weird, but menu_items is actually a generator and first seems to get the next item... #}
 								{% set menu_items_left_len = menu_items_left|count %}
@@ -39,7 +39,7 @@
 									</ul>
 								</nav>
 								<div class="sources-content">
-									{{static_info.sources}} selected: {{status}}
+									{{static_info.inputs}} selected: {{status}}
 								</div>
 								<nav class="text-right">
 									<ul>

@@ -12,10 +12,10 @@
 					<div class="sources">
 						<nav>
 							<ul>
-								<li v-for="source in sources1">
-									<a href="#fixme" class="input-select" v-bind:data-zone="zone.id" v-bind:data-input="source.id">
-										<svg class="icon"><use v-bind:xlink:href="sourceIcon(source.icon)" /></svg>
-										<span class="name">{{source.name}}</span>
+								<li v-for="input in inputs1">
+									<a href="#fixme" class="input-select" v-bind:data-zone="zone.id" v-bind:data-input="input.id">
+										<svg class="icon"><use v-bind:xlink:href="inputIcon(input.icon)" /></svg>
+										<span class="name">{{input.name}}</span>
 									</a>
 								</li>
 							</ul>
@@ -25,10 +25,10 @@
 						</div>
 						<nav class="text-right">
 							<ul>
-								<li v-for="source in sources2">
-									<a href="#fixme" class="input-select" v-bind:data-zone="zone.id" v-bind:data-input="source.id">
-										<span class="name">{{source.name}}</span>
-										<svg class="icon"><use v-bind:xlink:href="sourceIcon(source.icon)" /></svg>
+								<li v-for="input in inputs2">
+									<a href="#fixme" class="input-select" v-bind:data-zone="zone.id" v-bind:data-input="input.id">
+										<span class="name">{{input.name}}</span>
+										<svg class="icon"><use v-bind:xlink:href="inputIcon(input.icon)" /></svg>
 									</a>
 								</li>
 							</ul>

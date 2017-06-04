@@ -13,7 +13,8 @@ window.avr = {
 			this.zones.push({
 				id: z,
 				name: data.zones[z],
-				sources: data.sources,
+				inputs: data.inputs,
+				selected_input: data.input,
 				power: null,
 				volume: 0.0,
 			});

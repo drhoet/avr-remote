@@ -15,8 +15,8 @@ $.get('templates/zone.html', function( template ) {
 			panelId: function() {
 				return '#zone' + this.zone.id + '-body';
 			},
-			mappedSources: function() {
-				return this.zone.sources.map( function(v, index) {
+			mappedInputs: function() {
+				return this.zone.inputs.map( function(v, index) {
 					return {
 						id: index,
 						name: v[0],
@@ -24,15 +24,15 @@ $.get('templates/zone.html', function( template ) {
 					};
 				});
 			},
-			sources1: function() {
-				return this.mappedSources.slice(0, this.mappedSources.length / 2);
+			inputs1: function() {
+				return this.mappedInputs.slice(0, this.mappedInputs.length / 2);
 			},
-			sources2: function() {
-				return this.mappedSources.slice(this.mappedSources.length / 2);
+			inputs2: function() {
+				return this.mappedInputs.slice(this.mappedInputs.length / 2);
 			},
 		},
 		methods: {
-			sourceIcon: function( id ) {
+			inputIcon: function( id ) {
 				return 'svg/sprite/input_sources_24px.svg#' + id;
 			},
 		},

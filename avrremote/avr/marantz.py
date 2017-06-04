@@ -6,7 +6,7 @@ from xml.etree import ElementTree
 class Marantz(AbstractAvr):
 
 	INPUT_NAME_TO_ID_MAPPING = {
-		# name : source_id mapping
+		# name : input_id mapping
 		'AUX': 'AUX1',
 		'AUX1': 'AUX1',
 		'AUX2': 'AUX2',
@@ -48,7 +48,7 @@ class Marantz(AbstractAvr):
 	}
 	
 	INPUT_ID_TO_ICON_MAPPING = {
-		# source_id : icon mapping
+		# input_id : icon mapping
 		'AUX1': 'hdmi',
 		'AUX2': 'hdmi',
 		'AUX3': 'hdmi',
@@ -83,12 +83,12 @@ class Marantz(AbstractAvr):
 		cmds = self._post_app_command('GetZoneName', 'GetRenameSource')
 		self.zones = [ x.text.strip() for x in cmds[0] ]
 
-		self.source_ids = [ Marantz.INPUT_NAME_TO_ID_MAPPING[x.findtext('name').strip().upper()] for x in cmds[1].findall('functionrename/list') ]
-		self.sources = [ (x.findtext('rename').strip(), Marantz.INPUT_ID_TO_ICON_MAPPING[Marantz.INPUT_NAME_TO_ID_MAPPING[x.findtext('name').strip().upper()]]) for x in cmds[1].findall('functionrename/list') ]
+		self.input_ids = [ Marantz.INPUT_NAME_TO_ID_MAPPING[x.findtext('name').strip().upper()] for x in cmds[1].findall('functionrename/list') ]
+		self.inputs = [ (x.findtext('rename').strip(), Marantz.INPUT_ID_TO_ICON_MAPPING[Marantz.INPUT_NAME_TO_ID_MAPPING[x.findtext('name').strip().upper()]]) for x in cmds[1].findall('functionrename/list') ]
 		
 	@property
 	def static_info(self):
-		return { 'name': 'Marantz NR1605', 'ip': self.config['ip'], 'zones': self.zones, 'sources': self.sources, 'volume_step': 0.5 }
+		return { 'name': 'Marantz NR1605', 'ip': self.config['ip'], 'zones': self.zones, 'inputs': self.inputs, 'volume_step': 0.5 }
 	
 	def get_power(self, zoneId):
 		return self._get_zone_status( zoneId )['power']
@@ -111,12 +111,12 @@ class Marantz(AbstractAvr):
 	def get_selected_input(self, zoneId):
 		input = self._get_zone_status( zoneId )['input']
 		if input == 'Online Music' or input == 'Favorites' or input == 'Flickr' or input == 'Media Server' or input == 'Internet Radio':
-			return self.source_ids.index( 'NET' )
+			return self.input_ids.index( 'NET' )
 		else:
-			return self.source_ids.index( input )
+			return self.input_ids.index( input )
 	
 	def select_input(self, zoneId, inputId):
-		self._get( '/goform/formiPhoneAppDirect.xml?{0}{1}'.format('SI' if zoneId == 0 else 'Z{0}'.format(zoneId + 1), self.source_ids[inputId]) )
+		self._get( '/goform/formiPhoneAppDirect.xml?{0}{1}'.format('SI' if zoneId == 0 else 'Z{0}'.format(zoneId + 1), self.input_ids[inputId]) )
 	
 	def _get(self, path):
 		return requests.get( self.baseUri + path ).text
