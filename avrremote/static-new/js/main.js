@@ -37,7 +37,7 @@ window.avr = {
 	set_static_info: function( data ) {
 		this.name = data.name;
 		this.ip = data.ip;
-		this.volume_step = parseFloat(data.volume_step);
+		this.volume_step = data.volume_step;
 		this.zones = [];
 		for(var z = 0; z < data.zones.length; ++z) {
 			this.zones.push( new Zone(z, data) );
