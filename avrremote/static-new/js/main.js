@@ -14,9 +14,9 @@ window.avr = {
 				id: z,
 				name: data.zones[z],
 				inputs: data.inputs,
-				selected_input: data.input,
+				selected_input: null,
 				power: null,
-				volume: 0.0,
+				volume: 0.0, //fixme: should be null
 			});
 		};
 	},
