@@ -16,7 +16,7 @@ window.avr = {
 				inputs: data.inputs,
 				selected_input: null,
 				power: null,
-				volume: 0.0, //fixme: should be null
+				volume: null,
 			});
 		};
 	},
