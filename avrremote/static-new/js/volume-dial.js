@@ -51,7 +51,12 @@
 				}
 			},
 		},
-		methods: {
+		watch: {
+			volume: function(value) {
+				this.$nextTick(function() {
+					$(this.$el).find('input').trigger('change');
+				});
+			},
 		},
 	});
 });
