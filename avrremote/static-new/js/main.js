@@ -12,19 +12,64 @@ Zone.prototype = {
 		return this._selected_input;
 	},
 	set selected_input(value) {
-		this._selected_input = value;
+		if( value !== this._selected_input ) {
+			console.log('sending selected input: ' + value);
+			this._selected_input = value;
+			$.ajax({
+				url: '/api/v1.0/zone/' + this.id + '/input',
+				type: 'PUT',
+				data: JSON.stringify({ value: this._selected_input }),
+				contentType: 'application/json; charset=utf-8'					
+			});
+		}
 	},
 	get power() {
 		return this._power;
 	},
 	set power(value) {
-		this._power = value;
+		if( value !== this._power ) {
+			console.log('sending power: ' + value);
+			this._power = value;
+			$.ajax({
+				url: '/api/v1.0/zone/' + this.id + '/power',
+				type: 'PUT',
+				data: JSON.stringify({ value: this._power }),
+				contentType: 'application/json; charset=utf-8'					
+			});
+		}
 	},
 	get volume() {
 		return this._volume;
 	},
 	set volume(value) {
-		this._volume = value;
+		if( value !== this._volume ) {
+			console.log('sending volume: ' + value);
+			this._volume = value;
+			$.ajax({
+				url: '/api/v1.0/zone/' + this.id + '/volume',
+				type: 'PUT',
+				data: JSON.stringify({ value: this._volume }),
+				contentType: 'application/json; charset=utf-8'
+			});
+		}
+	},
+	onSelectedInputUpdated( value ) {
+		if( value !== this._selected_input ) {
+			this._selected_input = value;
+			this.selected_input = value; // trigger the update of the property, so vue.js also knows it updated
+		}
+	},
+	onPowerUpdated( value ) {
+		if( value !== this._power ) {
+			this._power = value;
+			this.power = value; // trigger the update of the property, so vue.js also knows it updated
+		}
+	},
+	onVolumeUpdated( value ) {
+		if( value !== this._volume ) {
+			this._volume = value;
+			this.volume = value; // trigger the update of the property, so vue.js also knows it updated
+		}
 	},
 };
 
@@ -49,9 +94,9 @@ window.avr = {
 	set_status: function( data ) {
 		for(var z = 0; z < data.zones.length; ++z) {
 			let zone = data.zones[z];
-			this.zones[z].volume = zone.volume;
-			this.zones[z].power = zone.power;
-			this.zones[z].selected_input = zone.input;
+			this.zones[z].onVolumeUpdated( zone.volume );
+			this.zones[z].onPowerUpdated( zone.power );
+			this.zones[z].onSelectedInputUpdated( zone.input );
 		};
 	},
 };
