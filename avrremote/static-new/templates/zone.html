@@ -1,0 +1,44 @@
+<div class="panel panel-default">
+	<div class="panel-heading clearfix" data-toggle="collapse" data-parent="#zones-accordion" v-bind:data-target="panelId">
+		<span class="zone-name">{{zone.name}}</span>
+		<span class="pull-right zone-power">
+			<PowerToggle v-bind:zoneId="zone.id" v-bind:power.sync="zone.power"/>
+		</span>
+	</div>
+	<div v-bind:id="panelId" class="panel-collapse collapse in zone" role="tabpanel">
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-md-9 sources-column">
+					<div class="sources">
+						<nav>
+							<ul>
+								<li v-for="source in sources1">
+									<a href="#fixme" class="input-select" v-bind:data-zone="zone.id" v-bind:data-input="source.id">
+										<svg class="icon"><use v-bind:xlink:href="sourceIcon(source.icon)" /></svg>
+										<span class="name">{{source.name}}</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+						<div class="sources-content">
+							hallo world!
+						</div>
+						<nav class="text-right">
+							<ul>
+								<li v-for="source in sources2">
+									<a href="#fixme" class="input-select" v-bind:data-zone="zone.id" v-bind:data-input="source.id">
+										<span class="name">{{source.name}}</span>
+										<svg class="icon"><use v-bind:xlink:href="sourceIcon(source.icon)" /></svg>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+				<div class="col-md-3 volume-column">
+					<VolumeDial v-bind:zoneId="zone.id" v-bind:volume.sync="zone.volume" v-bind:step="config.volume_step" v-bind:max="config.volume_max"/>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

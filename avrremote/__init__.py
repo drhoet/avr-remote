@@ -1,7 +1,7 @@
 import sys
 import importlib
 
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from .avr.base import AvrListener
 
 app = Flask(__name__)
@@ -14,6 +14,10 @@ avr = avr_class( app.config['AVR_CONNECTION'], avr_listener )
 
 from . import api
 
-@app.route('/')
-def index():
-	return render_template('index.html', status = avr.status, static_info = avr.static_info, config = app.config)
+@app.route('/') 
+def index(): 
+  return render_template('index.html', status = avr.status, static_info = avr.static_info, config = app.config)
+
+@app.route('/static-new/<path:filename>')
+def base_static(filename):
+	return send_from_directory(app.root_path + '/static-new/', filename)
