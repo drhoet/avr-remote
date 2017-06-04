@@ -64,6 +64,7 @@ nav ul {
 
 div.sources {
 	display: table;
+	width: 100%;
 }
 
 div.sources nav {
@@ -136,5 +137,3 @@ div.sources-content {
 	display: table-cell;
 	vertical-align: top;
 }
-
-
