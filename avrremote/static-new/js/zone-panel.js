@@ -1,4 +1,5 @@
-$.get('templates/zone-panel.html', function( template ) {
+collector.register( $.get('templates/zone-panel.html', function( template ) {
+	console.log('loaded zone-panel');
 	Vue.component('zone-panel', {
 		template: template,
 		props: {
@@ -34,4 +35,5 @@ $.get('templates/zone-panel.html', function( template ) {
 			},
 		},
 	});
-});
+	console.log('registered zone-panel');
+}) );

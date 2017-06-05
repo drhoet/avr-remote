@@ -1,3 +1,4 @@
+console.log('loaded utils');
 Vue.component('transition-auto-expand', {
 	functional: true,
 	render: function (createElement, context) {
@@ -27,3 +28,4 @@ Vue.component('transition-auto-expand', {
 		return createElement('transition', data, context.children)
 	}
 });
+console.log('registered utils');

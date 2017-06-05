@@ -1,4 +1,5 @@
- $.get('templates/volume-dial.html', function( template ) {
+collector.register( $.get('templates/volume-dial.html', function( template ) {
+ 	console.log('loaded volume-dial');
 	Vue.component('volume-dial', { 
 		template: template,
 		props: {
@@ -59,4 +60,5 @@
 			},
 		},
 	});
-});
+	console.log('registered volume-dial');
+}) );

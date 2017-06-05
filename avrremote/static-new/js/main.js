@@ -101,30 +101,31 @@ window.avr = {
 			this.zones[z].onSelectedInputUpdated( zone.input );
 		};
 	},
+	poll_status: function() {
+		$.get( '/api/v1.0/status', function( data ) {
+			avr.set_status(data);
+		});
+	},
 };
 
-window.vm = new Vue({
-	el: '#app-container',
-	data: {
-		avr: avr,
-		config: {
-			rotation: 'clockwise',
-			volume_step: avr.volume_step,
-			volume_max: 60.0,
+$.when.apply( $, collector.promises ).then( function() {
+	console.log('All is loaded. Going to start the app!');
+	window.vm = new Vue({
+		el: '#app-container',
+		data: {
+			avr: avr,
+			config: {
+				rotation: 'clockwise',
+				volume_step: avr.volume_step,
+				volume_max: 60.0,
+			},
 		},
-	},
-});
-
-$.get( '/api/v1.0/static_info', function( data ) {
-	avr.set_static_info(data);
-	pollStatus();
-	setInterval( pollStatus, 5000 );
-});
-
-function pollStatus() {
-	$.get( '/api/v1.0/status', function( data ) {
-		avr.set_status(data);
 	});
-}
 
+	$.get( '/api/v1.0/static_info', function( data ) {
+		avr.set_static_info(data);
+		avr.poll_status();
+		setInterval( avr.poll_status, 5000 );
+	});
+});
 

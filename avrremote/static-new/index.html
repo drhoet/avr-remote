@@ -33,6 +33,14 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.12/jquery.knob.min.js"></script>
 		<script src="js/vendor/vue.js"></script>
 		
+		<script>
+			window.collector = {
+				promises: [],
+				register: function( promise ) {
+					this.promises.push( promise );
+				},
+			};
+		</script>
 		<script src="js/utils.js"></script>
 		<script src="js/accordion.js"></script>
 		<script src="js/volume-dial.js"></script>
