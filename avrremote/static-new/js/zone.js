@@ -11,11 +11,6 @@ $.get('templates/zone.html', function( template ) {
 				required: true,
 			},
 		},
-		data: function() {
-			return {
-				active: true,
-			};
-		},
 		computed: {
 			mappedInputs: function() {
 				return this.zone.inputs.map( function(v, index) {
@@ -36,9 +31,6 @@ $.get('templates/zone.html', function( template ) {
 		methods: {
 			inputIcon: function( id ) {
 				return 'svg/sprite/input_sources_24px.svg#' + id;
-			},
-			toggle: function() {
-				this.active = !this.active;
 			},
 		},
 	});
