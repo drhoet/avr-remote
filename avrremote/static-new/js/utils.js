@@ -1,4 +1,4 @@
-Vue.component('TransitionAutoExpand', {
+Vue.component('transition-auto-expand', {
 	functional: true,
 	render: function (createElement, context) {
 		var data = {
