@@ -10,9 +10,21 @@
 	</head>
 	<body>
 		<div id="app-container" class="container">
-			<h1 class="page-header">{{ avr.name }}</h1>
-			<div class="panel-group" id="zones-accordion" role="tablist">
-				<zone-panel v-for="(item, index) in avr.zones" :key="item.id" :zone="item" :config="config"></zone-panel>
+			<div id="loading" v-if="!avr.connected">
+				<div class="loading-content">
+					<div class="spinner">
+						<div class="bubble1"></div>
+						<div class="bubble2"></div>
+						<div class="bubble3"></div>
+					</div>
+					Loading
+				</div>
+			</div>
+			<div id="content" v-cloak>
+				<h1 class="page-header">{{ avr.name }}</h1>
+				<div class="panel-group" id="zones-accordion" role="tablist">
+					<zone-panel v-for="(item, index) in avr.zones" :key="item.id" :zone="item" :config="config"></zone-panel>
+				</div>
 			</div>
 		</div>
 		

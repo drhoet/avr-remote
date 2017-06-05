@@ -78,6 +78,7 @@ window.avr = {
 	ip: '',
 	volume_step: 0.5,
 	zones: [],
+	connected: false,
 	
 	set_static_info: function( data ) {
 		this.name = data.name;
@@ -87,6 +88,7 @@ window.avr = {
 		for(var z = 0; z < data.zones.length; ++z) {
 			this.zones.push( new Zone(z, data) );
 		};
+		this.connected = true;
 	},
 	set_config: function( data ) {
 		this.config = data;

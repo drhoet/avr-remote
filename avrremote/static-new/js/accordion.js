@@ -1,4 +1,4 @@
-$.get('templates/accordion.html', function( template ) {
+$.get('templates/accordion-panel.html', function( template ) {
 	Vue.component('accordion-panel', { 
 		template: template,
 		props: {
