@@ -36,7 +36,7 @@
 					</div>
 				</div>
 				<div class="col-1 col-md-3 volume-column">
-					<volume-dial :volume.sync="zone.volume" :step="config.volume_step" :max="config.volume_max"></volume-dial>
+					<volume-dial v-model="zone.volume" :step="config.volume_step" :max="config.volume_max"></volume-dial>
 				</div>
 			</div>
 		</div>

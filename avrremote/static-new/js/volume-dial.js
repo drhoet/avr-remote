@@ -2,7 +2,7 @@
 	Vue.component('volume-dial', { 
 		template: template,
 		props: {
-			volume: {
+			value: {
 				type: Number,
 				required: false,
 			},
@@ -31,29 +31,28 @@
 				'angleArc': 250,
 				'width': 220, //fixme
 				'height': 175, //fixme
-				'format': function( value ) {
-					if( this.step < 1) {
-						return sprintf('%04.1f', value);
-					} else {
-						return value;
-					}
-				},
+				'format': this.formatVolume,
 				'release': function( value ) {
-					vm.$emit('update:volume', value)
+					vm.$emit('input', value)
 				}
 			});
 		},
 		computed: {
 			displayVolume: function() {
-				if( this.step < 1) {
-					return sprintf('%04.1f', this.volume);
-				} else {
-					return this.volume;
-				}
+				return this.formatVolume( this.value );
 			},
 		},
+		methods: {
+			formatVolume: function( value ) {
+				if( this.step < 1) {
+					return sprintf('%04.1f', value);
+				} else {
+					return value;
+				}
+			}
+		},
 		watch: {
-			volume: function(value) {
+			value: function(value) {
 				this.$nextTick(function() {
 					$(this.$el).find('input').trigger('change');
 				});
