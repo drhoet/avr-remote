@@ -113,10 +113,12 @@ window.vm = new Vue({
 			volume_max: 60.0,
 		},
 	},
-})
+});
 
 $.get( '/api/v1.0/static_info', function( data ) {
 	avr.set_static_info(data);
+	pollStatus();
+	setInterval( pollStatus, 5000 );
 });
 
 function pollStatus() {
@@ -124,8 +126,5 @@ function pollStatus() {
 		avr.set_status(data);
 	});
 }
-
-pollStatus();
-setInterval( pollStatus, 5000 );
 
 
