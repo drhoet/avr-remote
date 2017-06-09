@@ -108,17 +108,24 @@ window.avr = {
 	},
 };
 
+window.config = {
+	rotation: 'clockwise',
+	volume_max: 60.0,
+};
+Object.defineProperty( window.config, 'volume_step', {
+	get: function() { return avr.volume_step; },
+	set: function( value ) { avr.volume_step = value; },
+	enumerable: true,
+	configurable: true,
+});
+
 $.when.apply( $, collector.promises ).then( function() {
 	console.log('All is loaded. Going to start the app!');
 	window.vm = new Vue({
 		el: '#app-container',
 		data: {
 			avr: avr,
-			config: {
-				rotation: 'clockwise',
-				volume_step: avr.volume_step,
-				volume_max: 60.0,
-			},
+			config: config,
 		},
 	});
 

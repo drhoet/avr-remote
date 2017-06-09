@@ -1,6 +1,6 @@
 collector.register( $.get('templates/volume-dial.html', function( template ) {
  	console.log('loaded volume-dial');
-	Vue.component('volume-dial', { 
+	Vue.component('volume-dial', {
 		template: template,
 		props: {
 			value: {
@@ -53,10 +53,19 @@ collector.register( $.get('templates/volume-dial.html', function( template ) {
 			}
 		},
 		watch: {
-			value: function(value) {
+			value: function( value ) {
 				this.$nextTick(function() {
 					$(this.$el).find('input').trigger('change');
 				});
+			},
+			step: function( value ) {
+				$(this.$refs.input).trigger( 'configure', { 'step': value } );
+			},
+			rotation: function( value ) {
+				$(this.$refs.input).trigger( 'configure', { 'rotation': value } );
+			},
+			max: function( value ) {
+				$(this.$refs.input).trigger( 'configure', { 'max': value } );
 			},
 		},
 	});
