@@ -111,13 +111,13 @@ window.avr = {
 window.config = {
 	rotation: 'clockwise',
 	volume_max: 60.0,
+	get volume_step() {
+		return avr.volume_step;
+	},
+	set volume_step( value ) {
+		avr.volume_step = value;
+	}
 };
-Object.defineProperty( window.config, 'volume_step', {
-	get: function() { return avr.volume_step; },
-	set: function( value ) { avr.volume_step = value; },
-	enumerable: true,
-	configurable: true,
-});
 
 $.when.apply( $, collector.promises ).then( function() {
 	console.log('All is loaded. Going to start the app!');
