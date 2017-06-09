@@ -1,17 +1,13 @@
 collector.register( $.get('templates/power-toggle.html', function( template ) {
 	console.log('loaded power-toggle');
-	Vue.component('power-toggle', { 
+	Vue.component('power-toggle', {
 		template: template,
-		model: {
-			prop: 'checked',
-			event: 'change',
-		},
 		props: {
 			zoneId: {
 				type: Number,
 				required: true,
 			},
-			checked: {
+			value: {
 				required: true,
 			},
 		},
@@ -24,8 +20,8 @@ collector.register( $.get('templates/power-toggle.html', function( template ) {
 			}
 		},
 		methods: {
-			updateChecked: function( value ) {
-				this.$emit('change', value );
+			updateValue: function( value ) {
+				this.$emit('input', value );
 			},
 		},
 	});

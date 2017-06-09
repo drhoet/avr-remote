@@ -1,4 +1,4 @@
 <span class="tgl-btn">
-	<input :id="uid" type="checkbox" :checked="checked" @change="updateChecked($event.target.checked)" :disabled="disabled"/>
+	<input :id="uid" type="checkbox" :checked="value" @change="updateValue($event.target.checked)" :disabled="disabled"/>
 	<label :for="uid" />
 </span>
