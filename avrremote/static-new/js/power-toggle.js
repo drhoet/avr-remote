@@ -1,4 +1,4 @@
-collector.register( $.get('templates/power-toggle.html', function( template ) {
+collector.register($.get('templates/power-toggle.html', function(template) {
 	console.log('loaded power-toggle');
 	Vue.component('power-toggle', {
 		template: template,
@@ -20,10 +20,10 @@ collector.register( $.get('templates/power-toggle.html', function( template ) {
 			}
 		},
 		methods: {
-			updateValue: function( value ) {
-				this.$emit('input', value );
+			updateValue: function(value) {
+				this.$emit('input', value);
 			},
 		},
 	});
 	console.log('registered power-toggle');
-}) );
+}));

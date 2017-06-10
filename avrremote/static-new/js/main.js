@@ -12,7 +12,7 @@ Zone.prototype = {
 		return this._selected_input;
 	},
 	set selected_input(value) {
-		if( value !== this._selected_input ) {
+		if (value !== this._selected_input) {
 			console.log('sending selected input: ' + value);
 			this._selected_input = value;
 			$.ajax({
@@ -27,7 +27,7 @@ Zone.prototype = {
 		return this._power;
 	},
 	set power(value) {
-		if( value !== this._power ) {
+		if (value !== this._power) {
 			console.log('sending power: ' + value);
 			this._power = value;
 			$.ajax({
@@ -42,7 +42,7 @@ Zone.prototype = {
 		return this._volume;
 	},
 	set volume(value) {
-		if( value !== this._volume ) {
+		if (value !== this._volume) {
 			console.log('sending volume: ' + value);
 			this._volume = value;
 			$.ajax({
@@ -53,20 +53,20 @@ Zone.prototype = {
 			});
 		}
 	},
-	onSelectedInputUpdated( value ) {
-		if( value !== this._selected_input ) {
+	onSelectedInputUpdated(value) {
+		if (value !== this._selected_input) {
 			this._selected_input = value;
 			this.selected_input = value; // trigger the update of the property, so vue.js also knows it updated
 		}
 	},
-	onPowerUpdated( value ) {
-		if( value !== this._power ) {
+	onPowerUpdated(value) {
+		if (value !== this._power) {
 			this._power = value;
 			this.power = value; // trigger the update of the property, so vue.js also knows it updated
 		}
 	},
-	onVolumeUpdated( value ) {
-		if( value !== this._volume ) {
+	onVolumeUpdated(value) {
+		if (value !== this._volume) {
 			this._volume = value;
 			this.volume = value; // trigger the update of the property, so vue.js also knows it updated
 		}
@@ -79,30 +79,30 @@ window.avr = {
 	volume_step: 0.5,
 	zones: [],
 	connected: false,
-	
-	set_static_info: function( data ) {
+
+	set_static_info: function(data) {
 		this.name = data.name;
 		this.ip = data.ip;
 		this.volume_step = data.volume_step;
 		this.zones = [];
-		for(var z = 0; z < data.zones.length; ++z) {
-			this.zones.push( new Zone(z, data) );
+		for (var z = 0; z < data.zones.length; ++z) {
+			this.zones.push(new Zone(z, data));
 		};
 		this.connected = true;
 	},
-	set_config: function( data ) {
+	set_config: function(data) {
 		this.config = data;
 	},
-	set_status: function( data ) {
-		for(var z = 0; z < data.zones.length; ++z) {
+	set_status: function(data) {
+		for (var z = 0; z < data.zones.length; ++z) {
 			let zone = data.zones[z];
-			this.zones[z].onVolumeUpdated( zone.volume );
-			this.zones[z].onPowerUpdated( zone.power );
-			this.zones[z].onSelectedInputUpdated( zone.input );
+			this.zones[z].onVolumeUpdated(zone.volume);
+			this.zones[z].onPowerUpdated(zone.power);
+			this.zones[z].onSelectedInputUpdated(zone.input);
 		};
 	},
 	poll_status: function() {
-		$.get( '/api/v1.0/status', function( data ) {
+		$.get('/api/v1.0/status', function(data) {
 			avr.set_status(data);
 		});
 	},
@@ -114,12 +114,12 @@ window.config = {
 	get volume_step() {
 		return avr.volume_step;
 	},
-	set volume_step( value ) {
+	set volume_step(value) {
 		avr.volume_step = value;
 	}
 };
 
-$.when.apply( $, collector.promises ).then( function() {
+$.when.apply($, collector.promises).then(function() {
 	console.log('All is loaded. Going to start the app!');
 	window.vm = new Vue({
 		el: '#app-container',
@@ -129,10 +129,9 @@ $.when.apply( $, collector.promises ).then( function() {
 		},
 	});
 
-	$.get( '/api/v1.0/static_info', function( data ) {
+	$.get('/api/v1.0/static_info', function(data) {
 		avr.set_static_info(data);
 		avr.poll_status();
-		setInterval( avr.poll_status, 5000 );
+		setInterval(avr.poll_status, 5000);
 	});
 });
-

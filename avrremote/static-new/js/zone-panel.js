@@ -1,4 +1,4 @@
-collector.register( $.get('templates/zone-panel.html', function( template ) {
+collector.register($.get('templates/zone-panel.html', function(template) {
 	console.log('loaded zone-panel');
 	Vue.component('zone-panel', {
 		template: template,
@@ -14,7 +14,7 @@ collector.register( $.get('templates/zone-panel.html', function( template ) {
 		},
 		computed: {
 			mappedInputs: function() {
-				return this.zone.inputs.map( function(v, index) {
+				return this.zone.inputs.map(function(v, index) {
 					return {
 						id: index,
 						name: v[0],
@@ -30,10 +30,10 @@ collector.register( $.get('templates/zone-panel.html', function( template ) {
 			},
 		},
 		methods: {
-			inputIcon: function( id ) {
+			inputIcon: function(id) {
 				return 'svg/sprite/input_sources_24px.svg#' + id;
 			},
 		},
 	});
 	console.log('registered zone-panel');
-}) );
+}));
