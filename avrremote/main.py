@@ -2,7 +2,7 @@ import aiohttp
 import importlib
 import os
 import json
-import sys
+import traceback
 
 from .avr.base import AvrListener
 from .default_config import default_config as config
@@ -14,9 +14,11 @@ class AvrHandler:
         self.avr = avr
         self.client_count = 0
 
-    async def send_message(self, ws, type, state):
-        print('<< [{0}] {1}'.format(type, state))
-        await ws.send_json({'type': type, 'state': state})
+    async def send_message(self, ws, type, props, state):
+        msg = {'type': type, 'state': state}
+        msg.update(props)
+        print('<< [{0}] {1}'.format(type, msg))
+        await ws.send_json(msg)
 
     # The handler of the AVR. This one is listening for status updates of the avr.
     async def avr_handler(self, ws):
@@ -26,14 +28,16 @@ class AvrHandler:
 
         try:
             static_info = await self.avr.static_info
-            await self.send_message(ws, 'static_info', static_info)
+            await self.send_message(ws, 'static_info', {}, static_info)
 
-            #async for msg in self.avr:
-            #    pass
+            async for msg in self.avr.listen_for_updates(5):
+                print('In the async for loop', msg)
+                for zoneId, state in enumerate(msg):
+                    await self.send_message(ws, 'zone', {'zoneId': zoneId}, state)
         finally:
             self.client_count = self.client_count - 1
             if self.client_count <= 0:
-                self.avr.disconnect()
+                await self.avr.disconnect()
 
     # processes requests from the clients
     async def process_request(self, request):
@@ -64,7 +68,7 @@ class AvrHandler:
                 elif msg.type == aiohttp.WSMsgType.ERROR:
                     print('ws connection closed with exception %s' % ws.exception())
         except:
-            print("Unexpected error:", sys.exc_info()[0])
+            traceback.print_exc()
             raise
         finally:
             task.cancel()

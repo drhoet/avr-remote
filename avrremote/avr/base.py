@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
-
+import asyncio
 
 class AvrListener:
     # Call when the volume got updated
@@ -29,15 +29,22 @@ class AbstractAvr(metaclass=ABCMeta):
     async def static_info(self):
         pass
 
+    async def listen_for_updates(self, interval):
+        while await self.connected:
+            status = await self.status
+            yield status
+            await asyncio.sleep(interval)
+
     @property
-    def status(self):
-        return {
-            'zones': [{
+    async def status(self):
+        static_info = await self.static_info
+        return [
+            {
                 'power': self.get_power(zoneId),
                 'volume': self.get_volume(zoneId),
                 'input': self.get_selected_input(zoneId)
-            } for zoneId in range(len(self.static_info['zones']))]
-        }
+            } for zoneId in range(len(static_info['zones']))
+        ]
 
     # A constructor like this must be implemented in all subclasses.
     # config: the configuration. This is read from the configuration file and passed to your constructor. Use it to pass any necessary parameters.

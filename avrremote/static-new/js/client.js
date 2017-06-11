@@ -2,7 +2,7 @@
 
 function Zone(avr, zoneId, state) {
 	this.avr = avr;
-	this.id = zoneId;
+	this.zoneId = zoneId;
 	this.name = state.name;
 	this.inputs = state.inputs;
 	this._selected_input = null;
@@ -26,7 +26,7 @@ Zone.prototype = {
 		if (value !== this._selected_input) {
 			console.log('sending selected input: ' + value);
 			this._selected_input = value;
-			this.updateZone(this.id, {
+			this.updateZone(this.zoneId, {
 				'input': this._selected_input
 			});
 		}
@@ -38,7 +38,7 @@ Zone.prototype = {
 		if (value !== this._power) {
 			console.log('sending power: ' + value);
 			this._power = value;
-			this.updateZone(this.id, {
+			this.updateZone(this.zoneId, {
 				'power': this._power
 			});
 		}
@@ -50,19 +50,19 @@ Zone.prototype = {
 		if (value !== this._volume) {
 			console.log('sending volume: ' + value);
 			this._volume = value;
-			this.updateZone(this.id, {
+			this.updateZone(this.zoneId, {
 				'volume': this._volume
 			});
 		}
 	},
 	onZoneUpdate(state) {
-		if (state.input) {
+		if ('input' in state) {
 			this.onSelectedInputUpdated(state.input);
 		}
-		if (state.power) {
-			this.onPowerUpdate(state.power);
+		if ('power' in state) {
+			this.onPowerUpdated(state.power);
 		}
-		if (state.volume) {
+		if ('volume' in state) {
 			this.onVolumeUpdated(state.volume);
 		}
 	},
@@ -134,10 +134,10 @@ function Avr() {
 				onStaticInfoUpdate(msg.state);
 				break;
 			case 'zone':
-				if (this.zones[msg.id]) {
-					this.zones[msg.id].onZoneUpdate(msg.state);
+				if (_self.zones[msg.zoneId]) {
+					_self.zones[msg.zoneId].onZoneUpdate(msg.state);
 				} else {
-					console.warn('Received a zone update for non-existing zone: ' + msg.id, event);
+					console.warn('Received a zone update for non-existing zone: ' + msg.zoneId, event);
 				}
 				break;
 			default:
