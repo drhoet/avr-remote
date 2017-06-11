@@ -18,6 +18,10 @@ class AbstractAvr(metaclass=ABCMeta):
     async def connect(self):
         pass
 
+    @abstractmethod
+    async def disconnect():
+        pass
+
     # must return a dictionary with at least the following keys: name (string), zones (list of zone names),
     # inputs (list of tuples: (input names, input icon)), volume_step (float).
     @property

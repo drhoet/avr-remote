@@ -108,6 +108,12 @@ class Marantz(AbstractAvr):
                 self.session.close()
             raise
 
+    async def disconnect(self):
+        print('going to disconnect')
+        if self.session:
+            self.session.close()
+        self._connected = False
+
     @property
     async def static_info(self):
         print('im in static info')
