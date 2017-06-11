@@ -5,8 +5,7 @@ This project builds a python web application that provides a user-friendly web i
 
 ## Requirements
 1. Python 3
-2. Flask (`pip3 install flask` should do the trick)
-3. requests (`pip3 install requests` should do the trick)
+2. aiohttp (`pip3 install aiohttp` should do the trick)
 
 ## Extra requirements if using for Onkyo AVR
 1. onkyo-eiscp (https://github.com/miracle2k/onkyo-eiscp)
@@ -15,16 +14,17 @@ This project builds a python web application that provides a user-friendly web i
 1. Clone the git repo
 2. Create a configuration file, similar to:
 ```
-AVR_MODULE = 'avrremote.avr.marantz'
-AVR_CLASS = 'Marantz'
-
-AVR_CONNECTION = { 'ip': 'x.x.x.x' }
-MAX_VOLUME = x.x
-ROTATION = 'clockwise'		##ROTATION can be either 'clockwise' or 'anticlockwise'. 'clockwise' is the default.
+{
+	"avr_module": "avrremote.avr.marantz",
+	"avr_class": "Marantz",
+	"avr_connection": {
+		"ip": "192.168.12.4"
+	},
+}
 ```
 3. Start the app as follows:
 ```
-AVRREMOTE_SETTINGS=<absolute path to your config file> FLASK_APP=avrremote python3 -m flask run
+AVRREMOTE_SETTINGS=<absolute path to your config file> AIO_APP_PATH=avrremote adev runserver
 ```
 
-A stand-alone web server will be started, running on port 5000 on localhost. If you want it to be visible to the outside world, add a parameter `-h 0.0.0.0` to the command line above.
+A stand-alone web server will be started, running on port 5000 on 0.0.0.0.
