@@ -9,6 +9,14 @@ class AvrListener:
 
 
 class AbstractAvr(metaclass=ABCMeta):
+    # A constructor like this must be implemented in all subclasses.
+    # config: the configuration. This is read from the configuration file and passed to your constructor. Use it to pass any necessary parameters.
+    # listener: the instance of AvrListener. If your AVR supports async callbacks, use this listener to update the UI when you received updated values from your AVR.
+    @staticmethod
+    @abstractmethod
+    def __init__(self, config, listener):
+        pass
+    
     @property
     @abstractmethod
     async def connected(self):
@@ -45,14 +53,6 @@ class AbstractAvr(metaclass=ABCMeta):
                 'input': self.get_selected_input(zoneId)
             } for zoneId in range(len(static_info['zones']))
         ]
-
-    # A constructor like this must be implemented in all subclasses.
-    # config: the configuration. This is read from the configuration file and passed to your constructor. Use it to pass any necessary parameters.
-    # listener: the instance of AvrListener. If your AVR supports async callbacks, use this listener to update the UI when you received updated values from your AVR.
-    @staticmethod
-    @abstractmethod
-    def __init__(self, config, listener):
-        pass
 
     # returns a bool representing the main power of the device
     # zoneId: the zone id, int, index in static_info.zones of the zone
