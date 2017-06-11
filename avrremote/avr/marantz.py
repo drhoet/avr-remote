@@ -1,5 +1,6 @@
 from .base import AbstractAvr
 
+import asyncio
 import aiohttp
 import requests
 from xml.etree import ElementTree
@@ -92,15 +93,20 @@ class Marantz(AbstractAvr):
     async def connect(self):
         print('going to connect')
         self.session = aiohttp.ClientSession()
-        cmds = await self._post_app_command('GetZoneName', 'GetRenameSource')
-        self.zones = [x.text.strip() for x in cmds[0]]
-        self.input_ids = [Marantz.INPUT_NAME_TO_ID_MAPPING[x.findtext('name').strip().upper()]
-                          for x in cmds[1].findall('functionrename/list')]
-        self.inputs = [(x.findtext('rename').strip(),
-                        Marantz.INPUT_ID_TO_ICON_MAPPING[Marantz.INPUT_NAME_TO_ID_MAPPING[x.findtext('name').strip().upper()]])
-                       for x in cmds[1].findall('functionrename/list')]
-        self._connected = True
-        print('all is good and well!')
+        try:
+            cmds = await self._post_app_command('GetZoneName', 'GetRenameSource')
+            self.zones = [x.text.strip() for x in cmds[0]]
+            self.input_ids = [Marantz.INPUT_NAME_TO_ID_MAPPING[x.findtext('name').strip().upper()]
+                              for x in cmds[1].findall('functionrename/list')]
+            self.inputs = [(x.findtext('rename').strip(),
+                            Marantz.INPUT_ID_TO_ICON_MAPPING[Marantz.INPUT_NAME_TO_ID_MAPPING[x.findtext('name').strip().upper()]])
+                           for x in cmds[1].findall('functionrename/list')]
+            self._connected = True
+            print('all is good and well!')
+        except asyncio.CancelledError:
+            if self.session:
+                self.session.close()
+            raise
 
     @property
     async def static_info(self):
