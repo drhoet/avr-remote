@@ -20,6 +20,7 @@
 					Loading
 				</div>
 			</div>
+			<settings v-bind:app-config="config" v-cloak></settings>
 			<div id="content" v-cloak>
 				<h1 class="page-header">{{ avr.name }}</h1>
 				<div class="panel-group" id="zones-accordion" role="tablist">
@@ -47,6 +48,7 @@
 		<script src="js/power-toggle.js"></script>
 		<script src="js/zone-panel.js"></script>
 		<script src="js/client.js"></script>
+		<script src="js/settings.js"></script>
 		<script src="js/main.js"></script>
 	</body>
 </html>

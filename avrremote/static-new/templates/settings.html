@@ -1,0 +1,30 @@
+<div class="settings" :class="{ 'modal-mask': showSettings }">
+	<div :class="{ 'container': showSettings }">
+		<div id="settings-container">
+			<div id="open-settings" :class="{ active: showSettings }" @click="showSettings = !showSettings">
+				<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#settings" /></svg>
+			</div>
+			<div id="settings" class="panel" v-if="showSettings">
+				<h2>Settings</h2>
+				<label for="volume-max">Maximum volume:</label>
+				<input type="text" id="volume-max-box" v-model="volumeMax" disabled />
+				<input type="range" id="volume-max-slider" v-model="volumeMax" min="0" max="100" v-bind:step="appConfig.volume_step" />
+
+				<span>Volume knob rotation direction:</span>
+				<input type="radio" value="clockwise" id="rotation-clockwise" v-model="rotation" />
+				<label for="rotation-clockwise">Clockwise</label>
+				<input type="radio" value="anticlockwise" id="rotation-anticlockwise" v-model="rotation" />
+				<label for="rotation-anticlockwise">Counterclockwise</label>
+
+				<h3>Advanced</h3>
+				<label for="host-url" title="You shouldn't have to update this. In all but very weird deployment situations, the server hosting this static HTML will also be the server that hosts the backend application.">Backend url:</label>
+				<input type="url" id="host-url" v-model="url" />
+
+				<span v-if="errorMessage" class="alert">{{errorMessage}}</span>
+
+				<button class="btn btn-success" @click="save">Save</button>
+				<button class="btn btn-default" @click="close">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>

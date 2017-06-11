@@ -139,6 +139,11 @@ div.sources-content {
 	vertical-align: top;
 }
 
+[title] {
+  text-decoration: underline dotted orange;
+  cursor: help;
+}
+
 /* Start - Loading animation */
 [v-cloak] {
 	display: none;
@@ -153,7 +158,7 @@ div.sources-content {
 	top: 0;
 	background-color: #24292e;
 }
-#loading .loading-content {	
+#loading .loading-content {
 	text-align: center;
 	font-variant: small-caps;
 	position: relative;
@@ -245,3 +250,50 @@ div.sources-content {
 	overflow: hidden;
 }
 /* End - Transitions */
+
+/* Start - Settings */
+#settings-container {
+  margin-top: 40px;
+  float: right;
+}
+
+#open-settings {
+  cursor: pointer;
+  font-size: 36px;
+  float: right;
+}
+
+#open-settings svg {
+  fill: #fff;
+  transition: all 0.3s linear;
+}
+
+#open-settings.active svg, #open-settings:hover svg {
+  fill: #a90080;
+  font-size: 200%;
+  transform: rotate(50deg);
+  transition: all 0.3s linear;
+  margin-top: -20px;
+  margin-right: -20px;
+}
+
+#settings {
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 15px;
+}
+/* End - Settings */
+
+/* Start - Modal */
+.modal-mask {
+	height: 100%;
+	width: 100%;
+	position: fixed;
+	z-index: 5000;
+	left: 0;
+	top: 0;
+	background-color: rgba(0, 0, 0, .5);
+  transition: opacity 0.3s ease;
+  display: table;
+}
+/* End - Modal */
