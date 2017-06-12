@@ -12,15 +12,15 @@ class Onkyo(AbstractAvr):
 		self.input_real_names = [ ('dvd', 'BD/DVD'), ('fm', 'Tuner fm'), ('network', 'Network'), ('am', 'Tuner am'), ('strm-box', 'STRM BOX'), ('video2', 'CBL/SAT'), ('bluetooth', 'BLUETOOTH'), ('video6', 'PC'), ('video3', 'GAME'), ('video4', 'AUX'), ('cd', 'CD'), ('phono', 'PHONO'), ('tv', 'TV') ]
 		self.input_ids = [x[0] for x in self.input_real_names]
 
-    @property
-    async def connected(self):
-        return True
+	@property
+	async def connected(self):
+		return True
 
-    async def connect(self):
-        pass
+	async def connect(self):
+		pass
 
-    async def disconnect():
-        pass
+	async def disconnect():
+		pass
 
 	@property
 	async def static_info(self):

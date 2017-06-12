@@ -6,6 +6,7 @@ This project builds a python web application that provides a user-friendly web i
 ## Requirements
 1. Python 3
 2. aiohttp (`pip3 install aiohttp` should do the trick)
+3. aiohttp-devtools (`pip3 install aiohttp-devtools` should do the trick)
 
 ## Extra requirements if using for Onkyo AVR
 1. onkyo-eiscp (https://github.com/miracle2k/onkyo-eiscp)
@@ -19,7 +20,7 @@ This project builds a python web application that provides a user-friendly web i
 	"avr_class": "Marantz",
 	"avr_connection": {
 		"ip": "192.168.12.4"
-	},
+	}
 }
 ```
 3. Start the app as follows:
