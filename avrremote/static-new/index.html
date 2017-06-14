@@ -20,6 +20,7 @@
 					Loading
 				</div>
 			</div>
+			<settings v-bind:app-config="config" v-cloak></settings>
 			<div id="content" v-cloak>
 				<h1 class="page-header">{{ avr.name }}</h1>
 				<div class="panel-group" id="zones-accordion" role="tablist">
@@ -27,12 +28,12 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/sprintf/1.0.3/sprintf.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.12/jquery.knob.min.js"></script>
 		<script src="js/vendor/vue.js"></script>
-		
+
 		<script>
 			window.collector = {
 				promises: [],
@@ -46,6 +47,8 @@
 		<script src="js/volume-dial.js"></script>
 		<script src="js/power-toggle.js"></script>
 		<script src="js/zone-panel.js"></script>
+		<script src="js/client.js"></script>
+		<script src="js/settings.js"></script>
 		<script src="js/main.js"></script>
 	</body>
 </html>

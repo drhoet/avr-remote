@@ -2,7 +2,7 @@
 	<div slot="header">
 		<span class="zone-name">{{zone.name}}</span>
 		<span class="pull-right zone-power">
-			<power-toggle :zoneId="zone.id" v-model="zone.power"></power-toggle>
+			<power-toggle :zoneId="zone.zoneId" v-model="zone.power"></power-toggle>
 		</span>
 	</div>
 
@@ -35,7 +35,7 @@
 			</div>
 		</div>
 		<div class="col-1 col-md-3 volume-column">
-			<volume-dial v-model="zone.volume" :step="config.volume_step" :max="config.volume_max"></volume-dial>
+			<volume-dial v-model="zone.volume" :step="config.volume_step" :max="config.volume_max" :rotation="config.rotation"></volume-dial>
 		</div>
 	</div>
 </accordion-panel>

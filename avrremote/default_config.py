@@ -1,6 +1,5 @@
-AVR_MODULE = 'avrremote.avr.base'
-AVR_CLASS = 'AbstractAvr'
-
-AVR_CONNECTION = { 'ip': '192.168.0.55' }
-MAX_VOLUME = 60.0
-ROTATION = 'clockwise'
+default_config = {
+  'avr_module': 'avrremote.avr.base',
+  'avr_class': 'AbstractAvr',
+  'avr_connection': { 'ip': '192.168.0.55' },
+}

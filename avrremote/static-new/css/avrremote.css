@@ -139,6 +139,11 @@ div.sources-content {
 	vertical-align: top;
 }
 
+[title] {
+  text-decoration: underline dotted orange;
+  cursor: help;
+}
+
 /* Start - Loading animation */
 [v-cloak] {
 	display: none;
@@ -153,7 +158,7 @@ div.sources-content {
 	top: 0;
 	background-color: #24292e;
 }
-#loading .loading-content {	
+#loading .loading-content {
 	text-align: center;
 	font-variant: small-caps;
 	position: relative;
@@ -244,4 +249,98 @@ div.sources-content {
 	transition: all 0.3s ease;
 	overflow: hidden;
 }
+
+@keyframes grow {
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+  to {
+    transform: scale(2) rotate(50deg);
+  }
+}
 /* End - Transitions */
+
+/* Start - Settings */
+#settings-container {
+  margin-top: 40px;
+  float: right;
+  min-width: 45%;
+}
+
+#open-settings {
+  cursor: pointer;
+  font-size: 36px;
+  float: right;
+}
+
+#open-settings svg {
+  fill: #fff;
+  transition: all 0.3s linear;
+}
+
+#open-settings:hover svg {
+  fill: #12b2e7;
+  transition: all 0.3s linear;
+}
+
+#open-settings.active svg {
+  fill: #12b2e7;
+  transform: rotate(50deg);
+  animation: grow .5s forwards;
+}
+
+#settings {
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 15px;
+  animation: appear .5s forwards;
+}
+
+label[for=volume-max] {
+  display: block;
+}
+
+label[for=volume-max] + div {
+  display: flex;
+}
+
+#settings #volume-max-slider {
+  flex-grow: 100;
+}
+
+#settings #volume-max-box {
+  width: 4em;
+  margin-left: 10px;
+}
+
+#settings label#rotation {
+  display: block;
+}
+
+#settings #settings-buttons {
+  display: flex;
+}
+
+#settings #settings-buttons button:first-child {
+  flex-grow: 80;
+}
+
+#settings #settings-buttons button:last-child {
+  flex-grow: 20;
+  margin-left: 10px;
+}
+/* End - Settings */
+
+/* Start - Modal */
+.modal-mask {
+	height: 100%;
+	width: 100%;
+	position: fixed;
+	z-index: 5000;
+	left: 0;
+	top: 0;
+	background-color: rgba(0, 0, 0, .5);
+  transition: all 0.3s ease;
+  display: table;
+}
+/* End - Modal */

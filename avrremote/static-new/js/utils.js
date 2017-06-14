@@ -1,7 +1,7 @@
 console.log('loaded utils');
 Vue.component('transition-auto-expand', {
 	functional: true,
-	render: function (createElement, context) {
+	render: function(createElement, context) {
 		var data = {
 			props: {
 				name: 'auto-expand',
