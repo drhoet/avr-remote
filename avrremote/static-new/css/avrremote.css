@@ -249,12 +249,22 @@ div.sources-content {
 	transition: all 0.3s ease;
 	overflow: hidden;
 }
+
+@keyframes grow {
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+  to {
+    transform: scale(2) rotate(50deg);
+  }
+}
 /* End - Transitions */
 
 /* Start - Settings */
 #settings-container {
   margin-top: 40px;
   float: right;
+  min-width: 45%;
 }
 
 #open-settings {
@@ -268,19 +278,56 @@ div.sources-content {
   transition: all 0.3s linear;
 }
 
-#open-settings.active svg, #open-settings:hover svg {
-  fill: #a90080;
-  font-size: 200%;
-  transform: rotate(50deg);
+#open-settings:hover svg {
+  fill: #12b2e7;
   transition: all 0.3s linear;
-  margin-top: -20px;
-  margin-right: -20px;
+}
+
+#open-settings.active svg {
+  fill: #12b2e7;
+  transform: rotate(50deg);
+  animation: grow .5s forwards;
 }
 
 #settings {
   padding-right: 15px;
   padding-left: 15px;
   padding-bottom: 15px;
+  animation: appear .5s forwards;
+}
+
+label[for=volume-max] {
+  display: block;
+}
+
+label[for=volume-max] + div {
+  display: flex;
+}
+
+#settings #volume-max-slider {
+  flex-grow: 100;
+}
+
+#settings #volume-max-box {
+  width: 4em;
+  margin-left: 10px;
+}
+
+#settings label#rotation {
+  display: block;
+}
+
+#settings #settings-buttons {
+  display: flex;
+}
+
+#settings #settings-buttons button:first-child {
+  flex-grow: 80;
+}
+
+#settings #settings-buttons button:last-child {
+  flex-grow: 20;
+  margin-left: 10px;
 }
 /* End - Settings */
 
@@ -293,7 +340,7 @@ div.sources-content {
 	left: 0;
 	top: 0;
 	background-color: rgba(0, 0, 0, .5);
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
   display: table;
 }
 /* End - Modal */
