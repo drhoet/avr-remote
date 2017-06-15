@@ -128,7 +128,7 @@ function Avr() {
 
 	function onMessage(event) {
 		let msg = JSON.parse(event.data);
-		console.log('<< [' + msg.type + '] ', msg.state)
+		console.log('<< [' + msg.type + '] ', msg.state, msg)
 		switch (msg.type) {
 			case 'static_info':
 				onStaticInfoUpdate(msg.state);

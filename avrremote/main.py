@@ -4,8 +4,41 @@ import os
 import json
 import traceback
 
-from .avr.base import AvrListener
 from .default_config import default_config as config
+
+class AvrMessage:
+    """ A message that can be sent to the Avr. """
+    def __init__(self, type, extras, state):
+        self.type = type
+        self._state = state
+        self._extras = extras
+
+    def to_dict(self):
+        """ Convert to a dict that can be sent over the web socket to the clients"""
+        msg = {'type': self.type, 'state': self._state}
+        msg.update(self._extras)
+        return msg
+
+    def __repr__(self):
+        return "{0}({1}, {2}, {3})".format(self.__class__.__name__, self.type, self._state, self._extras)
+
+    def create(update):
+        if update.__class__.__name__ == 'AvrZonePropertyUpdate':
+            return AvrZoneMessage(update)
+
+
+
+class AvrStaticInfoMessage(AvrMessage):
+    """ An AvrMessage containing the static avr information """
+    def __init__(self, state):
+        super().__init__('static_info', {}, state)
+
+
+class AvrZoneMessage(AvrMessage):
+    """ An AvrMessage that is specific to one zone"""
+    def __init__(self, avr_update):
+        """ Creates a new AvrZoneMessage based on a AvrZonePropertyUpdate """
+        super().__init__('zone', {'zoneId': avr_update.zoneId}, {avr_update.property: avr_update.value})
 
 
 class AvrHandler:
@@ -14,11 +47,15 @@ class AvrHandler:
         self.avr = avr
         self.client_count = 0
 
-    async def send_message(self, ws, type, props, state):
-        msg = {'type': type, 'state': state}
-        msg.update(props)
-        print('<< [{0}] {1}'.format(type, msg))
-        await ws.send_json(msg)
+    async def send_message(self, ws, msg):
+        """ Send an message to the clients
+
+        Keyword arguments:
+        ws -- the websocket over which to send the message
+        msg -- the message to send. Must be an AvrMessage or subclass.
+        """
+        print('<< {0}'.format(msg))
+        await ws.send_json(msg.to_dict())
 
     # The handler of the AVR. This one is listening for status updates of the avr.
     async def avr_handler(self, ws):
@@ -27,13 +64,17 @@ class AvrHandler:
         self.client_count = self.client_count + 1
 
         try:
-            static_info = await self.avr.static_info
-            await self.send_message(ws, 'static_info', {}, static_info)
+            static_info = AvrStaticInfoMessage(await self.avr.static_info)
+            await self.send_message(ws, static_info)
 
-            async for msg in self.avr.listen_for_updates(5):
-                print('In the async for loop', msg)
-                for zoneId, state in enumerate(msg):
-                    await self.send_message(ws, 'zone', {'zoneId': zoneId}, state)
+            async for updates in self.avr.listen_for_updates():
+                print('In the async for loop', updates)
+                for avr_update in updates:
+                    await self.send_message(ws, AvrMessage.create(avr_update))
+        except:
+            import traceback
+            traceback.print_exc()
+            raise
         finally:
             self.client_count = self.client_count - 1
             if self.client_count <= 0:
@@ -45,11 +86,11 @@ class AvrHandler:
             zoneId = request['zoneId']
             state = request['state']
             if 'power' in state:
-                self.avr.set_power(zoneId, state['power'])
+                await self.avr.set_power(zoneId, state['power'])
             if 'volume' in state:
-                self.avr.set_volume(zoneId, state['volume'])
+                await self.avr.set_volume(zoneId, state['volume'])
             if 'input' in state:
-                self.avr.select_input(zoneId, state['input'])
+                await self.avr.select_input(zoneId, state['input'])
 
     # The handler of the websocket. This one is listening for requests of the clients
     # When a request is received, most of the handling is passed over to the process_request method.
@@ -86,9 +127,8 @@ def create_app(loop):
     app = aiohttp.web.Application()
     app['config'] = config
 
-    avr_listener = AvrListener()
     avr_class = getattr(importlib.import_module(app['config']['avr_module']), app['config']['avr_class'])
-    avr = avr_class(app['config']['avr_connection'], avr_listener)
+    avr = avr_class(app['config']['avr_connection'])
     avr_handler = AvrHandler(avr)
 
     app.router.add_static('/static-new', 'avrremote/static-new')
