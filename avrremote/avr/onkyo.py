@@ -40,11 +40,11 @@ class Zone():
     def get_volume(self):
         with eiscp.eISCP(self.avr.ip) as receiver:
             resp = receiver.command('volume', arguments=['query'], zone=self.name)
-        return float(resp[1])
+        return float(0 if resp[1] == 'N/A' else resp[1])
 
     def get_selected_input(self):
         with eiscp.eISCP(self.avr.ip) as receiver:
-            resp = receiver.command('input-selector' if zoneId == 0 else 'selector', arguments=['query'], zone=self.name)
+            resp = receiver.command('input-selector' if self.zoneId == 0 else 'selector', arguments=['query'], zone=self.name)
             inputid = resp[1][0] if isinstance(resp[1], tuple) else resp[1]
             return self.avr.input_ids.index(inputid)
 
