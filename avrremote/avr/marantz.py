@@ -1,4 +1,4 @@
-from .base import AbstractAvr, AbstractZone, AvrZonePropertyUpdate, UnsupportedUpdateException
+from .base import AbstractAvr, AbstractEndpoint, AvrZonePropertyUpdate, UnsupportedUpdateException
 
 import asyncio
 import aiohttp
@@ -7,14 +7,20 @@ import traceback
 from xml.etree import ElementTree
 
 
-class Zone(AbstractZone):
+class Zone(AbstractEndpoint):
 
     def __init__(self, avr, zoneId, name, inputs):
-        super().__init__(avr, zoneId, name, inputs)
+        super().__init__(avr)
+        self.zoneId = zoneId
+        self.name = name
+        self.inputs = inputs
         self._register_property('volume', self.set_volume)
         self._register_property('power', self.set_power)
         self._register_property('input', self.select_input)
         self._register_property('mute', self.mute)
+
+    def create_property_update(self, property_name, property_value):
+        return AvrZonePropertyUpdate(self.zoneId, property_name, property_value)
 
     async def poll(self):
         """ Polls the state of the AVR and returns a list of changed properties """

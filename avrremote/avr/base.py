@@ -89,39 +89,44 @@ class AbstractAvr(metaclass=ABCMeta):
             return true
         return NotImplemented
 
-class ZoneProperty:
+class EndpointProperty:
     def __init__(self, value, sender):
         self.value = value
         self.send = sender
 
 
-class AbstractZone:
+class AbstractEndpoint(metaclass=ABCMeta):
+    """ An endpoint of a receiver. This can be a zone, or a virtual input (e.g. a tuner)
+    An endpoint has properties that can be updated by the receiver, or new values can
+    be sent to the receiver.
+    """
 
-    def __init__(self, avr, zoneId, name, inputs):
+    def __init__(self, avr):
         self.avr = avr
-        self.zoneId = zoneId
-        self.name = name
-        self.inputs = inputs
         self.properties = {}
 
+    @abstractmethod
+    def create_property_update(self, property_name, property_value):
+        pass
+
     def _register_property(self, name, sender):
-        """ Call this method from your constructor, to register a propery in the zone
+        """ Call this method from your constructor, to register a propery in the endpoint
         Keyword arguments:
         name -- a name for the property
-        sender -- the method that should be used when an update of the property must be sent to the zone. Must be an async callable with one parameter (the value)
+        sender -- the method that should be used when an update of the property must be sent to the endpoint. Must be an async callable with one parameter (the value)
         """
-        self.properties[name] = ZoneProperty(None, sender)
+        self.properties[name] = EndpointProperty(None, sender)
 
     def _property_updated(self, name, value):
-        """ Call this when a zone property got updated. This happens when an update is received from the AVR """
+        """ Call this when an endpoint property got updated. This happens when an update is received from the AVR """
         if self.properties[name].value != value:
             self.properties[name].value = value
-            return AvrZonePropertyUpdate(self.zoneId, name, value)
+            return self.create_property_update(name, value)
 
     async def send(self, avr_update):
-        """ Sends an update to the zone """
+        """ Sends an update to the endpoint """
         if avr_update.property in self.properties:
             await self.properties[avr_update.property].send(avr_update.value)
             self.properties[avr_update.property].value = avr_update.value
         else:
-            raise UnsupportedUpdateException('Property {} not supported by zone'.format(avr_update.property), avr_update)
+            raise UnsupportedUpdateException('Property {} not supported by endpoint'.format(avr_update.property), avr_update)
