@@ -65,7 +65,7 @@ class Onkyo(AbstractAvr):
     async def connect(self):
         pass
 
-    async def disconnect():
+    async def disconnect(self):
         pass
 
     @property

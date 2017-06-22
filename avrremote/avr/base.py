@@ -31,7 +31,7 @@ class AbstractAvr(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    async def disconnect():
+    async def disconnect(self):
         pass
 
     # must return a dictionary with at least the following keys: name (string), volume_step (float),
