@@ -86,11 +86,11 @@ class Onkyo(AbstractAvr):
             resp = receiver.command('power', ['on' if value else 'standby'], zone=self.zones[zoneId].name)
             return resp
 
-    def set_volume(self, zoneId, value):
+    async def set_volume(self, zoneId, value):
         with eiscp.eISCP(self.ip) as receiver:
             return receiver.command('volume', [str(value)], zone=self.zones[zoneId].name)
 
-    def select_input(self, zoneId, inputId):
+    async def select_input(self, zoneId, inputId):
         with eiscp.eISCP(self.ip) as receiver:
             resp = (receiver.raw('SLI12' if zoneId == 0 else 'SLZ12')) if self.input_real_names[inputId][0] == 'tv' else (receiver.command('input-selector' if zoneId == 0 else 'selector', arguments=[self.input_real_names[inputId][0]], zone=self.zones[zoneId].name))
             return resp
