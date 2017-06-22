@@ -15,29 +15,24 @@ class Zone(AbstractZone):
 
     async def poll(self):
         """ Updates the state by polling the AVR and returns a list of changed properties """
+        with eiscp.eISCP(self.avr.ip) as receiver:
+            resp = receiver.command('power', arguments=['query'], zone=self.name)
+            power = resp[1] == 'on'
+
+            resp = receiver.command('volume', arguments=['query'], zone=self.name)
+            volume = float(0 if resp[1] == 'N/A' else resp[1])
+
+            resp = receiver.command('input-selector' if self.zoneId == 0 else 'selector', arguments=['query'], zone=self.name)
+            inputid = resp[1][0] if isinstance(resp[1], tuple) else resp[1]
+            selected_input = self.avr.input_ids.index(inputid)
+
         result = [
-            self._property_updated('power', self.get_power()),
-            self._property_updated('input', self.get_selected_input()),
-            self._property_updated('volume', self.get_volume()),
+            self._property_updated('power', power),
+            self._property_updated('input', selected_input),
+            self._property_updated('volume', volume),
             self._property_updated('mute', False)
         ]
         return filter(None, result)
-
-    def get_power(self):
-        with eiscp.eISCP(self.avr.ip) as receiver:
-            resp = receiver.command('power', arguments=['query'], zone=self.name)
-            return resp[1] == 'on'
-
-    def get_volume(self):
-        with eiscp.eISCP(self.avr.ip) as receiver:
-            resp = receiver.command('volume', arguments=['query'], zone=self.name)
-        return float(0 if resp[1] == 'N/A' else resp[1])
-
-    def get_selected_input(self):
-        with eiscp.eISCP(self.avr.ip) as receiver:
-            resp = receiver.command('input-selector' if self.zoneId == 0 else 'selector', arguments=['query'], zone=self.name)
-            inputid = resp[1][0] if isinstance(resp[1], tuple) else resp[1]
-            return self.avr.input_ids.index(inputid)
 
     async def set_power(self, value):
         with eiscp.eISCP(self.avr.ip) as receiver:
