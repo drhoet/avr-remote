@@ -35,6 +35,20 @@ class AvrZonePropertyUpdate(AvrUpdate):
         self.value = value
 
 
+class AvrTunerPropertyUpdate(AvrUpdate):
+    def __init__(self, prop, value):
+        """Creates a new AvrTunerPropertyUpdate object
+
+        Keyword arguments:
+        property -- the name of the property to be updated. Currently supported are:
+            freq: float
+            band: 'AM' or 'FM'
+        value -- the new value of the property. For the type, see the documentation of property.
+        """
+        self.property = prop
+        self.value = value
+
+
 class AbstractAvr(metaclass=ABCMeta):
     # A constructor like this must be implemented in all subclasses.
     # config: the configuration. This is read from the configuration file and passed to your constructor. Use it to pass any necessary parameters.

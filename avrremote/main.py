@@ -5,7 +5,7 @@ import json
 import traceback
 
 from .default_config import default_config as config
-from .avr.base import AvrZonePropertyUpdate
+from .avr.base import AvrZonePropertyUpdate, AvrTunerPropertyUpdate
 
 class AvrMessage:
     """ A message that can be sent to the Avr. """
@@ -26,6 +26,8 @@ class AvrMessage:
     def create(update):
         if isinstance(update, AvrZonePropertyUpdate):
             return AvrZoneMessage(update)
+        elif isinstance(update, AvrTunerPropertyUpdate):
+            return AvrTunerMessage(update)
 
 
 class AvrStaticInfoMessage(AvrMessage):
@@ -39,6 +41,13 @@ class AvrZoneMessage(AvrMessage):
     def __init__(self, avr_update):
         """ Creates a new AvrZoneMessage based on a AvrZonePropertyUpdate """
         super().__init__('zone', {'zoneId': avr_update.zoneId}, {avr_update.property: avr_update.value})
+
+
+class AvrTunerMessage(AvrMessage):
+    """ An AvrMessage for a tuner"""
+    def __init__(self, avr_update):
+        """ Creates a new AvrTunerMessage based on a AvrTunerPropertyUpdate """
+        super().__init__('tuner', {}, {avr_update.property: avr_update.value})
 
 
 class AvrHandler:

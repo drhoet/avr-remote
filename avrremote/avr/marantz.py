@@ -1,4 +1,4 @@
-from .base import AbstractAvr, AbstractEndpoint, AvrZonePropertyUpdate, UnsupportedUpdateException
+from .base import AbstractAvr, AbstractEndpoint, AvrZonePropertyUpdate, AvrTunerPropertyUpdate, UnsupportedUpdateException
 
 import asyncio
 import aiohttp
@@ -59,6 +59,34 @@ class Zone(AbstractEndpoint):
     async def mute(self, value):
         await self.avr._get('/goform/formiPhoneAppMute.xml?{0}+{1}'.format(self.zoneId + 1, 'MuteOn' if value else 'MuteOff'))
         self.properties['mute'].value = value
+
+
+class Tuner(AbstractEndpoint):
+
+    def __init__(self, avr):
+        super().__init__(avr)
+        self._register_property('band', self.set_band)
+        self._register_property('freq', self.set_freq)
+
+    def create_property_update(self, property_name, property_value):
+        return AvrTunerPropertyUpdate(property_name, property_value)
+
+    async def poll(self):
+        """ Polls the state of the AVR and returns a list of changed properties """
+        data = await self.avr._get('/goform/formTuner_TunerXml.xml')
+        xml = ElementTree.fromstring(data)
+
+        result = [
+            self._property_updated('band', xml.findtext('Band/value')),
+            self._property_updated('freq', float(xml.findtext('Frequency/value'))),
+        ]
+        return filter(None, result)
+
+    async def set_band(self, band):
+        pass
+
+    async def set_freq(self, freq):
+        pass
 
 
 class Marantz(AbstractAvr):
@@ -156,6 +184,7 @@ class Marantz(AbstractAvr):
                             Marantz.INPUT_ID_TO_ICON_MAPPING[Marantz.INPUT_NAME_TO_ID_MAPPING[x.findtext('name').strip().upper()]])
                            for x in cmds[1].findall('functionrename/list')]
             self.zones = [Zone(self, i, x.text.strip(), self.inputs) for i, x in enumerate(cmds[0])]
+            self.internals = [Tuner(self)]
             self._connected = True
             print('all is good and well!')
         except asyncio.CancelledError:
@@ -176,13 +205,13 @@ class Marantz(AbstractAvr):
     async def static_info(self):
         print('im in static info')
         augmented_zones = [{'name': z.name, 'inputs': z.inputs} for z in self.zones]
-        return {'name': 'Marantz NR1605', 'ip': self.config['ip'], 'zones': augmented_zones, 'volume_step': 0.5, 'internals': {}}
+        return {'name': 'Marantz NR1605', 'ip': self.config['ip'], 'zones': augmented_zones, 'volume_step': 0.5, 'internals': ['tuner']}
 
     async def listen(self):
         print('listen_for_updates')
         while await self.connected:
-            all_zone_updates = await asyncio.gather(*[ zone.poll() for zone in self.zones ])
-            flattened_updates = [zone_update for zone_updates in all_zone_updates for zone_update in zone_updates]
+            all_updates = await asyncio.gather(*[ zone.poll() for zone in self.zones ], *[ internal.poll() for internal in self.internals ])
+            flattened_updates = [update for updates in all_updates for update in updates]
             yield flattened_updates
             await asyncio.sleep(5)
 

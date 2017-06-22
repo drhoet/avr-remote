@@ -56,6 +56,7 @@ class Zone(AbstractEndpoint):
     async def mute(self):
         pass
 
+
 class Onkyo(AbstractAvr):
 
     def __init__(self, config):
