@@ -1,34 +1,25 @@
-from .base import AbstractAvr, AvrZonePropertyUpdate
+from .base import AbstractAvr, AbstractZone, AvrZonePropertyUpdate
 
 import asyncio
 import eiscp
 
-class Zone():
+class Zone(AbstractZone):
 
     def __init__(self, avr, zoneId, name, inputs):
-        self.avr = avr
-        self.zoneId = zoneId
-        self.name = name
-        self.inputs = inputs
-        self.props = {
-            'volume': None,
-            'power': None,
-            'input': None,
-            'mute': None
-        }
+        super().__init__(avr, zoneId, name, inputs)
+        self._register_property('volume', self.set_volume)
+        self._register_property('power', self.set_power)
+        self._register_property('input', self.select_input)
+        self._register_property('mute', self.mute)
 
-    def _update_prop(self, name, value):
-        if self.props[name] != value:
-            self.props[name] = value
-            return AvrZonePropertyUpdate(self.zoneId, name, value)
 
-    async def update(self):
+    async def poll(self):
         """ Updates the state by polling the AVR and returns a list of changed properties """
         result = [
-            self._update_prop('power', self.get_power()),
-            self._update_prop('input', self.get_selected_input()),
-            self._update_prop('volume', self.get_volume()),
-            self._update_prop('mute', False)
+            self._property_updated('power', self.get_power()),
+            self._property_updated('input', self.get_selected_input()),
+            self._property_updated('volume', self.get_volume()),
+            self._property_updated('mute', False)
         ]
         return filter(None, result)
 
@@ -48,6 +39,22 @@ class Zone():
             inputid = resp[1][0] if isinstance(resp[1], tuple) else resp[1]
             return self.avr.input_ids.index(inputid)
 
+    async def set_power(self, value):
+        with eiscp.eISCP(self.avr.ip) as receiver:
+            resp = receiver.command('power', ['on' if value else 'standby'], zone=self.name)
+            return resp
+
+    async def set_volume(self, value):
+        with eiscp.eISCP(self.avr.ip) as receiver:
+            return receiver.command('volume', [str(value)], zone=self.name)
+
+    async def select_input(self, inputId):
+        with eiscp.eISCP(self.avr.ip) as receiver:
+            resp = (receiver.raw('SLI12' if self.zoneId == 0 else 'SLZ12')) if self.avr.input_real_names[inputId][0] == 'tv' else (receiver.command('input-selector' if self.zoneId == 0 else 'selector', arguments=[self.avr.input_real_names[inputId][0]], zone=self.name))
+            return resp
+
+    async def mute(self):
+        pass
 
 class Onkyo(AbstractAvr):
 
@@ -73,27 +80,19 @@ class Onkyo(AbstractAvr):
         augmented_zones = [{'name': z.name, 'inputs': z.inputs} for z in self.zones]
         return { 'name': 'Onkyo', 'ip': self.ip, 'zones': augmented_zones, 'volume_step': 1, 'internals': {}}
 
-    async def listen_for_updates(self):
+    async def listen(self):
         print('listen_for_updates')
         while True:
-            all_zone_updates = await asyncio.gather(*[ zone.update() for zone in self.zones ])
+            all_zone_updates = await asyncio.gather(*[ zone.poll() for zone in self.zones ])
             flattened_updates = [zone_update for zone_updates in all_zone_updates for zone_update in zone_updates]
             yield flattened_updates
             await asyncio.sleep(5)
 
-    async def set_power(self, zoneId, value):
-        with eiscp.eISCP(self.ip) as receiver:
-            resp = receiver.command('power', ['on' if value else 'standby'], zone=self.zones[zoneId].name)
-            return resp
-
-    async def set_volume(self, zoneId, value):
-        with eiscp.eISCP(self.ip) as receiver:
-            return receiver.command('volume', [str(value)], zone=self.zones[zoneId].name)
-
-    async def select_input(self, zoneId, inputId):
-        with eiscp.eISCP(self.ip) as receiver:
-            resp = (receiver.raw('SLI12' if zoneId == 0 else 'SLZ12')) if self.input_real_names[inputId][0] == 'tv' else (receiver.command('input-selector' if zoneId == 0 else 'selector', arguments=[self.input_real_names[inputId][0]], zone=self.zones[zoneId].name))
-            return resp
+    async def send(self, avr_update):
+        if isinstance(avr_update, AvrZonePropertyUpdate):
+            await self.zones[avr_update.zoneId].send(avr_update)
+        else:
+            raise UnsupportedUpdateException('Update type {} not supported'.format(avr_update.__class__.__name__), avr_update)
 
     def get_tuning_freq(self, zoneId):
         with eiscp.eISCP(self.ip) as receiver:

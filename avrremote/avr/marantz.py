@@ -1,31 +1,23 @@
-from .base import AbstractAvr, AvrZonePropertyUpdate
+from .base import AbstractAvr, AbstractZone, AvrZonePropertyUpdate, UnsupportedUpdateException
 
 import asyncio
 import aiohttp
 import requests
+import traceback
 from xml.etree import ElementTree
 
-class Zone():
+
+class Zone(AbstractZone):
 
     def __init__(self, avr, zoneId, name, inputs):
-        self.avr = avr
-        self.zoneId = zoneId
-        self.name = name
-        self.inputs = inputs
-        self.props = {
-            'volume': None,
-            'power': None,
-            'input': None,
-            'mute': None
-        }
+        super().__init__(avr, zoneId, name, inputs)
+        self._register_property('volume', self.set_volume)
+        self._register_property('power', self.set_power)
+        self._register_property('input', self.select_input)
+        self._register_property('mute', self.mute)
 
-    def _update_prop(self, name, value):
-        if self.props[name] != value:
-            self.props[name] = value
-            return AvrZonePropertyUpdate(self.zoneId, name, value)
-
-    async def update(self):
-        """ Updates the state by polling the AVR and returns a list of changed properties """
+    async def poll(self):
+        """ Polls the state of the AVR and returns a list of changed properties """
         if(self.zoneId == 0):
             data = await self.avr._get('/goform/formMainZone_MainZoneXmlStatusLite.xml')
         else:
@@ -33,12 +25,34 @@ class Zone():
         xml = ElementTree.fromstring(data)
 
         result = [
-            self._update_prop('power', xml.findtext('Power/value') == 'ON'),
-            self._update_prop('input', self.avr._map_input(xml.findtext('InputFuncSelect/value'))),
-            self._update_prop('volume', float(xml.findtext('MasterVolume/value')) + 80),
-            self._update_prop('mute', xml.findtext('Mute/value') == 'on')
+            self._property_updated('power', xml.findtext('Power/value') == 'ON'),
+            self._property_updated('input', self.avr._map_input(xml.findtext('InputFuncSelect/value'))),
+            self._property_updated('volume', float(xml.findtext('MasterVolume/value')) + 80),
+            self._property_updated('mute', xml.findtext('Mute/value') == 'on')
         ]
         return filter(None, result)
+
+    async def set_power(self, value):
+        await self.avr._get('/goform/formiPhoneAppPower.xml?{0}+{1}'.format(self.zoneId + 1, 'PowerOn' if value else 'PowerStandby'))
+        self.properties['power'].value = value
+
+    async def set_volume(self, value):
+        if value > 98:
+            value = 98
+        elif value < 0:
+            value = 0
+
+        volume = value - 80
+        await self.avr._get('/goform/formiPhoneAppVolume.xml?{0}+{2:0{1}.1f}'.format(self.zoneId + 1, 4 if volume >= 0 else 5, volume))
+        self.properties['volume'].value = value
+
+    async def select_input(self, inputId):
+        await self.avr._get('/goform/formiPhoneAppDirect.xml?{0}{1}'.format('SI' if self.zoneId == 0 else 'Z{0}'.format(self.zoneId + 1), self.avr.input_ids[inputId]))
+        self.properties['input'].value = inputId
+
+    async def mute(self, value):
+        await self.avr._get('/goform/formiPhoneAppMute.xml?{0}+{1}'.format(self.zoneId + 1, 'MuteOn' if value else 'MuteOff'))
+        self.properties['mute'].value = value
 
 
 class Marantz(AbstractAvr):
@@ -142,6 +156,9 @@ class Marantz(AbstractAvr):
             if self.session:
                 self.session.close()
             raise
+        except:
+            traceback.print_exc()
+            raise
 
     async def disconnect(self):
         print('going to disconnect')
@@ -155,35 +172,25 @@ class Marantz(AbstractAvr):
         augmented_zones = [{'name': z.name, 'inputs': z.inputs} for z in self.zones]
         return {'name': 'Marantz NR1605', 'ip': self.config['ip'], 'zones': augmented_zones, 'volume_step': 0.5, 'internals': {}}
 
-    async def listen_for_updates(self):
+    async def listen(self):
         print('listen_for_updates')
         while await self.connected:
-            all_zone_updates = await asyncio.gather(*[ zone.update() for zone in self.zones ])
+            all_zone_updates = await asyncio.gather(*[ zone.poll() for zone in self.zones ])
             flattened_updates = [zone_update for zone_updates in all_zone_updates for zone_update in zone_updates]
             yield flattened_updates
             await asyncio.sleep(5)
 
-    async def set_power(self, zoneId, value):
-        await self._get('/goform/formiPhoneAppPower.xml?{0}+{1}'.format(zoneId + 1, 'PowerOn' if value else 'PowerStandby'))
-
-    async def set_volume(self, zoneId, value):
-        if value > 98:
-            value = 98
-        elif value < 0:
-            value = 0
-
-        volume = value - 80
-        await self._get('/goform/formiPhoneAppVolume.xml?{0}+{2:0{1}.1f}'.format(zoneId + 1, 4 if volume >= 0 else 5, volume))
+    async def send(self, avr_update):
+        if isinstance(avr_update, AvrZonePropertyUpdate):
+            await self.zones[avr_update.zoneId].send(avr_update)
+        else:
+            raise UnsupportedUpdateException('Update type {} not supported'.format(avr_update.__class__.__name__), avr_update)
 
     def _map_input(self, input):
         if input == 'Online Music' or input == 'Favorites' or input == 'Flickr' or input == 'Media Server' or input == 'Internet Radio':
             return self.input_ids.index('NET')
         else:
             return self.input_ids.index(input)
-
-    async def select_input(self, zoneId, inputId):
-        await self._get('/goform/formiPhoneAppDirect.xml?{0}{1}'.format(
-            'SI'if zoneId == 0 else 'Z{0}'.format(zoneId + 1), self.input_ids[inputId]))
 
     async def _get(self, path):
         async with self.session.get(self.baseUri + path) as response:

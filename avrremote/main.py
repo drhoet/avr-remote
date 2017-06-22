@@ -5,6 +5,7 @@ import json
 import traceback
 
 from .default_config import default_config as config
+from .avr.base import AvrZonePropertyUpdate
 
 class AvrMessage:
     """ A message that can be sent to the Avr. """
@@ -23,9 +24,8 @@ class AvrMessage:
         return "{0}({1}, {2}, {3})".format(self.__class__.__name__, self.type, self._state, self._extras)
 
     def create(update):
-        if update.__class__.__name__ == 'AvrZonePropertyUpdate':
+        if isinstance(update, AvrZonePropertyUpdate):
             return AvrZoneMessage(update)
-
 
 
 class AvrStaticInfoMessage(AvrMessage):
@@ -67,7 +67,7 @@ class AvrHandler:
             static_info = AvrStaticInfoMessage(await self.avr.static_info)
             await self.send_message(ws, static_info)
 
-            async for updates in self.avr.listen_for_updates():
+            async for updates in self.avr.listen():
                 print('In the async for loop', updates)
                 for avr_update in updates:
                     await self.send_message(ws, AvrMessage.create(avr_update))
@@ -85,12 +85,9 @@ class AvrHandler:
         if request['type'] == 'zone':
             zoneId = request['zoneId']
             state = request['state']
-            if 'power' in state:
-                await self.avr.set_power(zoneId, state['power'])
-            if 'volume' in state:
-                await self.avr.set_volume(zoneId, state['volume'])
-            if 'input' in state:
-                await self.avr.select_input(zoneId, state['input'])
+            for key, value in state.items():
+                avr_update = AvrZonePropertyUpdate(zoneId, key, value)
+                await self.avr.send(avr_update)
 
     # The handler of the websocket. This one is listening for requests of the clients
     # When a request is received, most of the handling is passed over to the process_request method.
