@@ -140,6 +140,9 @@ function Avr() {
 					console.warn('Received a zone update for non-existing zone: ' + msg.zoneId, event);
 				}
 				break;
+			case 'error':
+				alert(msg.state.message);
+				break;
 			default:
 				console.warn('Invalid message type: ' + msg.type, event);
 		}
