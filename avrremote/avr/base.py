@@ -22,7 +22,7 @@ class AvrZonePropertyUpdate(AvrUpdate):
         """Creates a new AvrZonePropertyUpdate object
 
         Keyword arguments:
-        zoneId -- the zone id, int, index in static_info.zones of the zone
+        zoneId -- the zone id of the zone, int, index in static_info.zones
         property -- the name of the property to be updated. Currently supported are:
             power: boolean
             volume: float [0..100]
@@ -36,15 +36,17 @@ class AvrZonePropertyUpdate(AvrUpdate):
 
 
 class AvrTunerPropertyUpdate(AvrUpdate):
-    def __init__(self, prop, value):
+    def __init__(self, internalId, prop, value):
         """Creates a new AvrTunerPropertyUpdate object
 
         Keyword arguments:
+        internalId -- the id of the internal, int, index in static_info.internals
         property -- the name of the property to be updated. Currently supported are:
             freq: float
             band: 'AM' or 'FM'
         value -- the new value of the property. For the type, see the documentation of property.
         """
+        self.internalId = internalId
         self.property = prop
         self.value = value
 

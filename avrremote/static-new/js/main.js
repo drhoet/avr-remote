@@ -59,6 +59,13 @@ $.when.apply($, collector.promises).then(function() {
 			avr: avr,
 			config: config,
 		},
+		methods: {
+			mapType: function(internal) {
+				if (internal instanceof Tuner) {
+					return 'tuner-panel';
+				}
+			}
+		}
 	});
 
 	avr.connect('ws://' + config.ip + '/ws');

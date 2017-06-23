@@ -63,13 +63,14 @@ class Zone(AbstractEndpoint):
 
 class Tuner(AbstractEndpoint):
 
-    def __init__(self, avr):
+    def __init__(self, avr, internalId):
         super().__init__(avr)
+        self.internalId = internalId
         self._register_property('band', self.set_band)
         self._register_property('freq', self.set_freq)
 
     def create_property_update(self, property_name, property_value):
-        return AvrTunerPropertyUpdate(property_name, property_value)
+        return AvrTunerPropertyUpdate(self.internalId, property_name, property_value)
 
     async def poll(self):
         """ Polls the state of the AVR and returns a list of changed properties """
@@ -82,11 +83,18 @@ class Tuner(AbstractEndpoint):
         ]
         return filter(None, result)
 
-    async def set_band(self, band):
-        pass
+    async def set_band(self, value):
+        if value == 'AM':
+            band = 'AM'
+        else:
+            band = 'FM'
+        await self.avr._get('/goform/formiPhoneAppDirect.xml?TMAN{0}'.format(band))
+        self.properties['band'].value = band
 
-    async def set_freq(self, freq):
-        pass
+    async def set_freq(self, value):
+        freq_str = '{0:06.0f}'.format(100 * value)
+        await self.avr._get('/goform/formiPhoneAppDirect.xml?TFAN{0}'.format(freq_str))
+        self.properties['freq'].value = value
 
 
 class Marantz(AbstractAvr):
@@ -184,7 +192,7 @@ class Marantz(AbstractAvr):
                             Marantz.INPUT_ID_TO_ICON_MAPPING[Marantz.INPUT_NAME_TO_ID_MAPPING[x.findtext('name').strip().upper()]])
                            for x in cmds[1].findall('functionrename/list')]
             self.zones = [Zone(self, i, x.text.strip(), self.inputs) for i, x in enumerate(cmds[0])]
-            self.internals = [Tuner(self)]
+            self.internals = [Tuner(self, 0)]
             self._connected = True
             print('all is good and well!')
         except asyncio.CancelledError:
@@ -218,6 +226,8 @@ class Marantz(AbstractAvr):
     async def send(self, avr_update):
         if isinstance(avr_update, AvrZonePropertyUpdate):
             await self.zones[avr_update.zoneId].send(avr_update)
+        elif isinstance(avr_update, AvrTunerPropertyUpdate):
+            await self.internals[avr_update.internalId].send(avr_update)
         else:
             raise UnsupportedUpdateException('Update type {} not supported'.format(avr_update.__class__.__name__), avr_update)
 

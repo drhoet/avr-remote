@@ -1,0 +1,16 @@
+<accordion-panel>
+	<div slot="header">
+		<span class="name">Tuner</span>
+	</div>
+
+	<div slot="content" class="row">
+		<label for="tuner-am">
+			<input type="radio" value="AM" id="tuner-am" v-model="item.band" /> AM
+		</label>
+		<label for="tuner-fm">
+			<input type="radio" value="FM" id="tuner-fm" v-model="item.band" /> FM
+		</label>
+
+		<input type="number" v-model.lazy.number="item.freq" :min="freqMin" :max="freqMax" :step="freqStep" required/>
+	</div>
+</accordion-panel>

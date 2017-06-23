@@ -47,7 +47,7 @@ class AvrTunerMessage(AvrMessage):
     """ An AvrMessage for a tuner"""
     def __init__(self, avr_update):
         """ Creates a new AvrTunerMessage based on a AvrTunerPropertyUpdate """
-        super().__init__('tuner', {}, {avr_update.property: avr_update.value})
+        super().__init__('tuner', {'internalId': avr_update.internalId}, {avr_update.property: avr_update.value})
 
 
 class AvrError(AvrMessage):
@@ -86,7 +86,6 @@ class AvrHandler:
                 for avr_update in updates:
                     await self.send_message(ws, AvrMessage.create(avr_update))
         except:
-            import traceback
             traceback.print_exc()
             raise
         finally:
@@ -101,6 +100,12 @@ class AvrHandler:
             state = request['state']
             for key, value in state.items():
                 avr_update = AvrZonePropertyUpdate(zoneId, key, value)
+                await self.avr.send(avr_update)
+        elif request['type'] == 'tuner':
+            internalId = request['internalId']
+            state = request['state']
+            for key, value in state.items():
+                avr_update = AvrTunerPropertyUpdate(internalId, key, value)
                 await self.avr.send(avr_update)
 
     # The handler of the websocket. This one is listening for requests of the clients
@@ -119,6 +124,7 @@ class AvrHandler:
                     try:
                         await self.process_request(json)
                     except UnsupportedUpdateException as err:
+                        traceback.print_exc()
                         await self.send_message(ws, AvrError('websocket_handler', err.message))
                 elif msg.type == aiohttp.WSMsgType.ERROR:
                     print('ws connection closed with exception %s' % ws.exception())

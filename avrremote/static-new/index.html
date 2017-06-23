@@ -25,6 +25,7 @@
 				<h1 class="page-header">{{ avr.name }}</h1>
 				<div class="panel-group" id="zones-accordion" role="tablist">
 					<zone-panel v-for="(item, index) in avr.zones" :key="item.id" :zone="item" :config="config"></zone-panel>
+					<component v-for="item in avr.internals" :is="mapType(item)" :key="item.internalId" :item="item"></component>
 				</div>
 			</div>
 		</div>
@@ -46,6 +47,7 @@
 		<script src="js/accordion.js"></script>
 		<script src="js/volume-dial.js"></script>
 		<script src="js/power-toggle.js"></script>
+		<script src="js/tuner-panel.js"></script>
 		<script src="js/zone-panel.js"></script>
 		<script src="js/client.js"></script>
 		<script src="js/settings.js"></script>

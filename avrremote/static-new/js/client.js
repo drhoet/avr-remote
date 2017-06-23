@@ -1,90 +1,90 @@
 "use strict";
 
-function Zone(avr, zoneId, state) {
-	this.avr = avr;
-	this.zoneId = zoneId;
-	this.name = state.name;
-	this.inputs = state.inputs;
-	this._selected_input = null;
-	this._power = null;
-	this._volume = null;
+class Endpoint {
+	constructor(avr) {
+		this.avr = avr;
+		this.properties = {}; // these hold the last known value of the property. Used to avoid sending to the AVR when a value has not changed.
+	}
 
-	this.updateZone = function(zoneId, state) {
-		avr.send({
-			type: 'zone',
-			zoneId: zoneId,
-			state: state,
+	registerProperty(name) {
+		this.properties[name] = null;
+		Object.defineProperty(this, name, {
+			get: function() {
+				return this.properties[name];
+			},
+			set: function(newValue) {
+				let oldValue = this.properties[name];
+				if (newValue !== oldValue) {
+					console.log('sending ' + name + ': ' + newValue);
+					this.properties[name] = newValue;
+					this.send(name, newValue);
+				}
+			}
 		});
+	}
+
+	send(propertyName, propertyValue) {
+		console.warn('No send function implemented for ', this, '. Skipping sending of property ' +
+			propertyName + '=', propertyValue);
+	}
+
+	onStateUpdate(state) {
+		for (let property in state) {
+			if (state.hasOwnProperty(property)) {
+				if (this.properties.hasOwnProperty(property)) {
+					let newValue = state[property];
+					if (newValue !== this.properties[property]) {
+						this.properties[property] = newValue;
+						this[property] = newValue; // trigger the update of the property, so vue.js also knows it updated
+					}
+				} else {
+					console.warn('Received update for unregistered property: ' + property);
+				}
+			}
+		}
 	}
 }
 
-Zone.prototype = {
-	get selected_input() {
-		return this._selected_input;
-	},
-	set selected_input(value) {
-		if (value !== this._selected_input) {
-			console.log('sending selected input: ' + value);
-			this._selected_input = value;
-			this.updateZone(this.zoneId, {
-				'input': this._selected_input
-			});
-		}
-	},
-	get power() {
-		return this._power;
-	},
-	set power(value) {
-		if (value !== this._power) {
-			console.log('sending power: ' + value);
-			this._power = value;
-			this.updateZone(this.zoneId, {
-				'power': this._power
-			});
-		}
-	},
-	get volume() {
-		return this._volume;
-	},
-	set volume(value) {
-		if (value !== this._volume) {
-			console.log('sending volume: ' + value);
-			this._volume = value;
-			this.updateZone(this.zoneId, {
-				'volume': this._volume
-			});
-		}
-	},
-	onZoneUpdate(state) {
-		if ('input' in state) {
-			this.onSelectedInputUpdated(state.input);
-		}
-		if ('power' in state) {
-			this.onPowerUpdated(state.power);
-		}
-		if ('volume' in state) {
-			this.onVolumeUpdated(state.volume);
-		}
-	},
-	onSelectedInputUpdated(value) {
-		if (value !== this._selected_input) {
-			this._selected_input = value;
-			this.selected_input = value; // trigger the update of the property, so vue.js also knows it updated
-		}
-	},
-	onPowerUpdated(value) {
-		if (value !== this._power) {
-			this._power = value;
-			this.power = value; // trigger the update of the property, so vue.js also knows it updated
-		}
-	},
-	onVolumeUpdated(value) {
-		if (value !== this._volume) {
-			this._volume = value;
-			this.volume = value; // trigger the update of the property, so vue.js also knows it updated
-		}
-	},
-};
+class Zone extends Endpoint {
+	constructor(avr, zoneId, static_state) {
+		super(avr);
+		this.zoneId = zoneId;
+		this.name = static_state.name;
+		this.inputs = static_state.inputs;
+		this.registerProperty('input');
+		this.registerProperty('power');
+		this.registerProperty('volume');
+	}
+
+	send(propertyName, propertyValue) {
+		let state = {};
+		state[propertyName] = propertyValue;
+		avr.send({
+			type: 'zone',
+			zoneId: this.zoneId,
+			state: state
+		})
+	}
+}
+
+class Tuner extends Endpoint {
+	constructor(avr, internalId) {
+		super(avr);
+		this.internalId = internalId;
+		this.registerProperty('band');
+		this.registerProperty('freq');
+	}
+
+	send(propertyName, propertyValue) {
+		let state = {};
+		state[propertyName] = propertyValue;
+		avr.send({
+			type: 'tuner',
+			internalId: this.internalId,
+			state: state
+		})
+	}
+}
 
 function Avr() {
 	var _socket = null;
@@ -93,6 +93,7 @@ function Avr() {
 	this.name = '';
 	this.ip = '';
 	this.zones = [];
+	this.internals = [];
 	this.connected = false;
 
 	this.connect = function(url) {
@@ -119,10 +120,16 @@ function Avr() {
 		_self.name = state.name;
 		_self.ip = state.ip;
 		_self.volume_step = state.volume_step;
-		_self.zones = [];
-		for (var z = 0; z < state.zones.length; ++z) {
+		for (let z = 0; z < state.zones.length; ++z) {
 			_self.zones.push(new Zone(_self, z, state.zones[z]));
-		};
+		}
+		for (let i = 0; i < state.internals.length; ++i) {
+			if (state.internals[i] == 'tuner') {
+				_self.internals.push(new Tuner(_self, i));
+			} else {
+				_self.internals.push(null);
+			}
+		}
 		_self.connected = true;
 	}
 
@@ -135,9 +142,16 @@ function Avr() {
 				break;
 			case 'zone':
 				if (_self.zones[msg.zoneId]) {
-					_self.zones[msg.zoneId].onZoneUpdate(msg.state);
+					_self.zones[msg.zoneId].onStateUpdate(msg.state);
 				} else {
 					console.warn('Received a zone update for non-existing zone: ' + msg.zoneId, event);
+				}
+				break;
+			case 'tuner':
+				if (_self.internals[msg.internalId]) {
+					_self.internals[msg.internalId].onStateUpdate(msg.state);
+				} else {
+					console.warn('Received an update for a non-existing internal: ' + msg.internalId, event);
 				}
 				break;
 			case 'error':

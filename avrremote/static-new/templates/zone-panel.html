@@ -11,8 +11,8 @@
 			<div class="sources">
 				<nav>
 					<ul>
-						<li v-for="input in inputs1" :class="{ active: input.id == zone.selected_input }">
-							<span class="input-select" :data-input="input.id" @click="zone.selected_input = input.id">
+						<li v-for="input in inputs1" :class="{ active: input.id == zone.input }">
+							<span class="input-select" :data-input="input.id" @click="zone.input = input.id">
 								<svg class="icon"><use :xlink:href="inputIcon(input.icon)" /></svg>
 								<span class="name">{{input.name}}</span>
 							</span>
@@ -24,8 +24,8 @@
 				</div>
 				<nav class="text-right">
 					<ul>
-						<li v-for="input in inputs2" :class="{ active: input.id == zone.selected_input }">
-							<span class="input-select" :data-input="input.id" @click="zone.selected_input = input.id">
+						<li v-for="input in inputs2" :class="{ active: input.id == zone.input }">
+							<span class="input-select" :data-input="input.id" @click="zone.input = input.id">
 								<span class="name">{{input.name}}</span>
 								<svg class="icon"><use :xlink:href="inputIcon(input.icon)" /></svg>
 							</span>
