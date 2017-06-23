@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod, abstractproperty
 import asyncio
 
-class UnsupportedUpdateException:
+class UnsupportedUpdateException(BaseException):
     """ Exception raised by AbstractAvr when an unrecognized update is received
 
     Attributes:
@@ -143,4 +143,4 @@ class AbstractEndpoint(metaclass=ABCMeta):
             await self.properties[avr_update.property].send(avr_update.value)
             self.properties[avr_update.property].value = avr_update.value
         else:
-            raise UnsupportedUpdateException('Property {} not supported by endpoint'.format(avr_update.property), avr_update)
+            raise UnsupportedUpdateException('Property \'{}\' not supported by endpoint'.format(avr_update.property), avr_update)
