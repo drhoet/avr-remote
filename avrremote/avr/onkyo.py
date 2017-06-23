@@ -1,4 +1,4 @@
-from .base import AbstractAvr, AbstractEndpoint, AvrZonePropertyUpdate
+from .base import AbstractAvr, AbstractEndpoint, AvrZonePropertyUpdate, AvrTunerPropertyUpdate, UnsupportedUpdateException
 
 import asyncio
 import eiscp
@@ -71,7 +71,7 @@ class Tuner(AbstractEndpoint):
 
     async def poll(self):
         """ Polls the state of the AVR and returns a list of changed properties """
-        with eiscp.eISCP(self.ip) as receiver:
+        with eiscp.eISCP(self.avr.ip) as receiver:
             resp = receiver.raw('TUNQSTN')
             freq = int(resp[3:])/100
 
@@ -85,8 +85,8 @@ class Tuner(AbstractEndpoint):
         return 'FM'
 
     async def set_freq(self, value):
-        with eiscp.eISCP(self.ip) as receiver:
-            resp = receiver.raw('TUN' + '{0:05.0f}'.format(freq))
+        with eiscp.eISCP(self.avr.ip) as receiver:
+            resp = receiver.raw('TUN' + '{0:05.0f}'.format(value*100))
         return value
 
 
