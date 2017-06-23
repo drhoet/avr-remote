@@ -145,6 +145,6 @@ class AbstractEndpoint(metaclass=ABCMeta):
         """ Sends an update to the endpoint """
         if avr_update.property in self.properties:
             set_value = await self.properties[avr_update.property].send(avr_update.value)
-            self.properties[avr_update.property].value = set_value
+            self.properties[avr_update.property].value = avr_update.value ## FIXME: shouldn't I use the set_value here?
         else:
             raise UnsupportedUpdateException('Property \'{}\' not supported by endpoint'.format(avr_update.property), avr_update)
