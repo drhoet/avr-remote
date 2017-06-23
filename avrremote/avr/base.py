@@ -129,7 +129,9 @@ class AbstractEndpoint(metaclass=ABCMeta):
         """ Call this method from your constructor, to register a propery in the endpoint
         Keyword arguments:
         name -- a name for the property
-        sender -- the method that should be used when an update of the property must be sent to the endpoint. Must be an async callable with one parameter (the value)
+        sender -- the method that should be used when an update of the property must be sent to the endpoint.
+            Must be an async callable with one parameter (the value), which returns
+            the value that was set on the endpoint
         """
         self.properties[name] = EndpointProperty(None, sender)
 
@@ -142,7 +144,7 @@ class AbstractEndpoint(metaclass=ABCMeta):
     async def send(self, avr_update):
         """ Sends an update to the endpoint """
         if avr_update.property in self.properties:
-            await self.properties[avr_update.property].send(avr_update.value)
-            self.properties[avr_update.property].value = avr_update.value
+            set_value = await self.properties[avr_update.property].send(avr_update.value)
+            self.properties[avr_update.property].value = set_value
         else:
             raise UnsupportedUpdateException('Property \'{}\' not supported by endpoint'.format(avr_update.property), avr_update)

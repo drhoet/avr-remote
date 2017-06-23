@@ -40,7 +40,7 @@ class Zone(AbstractEndpoint):
 
     async def set_power(self, value):
         await self.avr._get('/goform/formiPhoneAppPower.xml?{0}+{1}'.format(self.zoneId + 1, 'PowerOn' if value else 'PowerStandby'))
-        self.properties['power'].value = value
+        return True if value else False
 
     async def set_volume(self, value):
         if value > 98:
@@ -50,15 +50,15 @@ class Zone(AbstractEndpoint):
 
         volume = value - 80
         await self.avr._get('/goform/formiPhoneAppVolume.xml?{0}+{2:0{1}.1f}'.format(self.zoneId + 1, 4 if volume >= 0 else 5, volume))
-        self.properties['volume'].value = value
+        return value
 
     async def select_input(self, inputId):
         await self.avr._get('/goform/formiPhoneAppDirect.xml?{0}{1}'.format('SI' if self.zoneId == 0 else 'Z{0}'.format(self.zoneId + 1), self.avr.input_ids[inputId]))
-        self.properties['input'].value = inputId
+        return inputId
 
     async def mute(self, value):
         await self.avr._get('/goform/formiPhoneAppMute.xml?{0}+{1}'.format(self.zoneId + 1, 'MuteOn' if value else 'MuteOff'))
-        self.properties['mute'].value = value
+        return True if value else False
 
 
 class Tuner(AbstractEndpoint):
@@ -89,12 +89,12 @@ class Tuner(AbstractEndpoint):
         else:
             band = 'FM'
         await self.avr._get('/goform/formiPhoneAppDirect.xml?TMAN{0}'.format(band))
-        self.properties['band'].value = band
+        return band
 
     async def set_freq(self, value):
         freq_str = '{0:06.0f}'.format(100 * value)
         await self.avr._get('/goform/formiPhoneAppDirect.xml?TFAN{0}'.format(freq_str))
-        self.properties['freq'].value = value
+        return value
 
 
 class Marantz(AbstractAvr):
@@ -175,6 +175,7 @@ class Marantz(AbstractAvr):
         self.session = None
         self._connected = False
         self.zones = []
+        self.internals = []
 
     @property
     async def connected(self):
