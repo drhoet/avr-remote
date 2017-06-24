@@ -1,40 +1,5 @@
-body {
-  color: #ccc;
-  background-color: #24292e;
-  font-family: "opensans",Helvetica,Arial,sans-serif;
-}
-
 a, a:hover, a:focus {
 	text-decoration: none;
-}
-
-.btn-default {
-	background-color: #ccc;
-	border-color: #bbb;
-}
-
-.volume-dial-wrapper {
-	text-align: center;
-	padding-bottom: 10px;
-}
-
-.volume-wrapper a.btn {
-	font-size: 20px;
-	line-height: 1;
-}
-
-.panel {
-	color: #24292e;
-}
-
-.panel-heading {
-    cursor: pointer;
-}
-
-#zones-accordion .panel-heading span {
-	font-size: 24px;
-	line-height: 34px;
-	color: #337ab7;
 }
 
 svg.icon {
@@ -68,13 +33,13 @@ div.sources {
 }
 
 div.sources nav {
-	width: 3.3em;
+	width: 5rem;
 	display: table-cell;
 }
 
 div.sources nav ul li {
 	position: relative;
-	height: 2.5em;
+	height: 4rem;
 	list-style: none;
 	margin: 0;
 	padding: 0;
@@ -82,7 +47,7 @@ div.sources nav ul li {
 
 div.sources nav ul li span.input-select {
 	display: block;
-	padding: 0.6em 1em;
+	padding: 1rem 1.5rem;
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -103,8 +68,8 @@ div.sources nav ul li.active span.input-select, div.sources nav ul li:hover span
 
 div.sources nav ul li span.input-select svg.icon {
 	fill: #24292e;
-	height: 1.3em;
-	width: 1.3em;
+	height: 2rem;
+	width: 2rem;
 }
 
 div.sources nav ul li.active span.input-select svg.icon, div.sources nav ul li:hover span.input-select svg.icon {
@@ -113,27 +78,24 @@ div.sources nav ul li.active span.input-select svg.icon, div.sources nav ul li:h
 
 div.sources nav ul li span.input-select span.name {
 	display: none;
-	padding-left: 1em;
+	padding-left: 2rem;
 	padding-right: 0;
 	font-weight: bold;
 	vertical-align: top;
+  line-height: 2rem;
 }
 
 div.sources nav.text-right ul li span.input-select span.name {
 	padding-left: 0;
-	padding-right: 1em;
+	padding-right: 2rem;
 }
 
 div.sources nav ul li:hover span.input-select span.name {
 	display: inline-block;
 }
 
-div.zone div.panel-body {
-	padding: 0 15px;
-}
-
 div.sources-content {
-	box-shadow:  0px 50px 25px -20px #ffffff inset, 0px -50px 25px -20px #ffffff inset, -5px 0px 5px -5px rgba(0,0,0,0.5) inset, 5px 0px 5px -5px rgba(0,0,0,0.5) inset;
+	box-shadow:  0px 50px 25px -20px #f5f5f5 inset, 0px -50px 25px -20px #f5f5f5 inset, -5px 0px 5px -5px rgba(0,0,0,0.5) inset, 5px 0px 5px -5px rgba(0,0,0,0.5) inset;
 	padding: 15px;
 	display: table-cell;
 	vertical-align: top;
@@ -144,11 +106,80 @@ div.sources-content {
   cursor: help;
 }
 
-/* Start - Loading animation */
-[v-cloak] {
-	display: none;
+/* Start - Page layout */
+body {
+  background-color: #f5f5f5;
 }
 
+header {
+  background-color: #12b2e7;
+  margin-bottom: 2.5rem;
+}
+
+header h1 {
+  line-height: 2;
+  color: #fff;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 5001;
+  transition: all 0.3s ease;
+  max-height: 100%;
+  overflow-y: scroll;
+}
+
+footer::-webkit-scrollbar {
+  display: none;
+}
+/* End - Page layout */
+
+/* Start - Panels */
+.panel-group {
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+}
+
+.panel {
+	color: #24292e;
+}
+
+.panel-header {
+  display: block;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+
+  font-weight: 300;
+  font-size: 2.4rem;
+  letter-spacing: -.08rem;
+  line-height: 2;
+  padding: 0 1rem;
+
+  color: #12b2e7;
+  background-color: #fff;
+}
+
+.panel-body {
+  border-bottom: 1px solid #ddd;
+}
+/* End - Panels */
+
+/* Start - Accordion */
+ul.accordion {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+ul.accordion li {
+  margin-bottom: 0px;
+}
+/* End - Accordion */
+
+/* Start - Loading animation */
 #loading {
 	height: 100%;
 	width: 100%;
@@ -210,13 +241,14 @@ div.sources-content {
 
 .tgl-btn label {
 	background: #cccccc;
-	width: 2em;
-	height: 1em;
-	border-radius: 1em;
-	padding: 2px;
+	width: 3.6rem;
+	height: 1.8rem;
+	border-radius: 0.9rem;
+	padding: 0.1rem;
 	cursor: pointer;
 	transition: all .4s ease;
-	vertical-align: middle;
+	margin-bottom: 0;
+  display: inline-block;
 }
 
 .tgl-btn label::after {
@@ -244,6 +276,48 @@ div.sources-content {
 }
 /* End - PowerToggle */
 
+/* Start - Volume dial */
+.volume-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.volume-buttons-wrapper {
+  text-align: center;
+  margin-top: -30px;
+}
+
+.volume-wrapper input[type='checkbox'] {
+	display: none;
+}
+
+.volume-wrapper label.mute {
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 0.4em;
+  font-size: 2rem;
+  line-height: 2rem;
+  padding: 1rem;
+  border: 1px solid #12b2e7;
+}
+
+.volume-wrapper label.mute svg {
+  height: 2rem;
+  width: 2rem;
+}
+
+.volume-wrapper input:checked + label.mute {
+  background-color: #12b2e7;
+}
+
+.volume-wrapper input:checked + label.mute svg {
+  fill: #fff;
+}
+
+/* End - Volume dial */
+
 /* Start - Transitions */
 .auto-expand-enter-active, .auto-expand-leave-active {
 	transition: all 0.3s ease;
@@ -260,40 +334,61 @@ div.sources-content {
 }
 /* End - Transitions */
 
-/* Start - Settings */
-#settings-container {
-  margin-top: 40px;
-  float: right;
-  min-width: 45%;
+/* Start - Footer FAB navigation */
+main.container {
+  margin-bottom: 6rem;
 }
 
-#open-settings {
+footer.minimized {
+  max-height: 6rem;
+  overflow-y: hidden;
+  transition: all 0.3s ease;
+}
+
+footer nav.fab {
+  width: 100%;
+  text-align: right;
+}
+
+footer nav.fab ul {
+  padding-top: 1rem;
+}
+
+footer nav.fab li {
+  display: inline-block;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background-color: #12b2e7;
   cursor: pointer;
-  font-size: 36px;
-  float: right;
+  font-size: 2.4rem;
+  text-align: center;
+
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
+
+  transition: all 0.2s linear;
 }
 
-#open-settings svg {
+footer nav.fab li:hover {
+  transform: scale(1.2);
+}
+
+footer nav.fab li svg {
   fill: #fff;
-  transition: all 0.3s linear;
+  height: 100%;
 }
 
-#open-settings:hover svg {
-  fill: #12b2e7;
-  transition: all 0.3s linear;
+footer .panel {
+  background-color: #fff;
+  box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.3);
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
 }
+/* End - FAB navigation */
 
-#open-settings.active svg {
-  fill: #12b2e7;
-  transform: rotate(50deg);
-  animation: grow .5s forwards;
-}
-
-#settings {
-  padding-right: 15px;
-  padding-left: 15px;
-  padding-bottom: 15px;
-  animation: appear .5s forwards;
+/* Start - Settings */
+.label-inline + input {
+  margin-left: 2.5rem;
 }
 
 label[for=volume-max] {
@@ -332,6 +427,10 @@ label[for=volume-max] + div {
 /* End - Settings */
 
 /* Start - Modal */
+#modal-mask {
+  transition: all 0.3s ease;
+}
+
 .modal-mask {
 	height: 100%;
 	width: 100%;
@@ -340,7 +439,5 @@ label[for=volume-max] + div {
 	left: 0;
 	top: 0;
 	background-color: rgba(0, 0, 0, .5);
-  transition: all 0.3s ease;
-  display: table;
 }
 /* End - Modal */

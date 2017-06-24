@@ -1,5 +1,5 @@
-<div class="panel panel-default zone">
-	<div class="panel-heading clearfix" v-on:click="toggle">
+<li class="panel panel-default zone">
+	<div class="panel-header clearfix" v-on:click="toggle">
 		<slot name="header"></slot>
 	</div>
 	<transition-auto-expand>
@@ -7,4 +7,4 @@
 			<slot name="content"></slot>
 		</div>
 	</transition-auto-expand>
-</div>
+</li>

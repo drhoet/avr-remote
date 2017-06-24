@@ -4,12 +4,18 @@
 		<meta charset="utf-8">
 		<title>AVR remote</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="//gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css">
+		<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+		<link rel="stylesheet" href="css/vendor/normalize.css">
+		<link rel="stylesheet" href="css/vendor/milligram.min.css">
 		<link rel="stylesheet" type="text/css" href="css/avrremote.css">
 	</head>
 	<body>
-		<div id="app-container" class="container">
+		<div id="app-container">
+			<header>
+				<div class="container">
+					<h1>{{ avr.name }}</h1>
+				</div>
+			</header>
 			<div id="loading" v-if="!avr.connected">
 				<div class="loading-content">
 					<div class="spinner">
@@ -20,14 +26,25 @@
 					Loading
 				</div>
 			</div>
-			<settings v-bind:app-config="config" v-cloak></settings>
-			<div id="content" v-cloak>
-				<h1 class="page-header">{{ avr.name }}</h1>
-				<div class="panel-group" id="zones-accordion" role="tablist">
+			<div id="modal-mask" :class="{'modal-mask': showSettings}" @click="showSettings = false"></div>
+			<main id="content" class="container">
+				<ul class="panel-group accordion" id="zones-accordion" role="tablist">
 					<zone-panel v-for="(item, index) in avr.zones" :key="item.id" :zone="item" :config="config"></zone-panel>
+				</ul>
+				<ul class="panel-group accordion" id="internals-accordion" role="tablist">
 					<component v-for="item in avr.internals" :is="mapType(item)" :key="item.internalId" :item="item"></component>
-				</div>
-			</div>
+				</ul>
+			</main>
+			<footer :class="{ 'minimized': !showSettings }">
+				<nav class="fab">
+					<ul class="container">
+						<li id="open-settings" :class="{ 'active': showSettings }" @click="showSettings = !showSettings">
+								<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#settings" /></svg>
+						</li>
+					</ul>
+				</nav>
+				<settings :app-config="config" :show="showSettings" @close="showSettings = false"></settings>
+			</footer>
 		</div>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>

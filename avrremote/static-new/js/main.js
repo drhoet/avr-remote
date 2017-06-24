@@ -58,6 +58,7 @@ $.when.apply($, collector.promises).then(function() {
 		data: {
 			avr: avr,
 			config: config,
+			showSettings: false,
 		},
 		methods: {
 			mapType: function(internal) {

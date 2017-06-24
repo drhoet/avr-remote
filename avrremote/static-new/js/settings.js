@@ -7,6 +7,10 @@ collector.register($.get('templates/settings.html', function(template) {
 				type: Object,
 				required: true,
 			},
+			show: {
+				type: Boolean,
+				required: true,
+			}
 		},
 		data: function() {
 			return {
@@ -14,7 +18,6 @@ collector.register($.get('templates/settings.html', function(template) {
 				url: this.appConfig.ip,
 				volumeMax: this.appConfig.volume_max,
 				rotation: this.appConfig.rotation,
-				showSettings: false,
 			};
 		},
 		methods: {
@@ -31,7 +34,7 @@ collector.register($.get('templates/settings.html', function(template) {
 				}
 			},
 			close: function() {
-				this.showSettings = false;
+				this.$emit('close')
 			}
 		},
 	});

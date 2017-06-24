@@ -1,16 +1,11 @@
 <div class="volume-wrapper">
 	<div class="volume-dial-wrapper">
-		<input ref="input" type="text" :value="displayVolume" class="zone-volume-value">
-	</div>
-	<div class="btn-group btn-group-justified" role="group">
-		<a class="btn btn-default" href="#" role="button">
-			<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#volume-down" /></svg>
-		</a>
-		<a class="btn btn-default" href="#" role="button">
-			<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#volume-off" /></svg>
-		</a>
-		<a class="btn btn-default" href="#" role="button">
-			<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#volume-up" /></svg>
-		</a>
+		<input ref="input" type="text" :value="displayVolume" class="zone-volume-value" data-fgColor="#12b2e7" data-bgColor="#cccccc">
+		<div class="volume-buttons-wrapper">
+			<input :id="_uid" type="checkbox" :checked="mute" @change="$emit('muteChanged', $event.target.checked)"/>
+			<label :for="_uid" class="mute">
+				<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#volume-off" /></svg>
+			</label>
+		</div>
 	</div>
 </div>

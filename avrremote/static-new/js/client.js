@@ -54,6 +54,7 @@ class Zone extends Endpoint {
 		this.registerProperty('input');
 		this.registerProperty('power');
 		this.registerProperty('volume');
+		this.registerProperty('mute');
 	}
 
 	send(propertyName, propertyValue) {

@@ -3,7 +3,7 @@ collector.register($.get('templates/volume-dial.html', function(template) {
 	Vue.component('volume-dial', {
 		template: template,
 		props: {
-			value: {
+			volume: {
 				type: Number,
 				required: false,
 			},
@@ -18,6 +18,11 @@ collector.register($.get('templates/volume-dial.html', function(template) {
 			step: {
 				type: Number,
 				default: 1.0,
+			},
+			mute: {
+				type: Boolean,
+				required: false,
+				default: false,
 			}
 		},
 		mounted: function() {
@@ -34,13 +39,13 @@ collector.register($.get('templates/volume-dial.html', function(template) {
 				'height': 175, //fixme
 				'format': this.formatVolume,
 				'release': function(value) {
-					vm.$emit('input', value)
+					vm.$emit('volumeChanged', value)
 				}
 			});
 		},
 		computed: {
 			displayVolume: function() {
-				return this.formatVolume(this.value);
+				return this.formatVolume(this.volume);
 			},
 		},
 		methods: {
@@ -53,7 +58,7 @@ collector.register($.get('templates/volume-dial.html', function(template) {
 			}
 		},
 		watch: {
-			value: function(value) {
+			volume: function(value) {
 				this.$nextTick(function() {
 					$(this.$el).find('input').trigger('change');
 				});
