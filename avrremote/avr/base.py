@@ -75,7 +75,7 @@ class AbstractAvr(metaclass=ABCMeta):
 
     # must return a dictionary with at least the following keys: name (string), volume_step (float),
     # zones (list of dicts, { 'name': <name>, 'inputs': <list of tuples: (input name, input icon)> }),
-    # internal (list of dicts, {'name': <name>, 'type': <currently supported: 'tuner'>})
+    # internal (list of tuples, (type: <currently supported: 'tuner'>, icon))
     @property
     @abstractmethod
     async def static_info(self):

@@ -69,9 +69,10 @@ class Zone extends Endpoint {
 }
 
 class Tuner extends Endpoint {
-	constructor(avr, internalId) {
+	constructor(avr, internalId, icon) {
 		super(avr);
 		this.internalId = internalId;
+		this.icon = icon;
 		this.registerProperty('band');
 		this.registerProperty('freq');
 	}
@@ -125,8 +126,8 @@ function Avr() {
 			_self.zones.push(new Zone(_self, z, state.zones[z]));
 		}
 		for (let i = 0; i < state.internals.length; ++i) {
-			if (state.internals[i] == 'tuner') {
-				_self.internals.push(new Tuner(_self, i));
+			if (state.internals[i][0] == 'tuner') {
+				_self.internals.push(new Tuner(_self, i, state.internals[i][1]));
 			} else {
 				_self.internals.push(null);
 			}

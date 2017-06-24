@@ -1,7 +1,7 @@
 svg.icon {
 	fill: #24292e;
-	height: 1em;
-	width: 1em;
+	height: 2.4rem;
+	width: 2.4rem;
 	vertical-align: top;
 }
 
@@ -148,6 +148,11 @@ footer::-webkit-scrollbar {
 
   color: #12b2e7;
   background-color: #fff;
+}
+
+.panel-header svg.icon {
+	height: 4.8rem;
+	fill: #12b2e7;
 }
 
 .panel-body {

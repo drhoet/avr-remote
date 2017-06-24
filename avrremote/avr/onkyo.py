@@ -113,7 +113,7 @@ class Onkyo(AbstractAvr):
     @property
     async def static_info(self):
         augmented_zones = [{'name': z.name, 'inputs': z.inputs} for z in self.zones]
-        return { 'name': 'Onkyo', 'ip': self.ip, 'zones': augmented_zones, 'volume_step': 1, 'internals': ['tuner']}
+        return { 'name': 'Onkyo', 'ip': self.ip, 'zones': augmented_zones, 'volume_step': 1, 'internals': [('tuner', 'radio')]}
 
     async def listen(self):
         print('listen_for_updates')

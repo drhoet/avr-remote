@@ -214,7 +214,7 @@ class Marantz(AbstractAvr):
     async def static_info(self):
         print('im in static info')
         augmented_zones = [{'name': z.name, 'inputs': z.inputs} for z in self.zones]
-        return {'name': 'Marantz NR1605', 'ip': self.config['ip'], 'zones': augmented_zones, 'volume_step': 0.5, 'internals': ['tuner']}
+        return {'name': 'Marantz NR1605', 'ip': self.config['ip'], 'zones': augmented_zones, 'volume_step': 0.5, 'internals': [('tuner', 'radio')]}
 
     async def listen(self):
         print('listen_for_updates')

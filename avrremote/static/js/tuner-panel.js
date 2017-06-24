@@ -40,6 +40,11 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 				}
 			},
 		},
+		methods: {
+			inputIcon: function(id) {
+				return 'svg/sprite/input_sources_24px.svg#' + id;
+			},
+		},
 	});
 	console.log('registered tuner-panel');
 }));
