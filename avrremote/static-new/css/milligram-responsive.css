@@ -1,0 +1,6 @@
+@media (max-width: 40rem) {
+	.row .column.column-25, .row .column.column-75 {
+		flex: 1 1 auto;
+		max-width: 100%;
+	}
+}
