@@ -362,6 +362,10 @@ footer nav.fab li:hover {
   transform: scale(1.2);
 }
 
+footer nav.fab li.active {
+	background-color: #cccccc;
+}
+
 footer nav.fab li svg {
   fill: #fff;
   height: 100%;
