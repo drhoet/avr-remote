@@ -301,6 +301,8 @@ ul.accordion li {
   line-height: 2rem;
   padding: 1rem;
   border: 1px solid #12b2e7;
+	z-index: 1;
+	position: relative;
 }
 
 .volume-wrapper label.mute svg {
