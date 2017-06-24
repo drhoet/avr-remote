@@ -151,7 +151,7 @@ def create_app(loop):
     avr = avr_class(app['config']['avr_connection'])
     avr_handler = AvrHandler(avr)
 
-    app.router.add_static('/static-new', 'avrremote/static-new')
+    app.router.add_static('/static', 'avrremote/static')
     app.router.add_get('/ws', avr_handler.websocket_handler)
 
     aiohttp.web.run_app(app, host='0.0.0.0', port=5000)
