@@ -31,11 +31,14 @@ class Zone(AbstractEndpoint):
             inputid = resp[1][0] if isinstance(resp[1], tuple) else resp[1]
             selected_input = self.avr.input_ids.index(inputid)
 
+            resp = receiver.command('audio-muting' if self.zoneId == 0 else 'muting', arguments=['query'], zone=self.name)
+            mute = True if resp[1] == 'on' else False
+
         result = [
             self._property_updated('power', power),
             self._property_updated('input', selected_input),
             self._property_updated('volume', volume),
-            self._property_updated('mute', False)
+            self._property_updated('mute', mute)
         ]
         return filter(None, result)
 
@@ -55,7 +58,9 @@ class Zone(AbstractEndpoint):
         return inputId
 
     async def mute(self, value):
-        return True
+        with eiscp.eISCP(self.avr.ip) as receiver:
+            receiver.command('audio-muting' if self.zoneId == 0 else 'muting', ['on' if value else 'off'], zone=self.name)
+        return True if value else False
 
 
 class Tuner(AbstractEndpoint):
