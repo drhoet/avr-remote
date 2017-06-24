@@ -1,7 +1,3 @@
-a, a:hover, a:focus {
-	text-decoration: none;
-}
-
 svg.icon {
 	fill: #24292e;
 	height: 1em;
@@ -11,15 +7,6 @@ svg.icon {
 
 div.volume-column {
 	position: relative; /* needed to hide that absolutely positioned input */
-}
-
-div.sources-column {
-	padding-left: 0;
-	padding-right: 0;
-}
-
-span.zone-power svg.icon {
-	vertical-align: text-bottom;
 }
 
 nav ul {
