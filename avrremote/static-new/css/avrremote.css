@@ -10,7 +10,7 @@ svg.icon {
 }
 
 div.volume-column {
-	padding: 15px;
+	position: relative; /* needed to hide that absolutely positioned input */
 }
 
 div.sources-column {
