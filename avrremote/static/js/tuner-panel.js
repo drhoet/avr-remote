@@ -14,6 +14,10 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 		},
 		mounted: function() {
 			this.drawCanvas();
+			window.addEventListener('resize', this.drawCanvas);
+		},
+		beforeDestroy: function() {
+			window.removeEventListener('resize', this.drawCanvas);
 		},
 		computed: {
 			freqMin: function() {
@@ -48,7 +52,7 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 			},
 		},
 		methods: {
-			findClosestValidNbGuideLinesPerFreq(value) {
+			findClosestValidNbTicksPerFreq(value) {
 				let allowed = [10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01];
 				for (let i = 0; i < allowed.length; ++i) {
 					if (value >= allowed[i]) {
@@ -69,24 +73,27 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 
 				// calculations
 				ctx.font = '1.5rem roboto';
-				let minPadding = ctx.measureText(this.freqMax + 'MM').width; // padding needed to print labels completely
+				let minPadding = Math.ceil(ctx.measureText(this.freqMax + 'MM').width); // padding needed to print labels completely
 				let maxBandWidth = canvas.width - minPadding;
-				// first we want to estimate how many guide lines we want to draw. Every 4-5 pixels looks nice.
-				let nbGuideLinesPerFreq = maxBandWidth / (this.freqMax - this.freqMin + 1) / 4; // 10 -- 0.2
+				let minTickWidth = Math.ceil(ctx.measureText(this.freqMax).width / 10); // 10 ticks MUST be wider than the width of one label, otherwise the labels overlap
+				// first we want to estimate how many ticks we want to draw.
+				let maxNbTicks = maxBandWidth / minTickWidth;
+				let maxNbTicksPerFreq = maxNbTicks / (this.freqMax - this.freqMin);
 				// now set this at max 10, and must be a divisor of 10, otherwise we get weird frequence labels
-				nbGuideLinesPerFreq = this.findClosestValidNbGuideLinesPerFreq(nbGuideLinesPerFreq);
-				// to be able to calculate in whole numbers, move the frequency scale to the 'f' scale:
-				// this scale is constructed, so that we want to draw a guide line for every whole f
-				// FM: 875 .. 1080 (i.e. 10 * freq)
-				// AM: 104 .. 323 (i.e. 0.2 * freq)
-				let minF = Math.floor(nbGuideLinesPerFreq * this.freqMin);
-				let maxF = Math.ceil(nbGuideLinesPerFreq * this.freqMax);
-				let tickWidth = Math.floor(maxBandWidth / (maxF - minF + 1));
-				let bandWidth = tickWidth * (maxF - minF + 1);
+				let nbTicksPerFreq = this.findClosestValidNbTicksPerFreq(maxNbTicksPerFreq);
+				console.log('nbTicksPerFreq', nbTicksPerFreq);
+				// to be able to calculate in whole numbers, move the frequency scale to the 't' scale:
+				// this scale is constructed, so that we want to draw a guide line for every whole t
+				let firstTick = Math.floor(nbTicksPerFreq * this.freqMin); // freqMin could be fractional!
+				let lastTick = Math.ceil(nbTicksPerFreq * this.freqMax); // freqMax could be fractional!
+				// we got a minimum tick width, but maybe it can be wider and still fit in the window
+				let tickWidth = Math.max(minTickWidth, Math.floor(maxBandWidth / (lastTick - firstTick)));
+				let bandWidth = tickWidth * (lastTick - firstTick);
 				let padding = Math.floor((canvas.width - bandWidth) / 2); // max half pixel wrong...
+				console.log(minTickWidth, tickWidth);
 
 				// actual frequency
-				let position = Math.floor(nbGuideLinesPerFreq * this.freq) - minF;
+				let position = Math.floor(nbTicksPerFreq * this.freq) - firstTick;
 				ctx.strokeStyle = '#f00';
 				ctx.lineWidth = 4;
 				ctx.beginPath();
@@ -99,15 +106,15 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 				ctx.strokeStyle = '#fff';
 				ctx.fillStyle = '#fff';
 				ctx.lineWidth = 1;
-				for (let f = minF; f <= maxF; f += 1) {
-					let x = (f - minF) * tickWidth + padding;
+				for (let tick = firstTick; tick <= lastTick; tick += 1) {
+					let x = (tick - firstTick) * tickWidth + padding;
 					ctx.beginPath();
 					ctx.moveTo(x, 0);
-					ctx.lineTo(x, f % 10 == 0 ? 30 : f % 5 == 0 ? 25 : 20);
+					ctx.lineTo(x, tick % 10 == 0 ? 30 : tick % 5 == 0 ? 25 : 20);
 					ctx.stroke();
 					ctx.closePath();
-					if (f % 10 == 0) {
-						let freq = f / nbGuideLinesPerFreq;
+					if (tick % 10 == 0) {
+						let freq = tick / nbTicksPerFreq;
 						let textWidth = ctx.measureText(freq).width;
 						ctx.fillText(freq, x - textWidth / 2, 50);
 					}
