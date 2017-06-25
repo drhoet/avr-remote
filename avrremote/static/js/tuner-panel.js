@@ -81,7 +81,6 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 				let maxNbTicksPerFreq = maxNbTicks / (this.freqMax - this.freqMin);
 				// now set this at max 10, and must be a divisor of 10, otherwise we get weird frequence labels
 				let nbTicksPerFreq = this.findClosestValidNbTicksPerFreq(maxNbTicksPerFreq);
-				console.log('nbTicksPerFreq', nbTicksPerFreq);
 				// to be able to calculate in whole numbers, move the frequency scale to the 't' scale:
 				// this scale is constructed, so that we want to draw a guide line for every whole t
 				let firstTick = Math.floor(nbTicksPerFreq * this.freqMin); // freqMin could be fractional!
@@ -90,7 +89,6 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 				let tickWidth = Math.max(minTickWidth, Math.floor(maxBandWidth / (lastTick - firstTick)));
 				let bandWidth = tickWidth * (lastTick - firstTick);
 				let padding = Math.floor((canvas.width - bandWidth) / 2); // max half pixel wrong...
-				console.log(minTickWidth, tickWidth);
 
 				// actual frequency
 				let position = Math.floor(nbTicksPerFreq * this.freq) - firstTick;
