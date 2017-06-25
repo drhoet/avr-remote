@@ -160,22 +160,25 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 					}
 				}
 			},
+			pagex2freq: function(pageX) {
+				let x = pageX - this.canvas.getBoundingClientRect().left;
+				if (x < this.padding) {
+					x = this.padding;
+				} else if (x > this.canvasSize.width - this.padding) {
+					x = this.canvasSize.width - this.padding;
+				}
+				let bandWidth = this.canvasSize.width - 2 * this.padding;
+				let tempFreq = this.freqMin + (this.freqMax - this.freqMin) * (x - this.padding) /
+					bandWidth;
+				// round to the closest allowed frequency
+				return this.freqStep * Math.round(tempFreq / this.freqStep);
+			},
 			mouseDown: function(e) {
 				if (e.button == 0) {
 					e.preventDefault();
 					let vm = this;
-
 					var move = function(e) {
-						let x = e.pageX - vm.canvas.getBoundingClientRect().left;
-						if (x < vm.padding) {
-							x = vm.padding;
-						} else if (x > vm.canvasSize.width - vm.padding) {
-							x = vm.canvasSize.width - vm.padding;
-						}
-						let bandWidth = vm.canvasSize.width - 2 * vm.padding;
-						let tempFreq = vm.freqMin + (vm.freqMax - vm.freqMin) * (x - vm.padding) / bandWidth;
-						// round to the closest allowed frequency
-						vm.internalFreq = vm.freqStep * Math.round(tempFreq / vm.freqStep);
+						vm.internalFreq = vm.pagex2freq(e.pageX);
 						vm.$emit('freqSeek', vm.internalFreq);
 						vm.drawCanvas();
 					};
@@ -183,6 +186,7 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 						vm.canvas.removeEventListener('mousemove', move);
 						vm.canvas.removeEventListener('mouseup', mouseUp);
 						vm.canvas.removeEventListener('mouseleave', mouseCancel);
+						vm.internalFreq = vm.pagex2freq(e.pageX);
 						vm.$emit('freqChange', vm.internalFreq);
 					};
 					var mouseCancel = function(e) {
