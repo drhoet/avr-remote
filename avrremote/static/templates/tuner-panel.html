@@ -8,10 +8,17 @@
 		<div class="canvas-wrapper">
 			<frequency-band :freq="item.freq" :band="item.band" @freqChange="freq => { item.freq = freq }" @freqSeek="freq => { seekPosition = freq }"></frequency-band>
 		</div>
-		<div class="frequency">
-			{{displaySeekPosition}} <span class="unit">{{freqUnit}}</span>
+		<div class="frequency-control">
+			<span class="down" @click="item.seekDown()">
+				<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#play" /></svg>
+			</span>
+			<span class="frequency">{{displaySeekPosition}}</span>
+			<span class="unit">{{freqUnit}}</span>
+			<span class="up" @click="item.seekUp()">
+				<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#play" /></svg>
+			</span>
 		</div>
-		<input type="number" v-model.lazy.number="item.freq" :min="freqMin" :max="freqMax" :step="freqStep" required/>
+
 		<label for="tuner-am">
 			<input type="radio" value="AM" id="tuner-am" v-model="item.band" /> AM
 		</label>

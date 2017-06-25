@@ -318,16 +318,30 @@ ul.accordion li {
 	cursor: pointer;
 }
 
-.panel.tuner .panel-body .frequency {
+.panel.tuner .panel-body .frequency-control {
 	width: 100%;
-	font-size: 5rem;
-	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	background-color: #999999;
 }
 
-.panel.tuner .panel-body .frequency .unit {
+.panel.tuner .panel-body .frequency-control .frequency {
+	font-size: 5rem;
+	align-self: baseline;
+}
+.panel.tuner .panel-body .frequency-control .unit {
 	font-size: 3rem;
 	letter-spacing: -0.1rem;
+	align-self: baseline;
+}
+
+.panel.tuner .frequency-control .up, .panel.tuner .frequency-control .down {
+	cursor: pointer;
+}
+
+.panel.tuner .frequency-control .down svg {
+	transform: rotate(180deg);
 }
 /* End - Tuner */
 
