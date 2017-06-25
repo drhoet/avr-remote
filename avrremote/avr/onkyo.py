@@ -77,6 +77,8 @@ class Tuner(AbstractEndpoint):
         self.internalId = internalId
         self._register_property('band', self.set_band)
         self._register_property('freq', self.set_freq)
+        self._register_command('seekUp', self.seek_up)
+        self._register_command('seekDown', self.seek_down)
 
     def create_property_update(self, property_name, property_value):
         return AvrTunerPropertyUpdate(self.internalId, property_name, property_value)
@@ -117,6 +119,12 @@ class Tuner(AbstractEndpoint):
         with eiscp.eISCP(self.avr.ip) as receiver:
             resp = receiver.raw(('TUN' + '{0:05.0f}'.format(value*100)) if (value*100) > 5000 else ('TUN' + '{0:05.0f}'.format(value)))
         return value
+
+    async def seek_up(self, _):
+        pass
+
+    async def seek_down(self, _):
+        pass
 
 
 class Onkyo(AbstractAvr):
@@ -159,6 +167,10 @@ class Onkyo(AbstractAvr):
             await self.internals[avr_update.internalId].send(avr_update)
         else:
             raise UnsupportedUpdateException('Update type {} not supported'.format(avr_update.__class__.__name__), avr_update)
+
+    async def executeInternalCommand(self, internalId, commandName, arguments):
+        internal = self.internals[internalId]
+        await internal.executeCommand(commandName, arguments)
 
     def get_preset(self, zoneId):
         with eiscp.eISCP(self.ip) as receiver:

@@ -13,6 +13,15 @@ class UnsupportedUpdateException(BaseException):
         self.message = message
 
 
+class CommandError(BaseException):
+    """ Raised when the command could not be executed """
+    def __init__(self, message, commandName, arguments, cause):
+        self.message = message
+        self.commandName = commandName
+        self.arguments = arguments
+        self.cause = cause
+
+
 class AvrUpdate:
     pass
 
@@ -99,6 +108,17 @@ class AbstractAvr(metaclass=ABCMeta):
         """
         pass
 
+    @abstractmethod
+    async def executeInternalCommand(self, internalId, commandName, arguments):
+        """ Execute a command in an internal source
+
+        Keyword arguments:
+        internalId -- the id of the internal source
+        commandName -- the name of the command to execute
+        arguments -- the arguments. Can be None
+        """
+        pass
+
     @classmethod
     def __subclasshook__(cls, C):
         if cls is AbstractAvr:
@@ -120,6 +140,7 @@ class AbstractEndpoint(metaclass=ABCMeta):
     def __init__(self, avr):
         self.avr = avr
         self.properties = {}
+        self.commands = {}
 
     @abstractmethod
     def create_property_update(self, property_name, property_value):
@@ -135,6 +156,15 @@ class AbstractEndpoint(metaclass=ABCMeta):
         """
         self.properties[name] = EndpointProperty(None, sender)
 
+    def _register_command(self, commandName, callable):
+        """ Call this method from your constructor, to register a command in the endpoint
+        Keyword arguments:
+        commandName -- the name of the commandName
+        callable -- the method that should be execute when the command must be executed. Must be an async
+            callable with one parameter (the arguments)
+        """
+        self.commands[commandName] = callable
+
     def _property_updated(self, name, value):
         """ Call this when an endpoint property got updated. This happens when an update is received from the AVR """
         if self.properties[name].value != value:
@@ -148,3 +178,13 @@ class AbstractEndpoint(metaclass=ABCMeta):
             self.properties[avr_update.property].value = avr_update.value ## FIXME: shouldn't I use the set_value here?
         else:
             raise UnsupportedUpdateException('Property \'{}\' not supported by endpoint'.format(avr_update.property), avr_update)
+
+    async def executeCommand(self, commandName, arguments):
+        """ Executes the command with given arguments on this endpoint, if such command was registered """
+        if commandName in self.commands:
+            try:
+                await self.commands[commandName](arguments)
+            except Exception as cause:
+                raise CommandError("Error while executing command", commandName, arguments, cause)
+        else:
+            raise CommandError('Command \'{}\' not support by endpoint'.format(commandName), commandName, arguments, None)

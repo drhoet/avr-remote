@@ -68,6 +68,8 @@ class Tuner(AbstractEndpoint):
         self.internalId = internalId
         self._register_property('band', self.set_band)
         self._register_property('freq', self.set_freq)
+        self._register_command('seekUp', self.seek_up)
+        self._register_command('seekDown', self.seek_down)
 
     def create_property_update(self, property_name, property_value):
         return AvrTunerPropertyUpdate(self.internalId, property_name, property_value)
@@ -95,6 +97,12 @@ class Tuner(AbstractEndpoint):
         freq_str = '{0:06.0f}'.format(100 * value)
         await self.avr._get('/goform/formiPhoneAppDirect.xml?TFAN{0}'.format(freq_str))
         return value
+
+    async def seek_up(self, _):
+        await self.avr._get('/goform/formiPhoneAppDirect.xml?TFANUP')
+
+    async def seek_down(self, _):
+        await self.avr._get('/goform/formiPhoneAppDirect.xml?TFANDOWN')
 
 
 class Marantz(AbstractAvr):
@@ -231,6 +239,10 @@ class Marantz(AbstractAvr):
             await self.internals[avr_update.internalId].send(avr_update)
         else:
             raise UnsupportedUpdateException('Update type {} not supported'.format(avr_update.__class__.__name__), avr_update)
+
+    async def executeInternalCommand(self, internalId, commandName, arguments):
+        internal = self.internals[internalId]
+        await internal.executeCommand(commandName, arguments)
 
     def _map_input(self, input):
         if input == 'Online Music' or input == 'Favorites' or input == 'Flickr' or input == 'Media Server' or input == 'Internet Radio':

@@ -84,7 +84,24 @@ class Tuner extends Endpoint {
 			type: 'tuner',
 			internalId: this.internalId,
 			state: state
-		})
+		});
+	}
+
+	executeCommand(commandName, args) {
+		avr.send({
+			type: 'tuner',
+			internalId: this.internalId,
+			command: commandName,
+			arguments: args,
+		});
+	}
+
+	seekUp() {
+		this.executeCommand('seekUp');
+	}
+
+	seekDown() {
+		this.executeCommand('seekDown');
 	}
 }
 

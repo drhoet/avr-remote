@@ -101,12 +101,17 @@ class AvrHandler:
             for key, value in state.items():
                 avr_update = AvrZonePropertyUpdate(zoneId, key, value)
                 await self.avr.send(avr_update)
-        elif request['type'] == 'tuner':
+        elif request['type'] == 'tuner': # TODO: make this generic for all internals
             internalId = request['internalId']
-            state = request['state']
-            for key, value in state.items():
-                avr_update = AvrTunerPropertyUpdate(internalId, key, value)
-                await self.avr.send(avr_update)
+            if 'state' in request:
+                state = request['state']
+                for key, value in state.items():
+                    avr_update = AvrTunerPropertyUpdate(internalId, key, value)
+                    await self.avr.send(avr_update)
+            if 'command' in request:
+                command = request['command']
+                arguments = request['arguments'] if 'arguments' in request else None
+                await self.avr.executeInternalCommand(internalId, command, arguments)
 
     # The handler of the websocket. This one is listening for requests of the clients
     # When a request is received, most of the handling is passed over to the process_request method.
