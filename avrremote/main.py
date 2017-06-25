@@ -85,7 +85,7 @@ class AvrHandler:
                 print('In the async for loop', updates)
                 for avr_update in updates:
                     await self.send_message(ws, AvrMessage.create(avr_update))
-        except:
+        except Exception:
             traceback.print_exc()
             raise
         finally:
@@ -128,7 +128,7 @@ class AvrHandler:
                         await self.send_message(ws, AvrError('websocket_handler', err.message))
                 elif msg.type == aiohttp.WSMsgType.ERROR:
                     print('ws connection closed with exception %s' % ws.exception())
-        except:
+        except Exception:
             traceback.print_exc()
             raise
         finally:

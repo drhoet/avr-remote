@@ -200,7 +200,7 @@ class Marantz(AbstractAvr):
             if self.session:
                 self.session.close()
             raise
-        except:
+        except Exception:
             traceback.print_exc()
             raise
 
