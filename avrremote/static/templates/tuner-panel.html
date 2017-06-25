@@ -1,10 +1,10 @@
-<accordion-panel>
+<accordion-panel class="tuner">
 	<div slot="header">
 		<svg class="icon"><use :xlink:href="inputIcon(item.icon)" /></svg>
 		<span class="name">Tuner</span>
 	</div>
 
-	<div slot="content" class="">
+	<div slot="content">
 		<label for="tuner-am">
 			<input type="radio" value="AM" id="tuner-am" v-model="item.band" /> AM
 		</label>
@@ -12,6 +12,12 @@
 			<input type="radio" value="FM" id="tuner-fm" v-model="item.band" /> FM
 		</label>
 
+		<div class="canvas-wrapper">
+			<frequency-band :freq="item.freq" :band="item.band"></frequency-band>
+		</div>
+		<div class="frequency">
+			{{item.freq}} <span class="unit">{{freqUnit}}</span>
+		</div>
 		<input type="number" v-model.lazy.number="item.freq" :min="freqMin" :max="freqMax" :step="freqStep" required/>
 	</div>
 </accordion-panel>
