@@ -315,6 +315,7 @@ ul.accordion li {
 .panel.tuner .panel-body .canvas-wrapper {
 	width: 100%;
 	height: 8rem;
+	cursor: pointer;
 }
 
 .panel.tuner .panel-body .frequency {
