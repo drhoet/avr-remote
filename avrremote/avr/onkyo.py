@@ -29,6 +29,8 @@ class Zone(AbstractEndpoint):
 
             resp = receiver.command('input-selector' if self.zoneId == 0 else 'selector', arguments=['query'], zone=self.name)
             inputid = resp[1][0] if isinstance(resp[1], tuple) else resp[1]
+            if inputid == 'fm' or inputid =='am':
+                inputid = 'Tuner'
             selected_input = self.avr.input_ids.index(inputid)
 
             resp = receiver.command('audio-muting' if self.zoneId == 0 else 'muting', arguments=['query'], zone=self.name)
@@ -54,7 +56,12 @@ class Zone(AbstractEndpoint):
 
     async def select_input(self, inputId):
         with eiscp.eISCP(self.avr.ip) as receiver:
-            (receiver.raw('SLI12' if self.zoneId == 0 else 'SLZ12')) if self.avr.input_real_names[inputId][0] == 'tv' else (receiver.command('input-selector' if self.zoneId == 0 else 'selector', arguments=[self.avr.input_real_names[inputId][0]], zone=self.name))
+            if self.avr.input_real_names[inputId][0] == 'Tuner':
+                resp = receiver.raw('TUNQSTN')
+                freq = int(resp[3:])
+                receiver.command('input-selector' if self.zoneId == 0 else 'selector', arguments=['fm' if freq > 5000 else 'am'], zone=self.name)
+            else:
+                (receiver.raw('SLI12' if self.zoneId == 0 else 'SLZ12')) if self.avr.input_real_names[inputId][0] == 'tv' else (receiver.command('input-selector' if self.zoneId == 0 else 'selector', arguments=[self.avr.input_real_names[inputId][0]], zone=self.name))
         return inputId
 
     async def mute(self, value):
@@ -78,20 +85,37 @@ class Tuner(AbstractEndpoint):
         """ Polls the state of the AVR and returns a list of changed properties """
         with eiscp.eISCP(self.avr.ip) as receiver:
             resp = receiver.raw('TUNQSTN')
-            freq = int(resp[3:])/100
+            freq_raw = int(resp[3:])
+            if freq_raw > 5000:
+                band = 'FM'
+                freq = freq_raw/100
+            else:
+                band = 'AM'
+                freq = freq_raw
 
         result = [
-            self._property_updated('band', 'FM'),
+            self._property_updated('band', band),
             self._property_updated('freq', freq),
         ]
         return filter(None, result)
 
     async def set_band(self, value):
-        return 'FM'
+        with eiscp.eISCP(self.avr.ip) as receiver:
+            resp = receiver.command('input-selector', arguments=['query'], zone='main')
+            inputid = resp[1][0] if isinstance(resp[1], tuple) else resp[1]
+            if inputid == 'fm' or inputid == 'am':
+                receiver.command('input-selector', arguments=[value.lower()], zone='main')
+            resp = receiver.command('selector', arguments=['query'], zone='zone2')
+            inputid = resp[1][0] if isinstance(resp[1], tuple) else resp[1]
+            resp2 = receiver.command('power', arguments=['query'], zone='zone2')
+            power = resp2[1]
+            if ((inputid =='fm' or inputid == 'am') and power == 'on'):
+                receiver.command('selector', arguments=[value.lower()], zone='zone2')
+        return value
 
     async def set_freq(self, value):
         with eiscp.eISCP(self.avr.ip) as receiver:
-            resp = receiver.raw('TUN' + '{0:05.0f}'.format(value*100))
+            resp = receiver.raw(('TUN' + '{0:05.0f}'.format(value*100)) if (value*100) > 5000 else ('TUN' + '{0:05.0f}'.format(value)))
         return value
 
 
@@ -99,8 +123,8 @@ class Onkyo(AbstractAvr):
 
     def __init__(self, config):
         self.ip = config['ip']
-        self.inputs = [ ('BD/DVD', 'hdmi'), ('Tuner fm', 'radio'), ('Network', 'cloud'), ('Tuner am', 'radio'), ('STRM BOX', 'hdmi'), ('CBL/SAT', 'hdmi'), ('BLUETOOTH', 'bluetooth-audio'), ('PC', 'hdmi'), ('GAME', 'videogame'), ('AUX', 'hdmi'), ('CD', 'cd'), ('PHONO', 'hdmi'), ('TV', 'tv') ]
-        self.input_real_names = [ ('dvd', 'BD/DVD'), ('fm', 'Tuner fm'), ('network', 'Network'), ('am', 'Tuner am'), ('strm-box', 'STRM BOX'), ('video2', 'CBL/SAT'), ('bluetooth', 'BLUETOOTH'), ('video6', 'PC'), ('video3', 'GAME'), ('video4', 'AUX'), ('cd', 'CD'), ('phono', 'PHONO'), ('tv', 'TV') ]
+        self.inputs = [ ('BD/DVD', 'hdmi'), ('Tuner', 'radio'), ('Network', 'cloud'), ('STRM BOX', 'hdmi'), ('CBL/SAT', 'hdmi'), ('BLUETOOTH', 'bluetooth-audio'), ('PC', 'hdmi'), ('GAME', 'videogame'), ('AUX', 'hdmi'), ('CD', 'cd'), ('PHONO', 'hdmi'), ('TV', 'tv') ]
+        self.input_real_names = [ ('dvd', 'BD/DVD'), ('Tuner', 'Tuner'), ('network', 'Network'), ('strm-box', 'STRM BOX'), ('video2', 'CBL/SAT'), ('bluetooth', 'BLUETOOTH'), ('video6', 'PC'), ('video3', 'GAME'), ('video4', 'AUX'), ('cd', 'CD'), ('phono', 'PHONO'), ('tv', 'TV') ]
         self.input_ids = [x[0] for x in self.input_real_names]
         self.zones = [Zone(self, 0, 'main', self.inputs), Zone(self, 1, 'zone2', self.inputs)]
         self.internals = [Tuner(self, 0)]
