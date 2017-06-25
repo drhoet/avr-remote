@@ -35,7 +35,7 @@
 			</div>
 		</div>
 		<div class="column column-25 volume-column">
-			<volume-dial :volume="zone.volume" @volumeChanged="zone.volume = $event" :step="config.volume_step" :max="config.volume_max" :rotation="config.rotation" :mute="zone.mute" @muteChanged="zone.mute = $event"></volume-dial>
+			<volume-dial :volume="zone.volume" @volumeChanged="volume => { zone.volume = volume }" :step="config.volume_step" :max="config.volume_max" :rotation="config.rotation" :mute="zone.mute" @muteChanged="mute => { zone.mute = mute }"></volume-dial>
 		</div>
 	</div>
 </accordion-panel>
