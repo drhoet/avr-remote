@@ -79,8 +79,15 @@ class Tuner(AbstractEndpoint):
         data = await self.avr._get('/goform/formTuner_TunerXml.xml')
         xml = ElementTree.fromstring(data)
 
+        band = xml.findtext('Band/value')
+        if band == '': # sometimes, this value is empty. Posting the app command GetTunerStatus seems to fix it
+            cmds = await self.avr._post_app_command('GetTunerStatus')
+            data = await self.avr._get('/goform/formTuner_TunerXml.xml')
+            xml = ElementTree.fromstring(data)
+            band = xml.findtext('Band/value')
+
         result = [
-            self._property_updated('band', xml.findtext('Band/value')),
+            self._property_updated('band', band),
             self._property_updated('freq', float(xml.findtext('Frequency/value'))),
         ]
         return filter(None, result)
