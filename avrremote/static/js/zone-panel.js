@@ -28,6 +28,17 @@ collector.register($.get('templates/zone-panel.html', function(template) {
 			inputs2: function() {
 				return this.mappedInputs.slice(this.mappedInputs.length / 2);
 			},
+			selectedInput: function() {
+				if (this.zone.input) {
+					return {
+						id: this.input,
+						name: this.zone.inputs[this.zone.input][0],
+						icon: this.zone.inputs[this.zone.input][1],
+					}
+				} else {
+					return {}
+				}
+			},
 		},
 		methods: {
 			inputIcon: function(id) {

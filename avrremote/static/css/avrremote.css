@@ -15,13 +15,15 @@ nav ul {
 }
 
 div.sources {
-	display: table;
+	display: flex;
+	justify-content: space-between;
 	width: 100%;
 }
 
 div.sources nav {
 	width: 5rem;
-	display: table-cell;
+	align-self: flex-start;
+	box-shadow: 11px 0px 15px -15px rgba(0,0,0,0.5);
 }
 
 div.sources nav ul li {
@@ -41,6 +43,11 @@ div.sources nav ul li span.input-select {
 	left: 0;
 	white-space: nowrap;
 	cursor: pointer;
+}
+
+div.sources nav.text-right {
+	align-self: flex-end;
+	box-shadow: -11px 0px 15px -15px rgba(0,0,0,0.5);
 }
 
 div.sources nav.text-right ul li span.input-select {
@@ -82,10 +89,17 @@ div.sources nav ul li:hover span.input-select span.name {
 }
 
 div.sources-content {
-	box-shadow:  0px 50px 25px -20px #f5f5f5 inset, 0px -50px 25px -20px #f5f5f5 inset, -5px 0px 5px -5px rgba(0,0,0,0.5) inset, 5px 0px 5px -5px rgba(0,0,0,0.5) inset;
 	padding: 15px;
-	display: table-cell;
-	vertical-align: top;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+div.sources-content .title {
+	font-weight: 300;
+	font-size: 7.6rem;
+	letter-spacing: -0.1rem;
 }
 
 [title] {
