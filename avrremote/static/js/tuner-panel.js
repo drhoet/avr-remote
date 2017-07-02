@@ -15,11 +15,12 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 		},
 		data: function() {
 			return {
-				internalFreq: this.freq,
+				seekFreq: this.freq,
 				canvasSize: {
 					width: 0,
 					height: 0,
 				},
+				seeking: false,
 				canvas: null,
 				ctx: null,
 			}
@@ -30,7 +31,6 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 			this.ctx.font = '1.5rem roboto';
 
 			this.updateDimensions();
-			this.drawCanvas();
 			window.addEventListener('resize', this.updateDimensions);
 			this.$refs.canvas.addEventListener('mousedown', this.mouseDown);
 		},
@@ -132,7 +132,7 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 				ctx.fillRect(0, 0, this.canvasSize.width, this.canvasSize.height);
 
 				// actual frequency
-				let position = Math.floor(this.nbTicksPerFreq * this.internalFreq) - this.firstTick;
+				let position = Math.floor(this.nbTicksPerFreq * this.seekFreq) - this.firstTick;
 				ctx.strokeStyle = '#f00';
 				ctx.lineWidth = 4;
 				ctx.beginPath();
@@ -177,23 +177,26 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 				if (e.button == 0) {
 					e.preventDefault();
 					let vm = this;
+					vm.seekFreq = vm.pagex2freq(e.pageX);
+					vm.seeking = true;
 					var move = function(e) {
-						vm.internalFreq = vm.pagex2freq(e.pageX);
-						vm.$emit('freqSeek', vm.internalFreq);
+						vm.seekFreq = vm.pagex2freq(e.pageX);
+						vm.$emit('freqSeek', vm.seekFreq);
 						vm.drawCanvas();
 					};
 					var mouseUp = function(e) {
 						vm.canvas.removeEventListener('mousemove', move);
 						vm.canvas.removeEventListener('mouseup', mouseUp);
 						vm.canvas.removeEventListener('mouseleave', mouseCancel);
-						vm.internalFreq = vm.pagex2freq(e.pageX);
-						vm.$emit('freqChange', vm.internalFreq);
+						vm.seeking = false;
+						vm.$emit('freqChange', vm.seekFreq);
 					};
 					var mouseCancel = function(e) {
 						vm.canvas.removeEventListener('mousemove', move);
 						vm.canvas.removeEventListener('mouseup', mouseUp);
 						vm.canvas.removeEventListener('mouseleave', mouseCancel);
-						vm.internalFreq = vm.freq;
+						vm.seeking = false;
+						vm.seekFreq = vm.freq;
 						vm.drawCanvas();
 					};
 					vm.canvas.addEventListener('mousemove', move);
@@ -203,7 +206,10 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 			},
 		},
 		watch: {
-			freq: function() {
+			freq: function(value) {
+				if (!this.seeking) { // don't show outside updates while seeking...
+					this.seekFreq = value;
+				}
 				this.drawCanvas();
 			},
 			band: function() {
