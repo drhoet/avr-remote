@@ -1,0 +1,18 @@
+<transition name="modal">
+	<div class="modal-mask">
+		<div class="modal-wrapper">
+			<div class="modal-container">
+				<div class="modal-header">
+					<slot name="header"></slot>
+				</div>
+				<div class="modal-body">
+					<slot></slot>
+				</div>
+				<div class="ok-cancel-buttons">
+					<button @click="$emit('ok')" :disabled="!canOk">{{ok}}</button>
+					<button v-if="showCancel" @click="$emit('cancel')" :disabled="!canCancel" class="button-outline">{{cancel}}</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</transition>

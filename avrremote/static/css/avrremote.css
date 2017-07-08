@@ -5,6 +5,10 @@ svg.icon {
 	vertical-align: top;
 }
 
+button[disabled] {
+	cursor: not-allowed;
+}
+
 div.volume-column {
 	position: relative; /* needed to hide that absolutely positioned input */
 }
@@ -338,6 +342,7 @@ ul.accordion li {
 	justify-content: center;
 	align-items: center;
 	background-color: #999999;
+	position: relative;
 }
 
 .panel.tuner .panel-body .frequency-control .frequency {
@@ -354,8 +359,18 @@ ul.accordion li {
 	cursor: pointer;
 }
 
+.panel.tuner .frequency-control .up svg {
+	transform: scaleY(1.5);
+}
+
 .panel.tuner .frequency-control .down svg {
-	transform: rotate(180deg);
+	transform: rotate(180deg) scaleY(1.5);
+}
+
+.panel.tuner .frequency-control .save {
+	position: absolute;
+	right: 2.5rem;
+	cursor: pointer;
 }
 /* End - Tuner */
 
@@ -456,26 +471,9 @@ label[for=volume-max] + div {
 #settings label#rotation {
   display: block;
 }
-
-#settings #settings-buttons {
-  display: flex;
-}
-
-#settings #settings-buttons button:first-child {
-  flex-grow: 80;
-}
-
-#settings #settings-buttons button:last-child {
-  flex-grow: 20;
-  margin-left: 10px;
-}
 /* End - Settings */
 
 /* Start - Modal */
-#modal-mask {
-  transition: all 0.3s ease;
-}
-
 .modal-mask {
 	height: 100%;
 	width: 100%;
@@ -484,5 +482,54 @@ label[for=volume-max] + div {
 	left: 0;
 	top: 0;
 	background-color: rgba(0, 0, 0, .5);
+	transition: all 0.3s ease;
 }
+
+.modal-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+}
+
+.modal-container {
+	background-color: #fff;
+	padding: 2rem;
+	transition: all .3s ease;
+}
+
+.modal-body {
+	margin-bottom: 2rem;
+}
+
+.modal-enter {
+  opacity: 0;
+}
+
+.modal-leave-active {
+  opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+  transform: scale(1.1);
+}
+
+.ok-cancel-buttons {
+  display: flex;
+}
+
+.ok-cancel-buttons button {
+	margin-bottom: 0;
+}
+
+.ok-cancel-buttons button:first-child {
+  flex-grow: 80;
+}
+
+.ok-cancel-buttons button:last-child {
+  flex-grow: 20;
+  margin-left: 10px;
+}
+
 /* End - Modal */
