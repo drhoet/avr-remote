@@ -71,8 +71,22 @@ class Tuner(AbstractEndpoint):
         self._register_command('seekUp', self.seek_up)
         self._register_command('seekDown', self.seek_down)
 
+        self._register_property('selectedPreset', self.select_preset)
+        self._register_property('presets', None)
+        self._register_property('presetCount', None)
+        self._register_command('savePreset', self.save_preset)
+
     def create_property_update(self, property_name, property_value):
         return AvrTunerPropertyUpdate(self.internalId, property_name, property_value)
+
+    def _parse_raw_presets(self, raw_presets):
+        for index, preset in enumerate(raw_presets):
+            text = preset.get('param', '')
+            name = text[:8].strip()
+            if name != '':
+                freq = float(text[-6:]) / 100
+                band = 'AM' if freq > 500.00 else 'FM'
+                yield {'index': float(preset.get('index')), 'name': name, 'freq': freq, 'band': band}
 
     async def poll(self):
         """ Polls the state of the AVR and returns a list of changed properties """
@@ -86,9 +100,18 @@ class Tuner(AbstractEndpoint):
             xml = ElementTree.fromstring(data)
             band = xml.findtext('Band/value')
 
+        freq = float(xml.findtext('Frequency/value'))
+        raw_presets = [preset for preset in xml.iterfind('PresetLists/value') if preset.get('index', '0') != '0']
+        presets = [p for p in self._parse_raw_presets(raw_presets)]
+        selected_preset = next((preset['index'] for preset in presets if preset['freq']==freq), -1)
+        preset_count = len(raw_presets)
+
         result = [
             self._property_updated('band', band),
-            self._property_updated('freq', float(xml.findtext('Frequency/value'))),
+            self._property_updated('freq', freq),
+            self._property_updated('selectedPreset', selected_preset),
+            self._property_updated('presets', presets),
+            self._property_updated('presetCount', preset_count)
         ]
         return filter(None, result)
 
@@ -110,6 +133,23 @@ class Tuner(AbstractEndpoint):
 
     async def seek_down(self, _):
         await self.avr._get('/goform/formiPhoneAppDirect.xml?TFANDOWN')
+
+    async def select_preset(self, preset):
+        await self.avr._get('/goform/formiPhoneAppDirect.xml?TPAN{0:02d}'.format(preset))
+
+    async def save_preset(self, arguments):
+        if len(arguments) == 2 and arguments[0] >= 1 and arguments[0] <= 56 and isinstance(arguments[1], str):
+            index = arguments[0]
+            name = arguments[1][:8]
+            freq = self._property_value('freq')
+            await self.avr._post('/Tuner/TunerPreset/sendS-3_4_1.asp', {
+                'textPresetName{0:02d}'.format(index): name,
+                'setPresetName{0:02d}'.format(index): 'on',
+                'listPresetCh': '{0:02d}'.format(index),
+                'listPresetFreq{0:02d}'.format(index): '{0:06.0f}'.format(100 * freq)
+            } )
+        else:
+            raise AvrCommandError('Invalid arguments: must be 1. int [1..56] 2. string', 'savePreset', arguments, None)
 
 
 class Marantz(AbstractAvr):
@@ -259,6 +299,11 @@ class Marantz(AbstractAvr):
 
     async def _get(self, path):
         async with self.session.get(self.baseUri + path) as response:
+            resp_text = await response.text()
+        return resp_text
+
+    async def _post(self, path, data, headers = None):
+        async with self.session.post(self.baseUri + path, data = data, headers = headers) as response:
             resp_text = await response.text()
         return resp_text
 
