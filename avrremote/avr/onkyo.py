@@ -137,10 +137,6 @@ class Tuner(AbstractEndpoint):
     async def seek_down(self, _):
         pass
 
-    async def get_preset(self, zoneId):
-        with eiscp.eISCP(self.avr.ip) as receiver:
-            return receiver.command('preset', arguments=['query'], zone=self.avr.zones[zoneId])
-
     async def select_preset(self, preset):
         with eiscp.eISCP(self.avr.ip) as receiver:
             receiver.command('preset', [preset], zone=self.avr.zones[zoneId]) ##FIXME: Where to get zoneId?
