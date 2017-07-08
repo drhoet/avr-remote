@@ -75,6 +75,9 @@ class Tuner extends Endpoint {
 		this.icon = icon;
 		this.registerProperty('band');
 		this.registerProperty('freq');
+		this.registerProperty('selectedPreset');
+		this.registerProperty('presets');
+		this.registerProperty('presetCount');
 	}
 
 	send(propertyName, propertyValue) {
@@ -102,6 +105,10 @@ class Tuner extends Endpoint {
 
 	seekDown() {
 		this.executeCommand('seekDown');
+	}
+
+	savePreset(index, name) {
+		this.executeCommand('savePreset', [index, name]);
 	}
 }
 

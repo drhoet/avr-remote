@@ -232,6 +232,10 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 		data: function() {
 			return {
 				seekPosition: this.item.freq,
+				showSavePresetPopup: false,
+				presetsSparseArray: [],
+				savePresetIndex: -1,
+				savePresetName: '',
 			}
 		},
 		computed: {
@@ -257,17 +261,41 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 			},
 			displaySeekPosition: function() {
 				return sprintf(this.freqFormat, this.seekPosition);
+			},
+			bandAgnosticFrequency: function() {
+				return this.item.freq * 100;
 			}
 		},
 		watch: {
 			'item.freq': function(freq) {
 				this.seekPosition = freq;
+			},
+			'item.presets': function(presets) {
+				this.presetsSparseArray = [];
+				for (let p = 0; p < this.item.presets.length; ++p) {
+					let preset = this.item.presets[p];
+					this.presetsSparseArray[preset.index] = preset;
+				}
 			}
 		},
 		methods: {
 			inputIcon: function(id) {
 				return 'svg/sprite/input_sources_24px.svg#' + id;
 			},
+			formatPreset: function(preset) {
+				switch (preset.band) {
+					case "AM":
+						return sprintf('AM %.0fKHz', preset.freq);
+					case "FM":
+						return sprintf('FM %0.2fMHz', preset.freq);
+					default:
+						return '';
+				}
+			},
+			savePreset: function() {
+				this.item.savePreset(this.savePresetIndex, this.savePresetName);
+				this.showSavePresetPopup = false;
+			}
 		},
 	});
 	console.log('registered tuner-panel');

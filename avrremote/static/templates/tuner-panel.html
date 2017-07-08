@@ -17,6 +17,31 @@
 			<span class="up" @click="item.seekUp()">
 				<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#play" /></svg>
 			</span>
+			<span class="save" @click="showSavePresetPopup = true">
+				<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#save" /></svg>
+			</span>
+			<modal v-if="showSavePresetPopup" @ok="savePreset" @cancel="showSavePresetPopup = false" :canOk="savePresetIndex != -1 && savePresetName != ''">
+				<h2 slot="header">Save preset</h2>
+				<label>Save into preset:
+					<select required v-model="savePresetIndex">
+						<option disabled selected value="-1">Select a preset...</option>
+						<option v-for="index in item.presetCount" :value="index">
+							{{index}} <template v-if="presetsSparseArray[index]"> - {{presetsSparseArray[index].name}} ({{formatPreset(presetsSparseArray[index])}})</template>
+						</option>
+					</select>
+				</label>
+				<label required>Preset name:
+					<input type="text" v-model="savePresetName"/>
+				</label>
+			</modal>
+		</div>
+		<div class="presets">
+			<select v-model="item.selectedPreset">
+				<option disabled value="-1">Select a preset...</option>
+				<option v-for="preset in item.presets" :value="preset.index">
+					{{preset.name}} ({{formatPreset(preset)}})
+				</option>
+			</select>
 		</div>
 
 		<label for="tuner-am">
