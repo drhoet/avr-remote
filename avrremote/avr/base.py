@@ -171,6 +171,10 @@ class AbstractEndpoint(metaclass=ABCMeta):
             self.properties[name].value = value
             return self.create_property_update(name, value)
 
+    def _property_value(self, name):
+        """ Retrieve the value of a property """
+        return self.properties[name].value
+
     async def send(self, avr_update):
         """ Sends an update to the endpoint """
         if avr_update.property in self.properties:
