@@ -13,7 +13,7 @@ class UnsupportedUpdateException(BaseException):
         self.message = message
 
 
-class CommandError(BaseException):
+class AvrCommandError(BaseException):
     """ Raised when the command could not be executed """
     def __init__(self, message, commandName, arguments, cause):
         self.message = message
@@ -185,6 +185,6 @@ class AbstractEndpoint(metaclass=ABCMeta):
             try:
                 await self.commands[commandName](arguments)
             except Exception as cause:
-                raise CommandError("Error while executing command", commandName, arguments, cause)
+                raise AvrCommandError("Error while executing command", commandName, arguments, cause)
         else:
-            raise CommandError('Command \'{}\' not support by endpoint'.format(commandName), commandName, arguments, None)
+            raise AvrCommandError('Command \'{}\' not support by endpoint'.format(commandName), commandName, arguments, None)

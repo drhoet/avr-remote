@@ -1,4 +1,4 @@
-from .base import AbstractAvr, AbstractEndpoint, AvrZonePropertyUpdate, AvrTunerPropertyUpdate, UnsupportedUpdateException
+from .base import AbstractAvr, AbstractEndpoint, AvrZonePropertyUpdate, AvrTunerPropertyUpdate, UnsupportedUpdateException, AvrCommandError
 
 import asyncio
 import aiohttp

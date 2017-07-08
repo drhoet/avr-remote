@@ -5,7 +5,7 @@ import json
 import traceback
 
 from .default_config import default_config as config
-from .avr.base import AvrZonePropertyUpdate, AvrTunerPropertyUpdate, UnsupportedUpdateException
+from .avr.base import AvrZonePropertyUpdate, AvrTunerPropertyUpdate, UnsupportedUpdateException, AvrCommandError
 
 class AvrMessage:
     """ A message that can be sent to the Avr. """
@@ -128,7 +128,7 @@ class AvrHandler:
                     print('>> [{0}] {1}'.format(json['type'], json))
                     try:
                         await self.process_request(json)
-                    except UnsupportedUpdateException as err:
+                    except (UnsupportedUpdateException, AvrCommandError) as err:
                         traceback.print_exc()
                         await self.send_message(ws, AvrError('websocket_handler', err.message))
                 elif msg.type == aiohttp.WSMsgType.ERROR:
