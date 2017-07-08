@@ -136,6 +136,7 @@ class Tuner(AbstractEndpoint):
 
     async def select_preset(self, preset):
         await self.avr._get('/goform/formiPhoneAppDirect.xml?TPAN{0:02d}'.format(preset))
+        return preset
 
     async def save_preset(self, arguments):
         if len(arguments) == 2 and arguments[0] >= 1 and arguments[0] <= 56 and isinstance(arguments[1], str):

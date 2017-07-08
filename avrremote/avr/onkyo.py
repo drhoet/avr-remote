@@ -99,13 +99,16 @@ class Tuner(AbstractEndpoint):
             else:
                 band = 'AM'
                 freq = freq_raw
+            selected_preset = receiver.command('preset', arguments=['query'], zone=self.avr.zones[zoneId]) ##FIXME: Where to get zoneId?
+            presets = [] ##FIXME: implement!
+            preset_count = len(presets) ##FIXME: implement!
 
         result = [
             self._property_updated('band', band),
             self._property_updated('freq', freq),
-            self._property_updated('selectedPreset', -1),
-            self._property_updated('presetCount', 0),
-            self._property_updated('presets', []),
+            self._property_updated('selectedPreset', selected_preset),
+            self._property_updated('presetCount', preset_count),
+            self._property_updated('presets', presets),
         ]
         return filter(None, result)
 
@@ -134,17 +137,23 @@ class Tuner(AbstractEndpoint):
     async def seek_down(self, _):
         pass
 
-    def get_preset(self, zoneId):
+    async def get_preset(self, zoneId):
         with eiscp.eISCP(self.avr.ip) as receiver:
             return receiver.command('preset', arguments=['query'], zone=self.avr.zones[zoneId])
 
-    def set_selected_preset(self, zoneId, preset):
+    async def select_preset(self, preset):
         with eiscp.eISCP(self.avr.ip) as receiver:
-            return receiver.command('preset', [preset], zone=self.avr.zones[zoneId])
+            receiver.command('preset', [preset], zone=self.avr.zones[zoneId]) ##FIXME: Where to get zoneId?
+        return preset
 
-    def set_selected_preset_memory(self, zoneId, preset):
-        with eiscp.eISCP(self.avr.ip) as receiver:
-            return receiver.raw('PRM' + '{0:02x}'.format(preset))
+    async def save_preset(self, arguments):
+        if len(arguments) == 2 and arguments[0] >= 1 and arguments[0] <= 56 and isinstance(arguments[1], str): ## FIXME: Correct preset min/max here
+            index = arguments[0]
+            name = arguments[1][:8] ## FIXME: name max length? I assumed 8 here.
+            with eiscp.eISCP(self.avr.ip) as receiver:
+                receiver.raw('PRM' + '{0:02x}'.format(index))
+        else:
+            raise AvrCommandError('Invalid arguments: must be 1. int [1..56] 2. string', 'savePreset', arguments, None)
 
 
 class Onkyo(AbstractAvr):
