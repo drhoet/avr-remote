@@ -8,33 +8,51 @@
 		<div class="canvas-wrapper">
 			<frequency-band :freq="item.freq" :band="item.band" @freqChange="freq => { item.freq = freq }" @freqSeek="freq => { seekPosition = freq }"></frequency-band>
 		</div>
-		<div class="frequency-control">
-			<span class="down" @click="item.seekDown()">
-				<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#play" /></svg>
-			</span>
-			<span class="frequency">{{displaySeekPosition}}</span>
-			<span class="unit">{{freqUnit}}</span>
-			<span class="up" @click="item.seekUp()">
-				<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#play" /></svg>
-			</span>
-			<span class="save" @click="showSavePresetPopup = true">
-				<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#save" /></svg>
-			</span>
-			<modal v-if="showSavePresetPopup" @ok="savePreset" @cancel="showSavePresetPopup = false" :canOk="savePresetIndex != -1 && savePresetName != ''">
-				<h2 slot="header">Save preset</h2>
-				<label>Save into preset:
-					<select required v-model="savePresetIndex">
-						<option disabled selected value="-1">Select a preset...</option>
-						<option v-for="index in item.presetCount" :value="index">
-							{{index}} <template v-if="presetsSparseArray[index]"> - {{formatPreset(presetsSparseArray[index])}}</template>
-						</option>
-					</select>
-				</label>
-				<label required>Preset name:
-					<input type="text" v-model="savePresetName"/>
-				</label>
-			</modal>
+		<div class="controls">
+			<div class="extra-controls">
+				<span class="band-control">
+					<span>AM</span>
+					<span class="tgl-btn">
+						<input :id="'band' + _uid" type="checkbox" v-model="item.band" v-bind:true-value="'FM'" v-bind:false-value="'AM'" @click.stop />
+						<label :for="'band' + _uid" @click.stop />
+					</span>
+					<span>FM</span>
+				</span>
+			</div>
+
+			<div class="frequency-control">
+				<span class="down" @click="item.seekDown()">
+					<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#play" /></svg>
+				</span>
+				<span class="frequency">{{displaySeekPosition}}</span>
+				<span class="unit">{{freqUnit}}</span>
+				<span class="up" @click="item.seekUp()">
+					<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#play" /></svg>
+				</span>
+			</div>
+
+			<div class="save-control">
+				<span @click="showSavePresetPopup = true">
+					<svg class="icon"><use xlink:href="svg/sprite/input_sources_24px.svg#save" /></svg>
+				</span>
+			</div>
 		</div>
+
+		<modal v-if="showSavePresetPopup" @ok="savePreset" @cancel="showSavePresetPopup = false" :canOk="savePresetIndex != -1 && savePresetName != ''">
+			<h2 slot="header">Save preset</h2>
+			<label>Save into preset:
+				<select required v-model="savePresetIndex">
+					<option disabled selected value="-1">Select a preset...</option>
+					<option v-for="index in item.presetCount" :value="index">
+						{{index}} <template v-if="presetsSparseArray[index]"> - {{formatPreset(presetsSparseArray[index])}}</template>
+					</option>
+				</select>
+			</label>
+			<label required>Preset name:
+				<input type="text" v-model="savePresetName"/>
+			</label>
+		</modal>
+
 		<div class="presets">
 			<select v-model="item.selectedPreset">
 				<option disabled value="-1">Select a preset...</option>
@@ -43,12 +61,5 @@
 				</option>
 			</select>
 		</div>
-
-		<label for="tuner-am">
-			<input type="radio" value="AM" id="tuner-am" v-model="item.band" /> AM
-		</label>
-		<label for="tuner-fm">
-			<input type="radio" value="FM" id="tuner-fm" v-model="item.band" /> FM
-		</label>
 	</div>
 </accordion-panel>

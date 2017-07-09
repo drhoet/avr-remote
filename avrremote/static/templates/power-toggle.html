@@ -1,4 +1,4 @@
-<span class="tgl-btn">
+<span class="tgl-btn tgl-btn-on-off">
 	<input :id="uid" type="checkbox" :checked="value" @change="updateValue($event.target.checked)" @click.stop :disabled="disabled"/>
 	<label :for="uid" @click.stop />
 </span>

@@ -273,7 +273,7 @@ ul.accordion li {
 	content: '';
 }
 
-.tgl-btn input:checked + label {
+.tgl-btn.tgl-btn-on-off input:checked + label {
 	background: #9fd6ae;
 }
 
@@ -336,13 +336,34 @@ ul.accordion li {
 	cursor: pointer;
 }
 
-.panel.tuner .panel-body .frequency-control {
-	width: 100%;
+.panel.tuner .panel-body .controls {
+	background-color: #999999;
 	display: flex;
+}
+
+.panel.tuner .controls .extra-controls {
+	flex: 1;
+	align-self: center;
+}
+
+.panel.tuner .controls .extra-controls .band-control span:first-child,
+.panel.tuner .controls .extra-controls .seeking-control span:first-child {
+	margin-left: 2.5rem;
+}
+
+.panel.tuner .controls .extra-controls .tgl-btn label {
+	vertical-align: text-top;
+}
+
+.panel.tuner .controls .extra-controls label, .panel.tuner .controls .extra-controls input {
+	cursor: pointer;
+}
+
+.panel.tuner .panel-body .frequency-control {
+	display: flex;
+	flex: 1;
 	justify-content: center;
 	align-items: center;
-	background-color: #999999;
-	position: relative;
 }
 
 .panel.tuner .panel-body .frequency-control .frequency {
@@ -367,10 +388,19 @@ ul.accordion li {
 	transform: rotate(180deg) scaleY(1.5);
 }
 
-.panel.tuner .frequency-control .save {
-	position: absolute;
-	right: 2.5rem;
+.panel.tuner .controls .save-control {
+	flex: 1;
+	text-align: right;
+}
+
+.panel.tuner .controls .save-control span {
 	cursor: pointer;
+	padding: 2.5rem;
+	display: inline-block;
+}
+
+.panel.tuner .presets select {
+	margin-bottom: 0;
 }
 /* End - Tuner */
 
