@@ -26,7 +26,7 @@
 					<select required v-model="savePresetIndex">
 						<option disabled selected value="-1">Select a preset...</option>
 						<option v-for="index in item.presetCount" :value="index">
-							{{index}} <template v-if="presetsSparseArray[index]"> - {{presetsSparseArray[index].name}} ({{formatPreset(presetsSparseArray[index])}})</template>
+							{{index}} <template v-if="presetsSparseArray[index]"> - {{formatPreset(presetsSparseArray[index])}}</template>
 						</option>
 					</select>
 				</label>
@@ -39,7 +39,7 @@
 			<select v-model="item.selectedPreset">
 				<option disabled value="-1">Select a preset...</option>
 				<option v-for="preset in item.presets" :value="preset.index">
-					{{preset.name}} ({{formatPreset(preset)}})
+					{{formatPreset(preset)}}
 				</option>
 			</select>
 		</div>

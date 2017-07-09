@@ -283,13 +283,17 @@ collector.register($.get('templates/tuner-panel.html', function(template) {
 				return 'svg/sprite/input_sources_24px.svg#' + id;
 			},
 			formatPreset: function(preset) {
-				switch (preset.band) {
-					case "AM":
-						return sprintf('AM %.0fKHz', preset.freq);
-					case "FM":
-						return sprintf('FM %0.2fMHz', preset.freq);
-					default:
-						return '';
+				if (preset.band && preset.freq) {
+					switch (preset.band) {
+						case "AM":
+							return sprintf('%s (AM %.0fKHz)', preset.name, preset.freq);
+						case "FM":
+							return sprintf('%s (FM %0.2fMHz)', preset.name, preset.freq);
+						default:
+							return '';
+					}
+				} else {
+					return preset.name;
 				}
 			},
 			savePreset: function() {
