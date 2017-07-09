@@ -99,8 +99,8 @@ class Tuner(AbstractEndpoint):
             else:
                 band = 'AM'
                 freq = freq_raw
-            selected_preset = receiver.command('preset', arguments=['query'], zone=self.avr.zones[zoneId]) ##FIXME: Where to get zoneId?
-            presets = [] ##FIXME: implement!
+            selected_preset = receiver.command('preset', arguments=['query'], zone='main') ##FIXME: Where to get zoneId?
+            presets = [{'index': (i+1), 'name': ('Preset {0}'.format(i+1)), 'freq': None, 'band': None} for i in range(40)] ##FIXME: implement!
             preset_count = len(presets) ##FIXME: implement!
 
         result = [
@@ -132,24 +132,27 @@ class Tuner(AbstractEndpoint):
         return value
 
     async def seek_up(self, _):
-        pass
+        with eiscp.eISCP(self.avr.ip) as receiver:
+            return receiver.send('TUNUP')
 
     async def seek_down(self, _):
-        pass
+        with eiscp.eISCP(self.avr.ip) as receiver:
+            return receiver.send('TUNDOWN')
+
 
     async def select_preset(self, preset):
         with eiscp.eISCP(self.avr.ip) as receiver:
-            receiver.command('preset', [preset], zone=self.avr.zones[zoneId]) ##FIXME: Where to get zoneId?
+            receiver.raw('PRS' + '{0:02x}'.format(preset)) ##FIXME: Where to get zoneId?
         return preset
 
     async def save_preset(self, arguments):
-        if len(arguments) == 2 and arguments[0] >= 1 and arguments[0] <= 56 and isinstance(arguments[1], str): ## FIXME: Correct preset min/max here
+        if len(arguments) == 2 and arguments[0] >= 1 and arguments[0] <= 40 and isinstance(arguments[1], str): ## FIXME: Correct preset min/max here
             index = arguments[0]
             name = arguments[1][:8] ## FIXME: name max length? I assumed 8 here.
             with eiscp.eISCP(self.avr.ip) as receiver:
-                receiver.raw('PRM' + '{0:02x}'.format(index))
+                receiver.send('PRM' + '{0:02x}'.format(index))
         else:
-            raise AvrCommandError('Invalid arguments: must be 1. int [1..56] 2. string', 'savePreset', arguments, None)
+            raise AvrCommandError('Invalid arguments: must be 1. int [1..40] 2. string', 'savePreset', arguments, None)
 
 
 class Onkyo(AbstractAvr):
