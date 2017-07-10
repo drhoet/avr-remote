@@ -142,7 +142,9 @@ class Tuner(AbstractEndpoint):
 
     async def select_preset(self, preset):
         with eiscp.eISCP(self.avr.ip) as receiver:
-            receiver.raw('PRS' + '{0:02x}'.format(preset)) ##FIXME: Where to get zoneId?
+            current_preset = receiver.command('preset', arguments=['query'], zone='main')
+            if preset != current_preset[1]:
+                receiver.raw('PRS' + '{0:02x}'.format(preset)) ##FIXME: Where to get zoneId?
         return preset
 
     async def save_preset(self, arguments):
