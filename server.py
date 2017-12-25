@@ -14,7 +14,7 @@ from avrremote.main import AvrHandler
 
 def create_backend(config_file=None):
     if config_file is None:
-        # try the env variable as a backup
+        # try the env variable as a fallback
         config_file = os.getenv('AVRREMOTE_SETTINGS', None)
     if config_file is not None:
         with open(config_file) as f:
