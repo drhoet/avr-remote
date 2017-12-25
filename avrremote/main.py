@@ -1,10 +1,7 @@
 import aiohttp
-import importlib
-import os
 import json
 import traceback
 
-from .default_config import default_config as config
 from .avr.base import AvrZonePropertyUpdate, AvrTunerPropertyUpdate, UnsupportedUpdateException, AvrCommandError
 
 class AvrMessage:
@@ -141,22 +138,3 @@ class AvrHandler:
 
         print('websocket connection closed')
         return ws
-
-
-def create_app(loop):
-    config_file = os.getenv('AVRREMOTE_SETTINGS', None)
-    if config_file is not None:
-        with open(config_file) as f:
-            config.update(json.load(f))
-
-    app = aiohttp.web.Application()
-    app['config'] = config
-
-    avr_class = getattr(importlib.import_module(app['config']['avr_module']), app['config']['avr_class'])
-    avr = avr_class(app['config']['avr_connection'])
-    avr_handler = AvrHandler(avr)
-
-    app.router.add_static('/static', 'avrremote/static')
-    app.router.add_get('/ws', avr_handler.websocket_handler)
-
-    aiohttp.web.run_app(app, host='0.0.0.0', port=5000)
