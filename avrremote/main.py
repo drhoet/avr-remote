@@ -1,6 +1,7 @@
 import aiohttp
 import json
 import traceback
+import datetime
 
 from .avr.base import AvrZonePropertyUpdate, AvrTunerPropertyUpdate, UnsupportedUpdateException, AvrCommandError
 
@@ -56,7 +57,35 @@ class AvrHandler:
 
     def __init__(self, avr):
         self.avr = avr
-        self.client_count = 0
+        self.clients = set()
+        self.task = None
+        self.static_info = None
+
+    async def add_client(self, ws, loop): #TODO: ugly loop parameter here...
+        """ Adds a client to this avr handler. Updates from the avr will be sent over the given websocket to this client
+
+        Keyword arguments:
+        ws -- the client websocket connection
+        """
+        self.clients.add(ws)
+
+        if len(self.clients) == 1:
+            print('First client! Going to start avr handler')
+            self.task = loop.create_task(self.avr_handler())
+        else:
+            await self.send_message(ws, self.static_info)
+
+    async def remove_client(self, ws):
+        """ Removes a client. Must be called when the client disconnected.
+
+        Keyword arguments:
+        ws -- the client websocket avr_connection
+        """
+        self.clients.remove(ws)
+
+        if len(self.clients) == 0:
+            print('No more clients. Stopping avr handler')
+            self.task.cancel()
 
     async def send_message(self, ws, msg):
         """ Send an message to the clients
@@ -69,26 +98,25 @@ class AvrHandler:
         await ws.send_json(msg.to_dict())
 
     # The handler of the AVR. This one is listening for status updates of the avr.
-    async def avr_handler(self, ws):
+    async def avr_handler(self):
         if not await self.avr.connected:
             await self.avr.connect()
-        self.client_count = self.client_count + 1
 
         try:
-            static_info = AvrStaticInfoMessage(await self.avr.static_info)
-            await self.send_message(ws, static_info)
+            self.static_info = AvrStaticInfoMessage(await self.avr.static_info)
+            for ws in self.clients:
+                await self.send_message(ws, self.static_info)
 
             async for updates in self.avr.listen():
-                print('In the async for loop', updates)
+                print('In the async for loop', updates, datetime.datetime.now())
                 for avr_update in updates:
-                    await self.send_message(ws, AvrMessage.create(avr_update))
+                    for ws in self.clients:
+                        await self.send_message(ws, AvrMessage.create(avr_update))
         except Exception:
             traceback.print_exc()
             raise
         finally:
-            self.client_count = self.client_count - 1
-            if self.client_count <= 0:
-                await self.avr.disconnect()
+            await self.avr.disconnect()
 
     # processes requests from the clients
     async def process_request(self, request):
@@ -115,8 +143,10 @@ class AvrHandler:
     async def websocket_handler(self, request):
         ws = aiohttp.web.WebSocketResponse()
         await ws.prepare(request)
+        client_id = request.transport.get_extra_info('peername')
 
-        task = request.app.loop.create_task(self.avr_handler(ws))
+        await self.add_client(ws, request.loop)
+        print('Client {0} connected'.format(client_id))
 
         try:
             async for msg in ws:
@@ -133,8 +163,7 @@ class AvrHandler:
         except Exception:
             traceback.print_exc()
             raise
-        finally:
-            task.cancel()
 
-        print('websocket connection closed')
+        print('Client {0} disconnected: connection closed'.format(client_id))
+        await self.remove_client(ws)
         return ws
